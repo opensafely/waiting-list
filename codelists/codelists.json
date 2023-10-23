@@ -24,12 +24,6 @@
       "downloaded_at": "2023-10-18 09:43:43.184775Z",
       "sha": "8b849b5b785d80306e488d0109640c8c1d2da01b"
     },
-    "primis-covid19-vacc-uptake-longres.csv": {
-      "id": "primis-covid19-vacc-uptake/longres/v1",
-      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/longres/v1/",
-      "downloaded_at": "2023-10-18 09:43:43.339259Z",
-      "sha": "4d4c94b9c6aa267c6a60657150bbc5ec7d2d7625"
-    },
     "opensafely-chronic-cardiac-disease.csv": {
       "id": "opensafely/chronic-cardiac-disease/2020-04-08",
       "url": "https://codelists.opensafely.org/codelist/opensafely/chronic-cardiac-disease/2020-04-08/",
@@ -77,12 +71,6 @@
       "url": "https://codelists.opensafely.org/codelist/opensafely/high-dose-long-acting-opioids-openprescribing-dmd/44885cb2/",
       "downloaded_at": "2023-10-20 16:07:10.054125Z",
       "sha": "99853f502fc3294ba1a4c92e5181fe089218cf59"
-    },
-    "user-anschaf-antidepressants-for-pain.csv": {
-      "id": "user/anschaf/antidepressants-for-pain/5489cf85",
-      "url": "https://codelists.opensafely.org/codelist/user/anschaf/antidepressants-for-pain/5489cf85/",
-      "downloaded_at": "2023-10-20 16:07:10.252165Z",
-      "sha": "9d58d196870c86aebd10b0e25808f31d490211b7"
     },
     "user-anschaf-gabapentinoids-dmd.csv": {
       "id": "user/anschaf/gabapentinoids-dmd/7d030eef",

@@ -2,7 +2,6 @@ opensafely/cancer-excluding-lung-and-haematological-snomed/2020-04-15
 opensafely/haematological-cancer-snomed/2020-04-15
 opensafely/lung-cancer-snomed/2020-04-15
 opensafely/ethnicity-snomed-0removed/2e641f61
-primis-covid19-vacc-uptake/longres/v1
 opensafely/chronic-cardiac-disease/2020-04-08
 opensafely/chronic-liver-disease/2020-06-02
 opensafely/chronic-respiratory-disease/2020-04-10
@@ -11,11 +10,9 @@ opensafely/hypertension/2020-04-28
 opensafely/chronic-kidney-disease-snomed/07b0319c
 user/anschaf/opioids-for-analgesia-dmd/3b7a5c50/
 opensafely/high-dose-long-acting-opioids-openprescribing-dmd/44885cb2/
-user/anschaf/antidepressants-for-pain/5489cf85/
 user/anschaf/gabapentinoids-dmd/7d030eef/
 opensafely/nsaids-oral/3fe99055/
 opensafely/osteoarthritis/2020-06-04/
 opensafely/depression/2020-07-09/
 opensafely/anxiety-disorders/6aef605a/
 user/anschaf/antidepressants-dmd/1b780211/
-opensafely/chronic-respiratory-disease/2020-04-10/
