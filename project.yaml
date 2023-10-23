@@ -5,9 +5,32 @@ expectations:
 
 actions:
 
-  generate_dataset:
-    run: ehrql:v0 generate-dataset analysis/dataset_definition.py 
-      --output output/data/dataset_table.csv.gz
+  # Closed (completed) RTT pathways
+  generate_dataset_clockstops:
+    run: ehrql:v0 generate-dataset analysis/dataset_definition_clockstops.py 
+      --output output/data/dataset_table_clockstops.csv.gz
     outputs:
       highly_sensitive:
-        cohort: output/data/dataset_table.csv.gz  
+        cohort: output/data/dataset_table_clockstops.csv.gz  
+        
+  measures_clockstops:
+    run: ehrql:v0 generate-measures analysis/measures_clockstops.py 
+      --output output/measures/measures_clockstops.csv
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_clockstops.csv
+        
+  # Open (incomplete) RTT pathways
+  # generate_dataset_openpathways:
+  #   run: ehrql:v0 generate-dataset analysis/dataset_definition_openpathways.py 
+  #     --output output/data/dataset_table_openpathways.csv.gz
+  #   outputs:
+  #     highly_sensitive:
+  #       cohort: output/data/dataset_table_openpathways.csv.gz  
+
+  # measures_openpathways:
+  #   run: ehrql:v0 generate-measures analysis/measures_openpathways.py 
+  #     --output output/measures/measures_openpathways.csv
+  #   outputs:
+  #     moderately_sensitive:
+  #       measure_csv: output/measures/measures_openpathways.csv
