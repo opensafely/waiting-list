@@ -243,12 +243,12 @@ dataset.osteoarthritis = clin_events_6mo.where(
         clin_events_6mo.ctv3_code.is_in(codelists.osteo_codes)
     ).exists_for_patient()
 
-dataset.depression = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.depression_codes)
+dataset.depress_or_gad = clin_events_6mo.where(
+        clin_events_6mo.snomedct_code.is_in(codelists.depress_gad_codes)
     ).exists_for_patient()
 
 # dataset.anxiety = clin_events_6mo.where(
-#         clin_events_6mo.ctv3_code.is_in(codelists.anxiety_codes)
+#         clin_events_6mo.snomedct_code.is_in(codelists.anxiety_codes)
 #     ).exists_for_patient()
 
 ### TO ADD MORE? ###

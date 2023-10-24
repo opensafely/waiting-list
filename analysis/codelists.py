@@ -79,10 +79,16 @@ osteo_codes = codelist_from_csv(
     column = "CTV3ID"
 )
 
-depression_codes = codelist_from_csv(
-  "codelists/opensafely-depression.csv",
-   column = "CTV3Code"
+depress_gad_codes = codelist_from_csv(
+    "codelists/ons-depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms.csv",
+    column = "code"
 )
+
+
+# depression_codes = codelist_from_csv(
+#   "codelists/opensafely-depression.csv",
+#    column = "CTV3Code"
+# )
 
 # anxiety_codes = codelist_from_csv(
 #   "codelists/opensafely-anxiety-disorders.csv",
