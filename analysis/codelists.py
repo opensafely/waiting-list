@@ -84,7 +84,6 @@ depress_gad_codes = codelist_from_csv(
     column = "code"
 )
 
-
 # depression_codes = codelist_from_csv(
 #   "codelists/opensafely-depression.csv",
 #    column = "CTV3Code"

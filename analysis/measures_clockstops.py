@@ -1,8 +1,8 @@
 ###########################################################
 # This script creates weekly opioid prescribing rates
-#   in the 6 months pre-WL, during WL and 6 months post-WL
-#   for people with a completed RTT pathway
-#   for orthopaedic surgery
+#   in the 6 months pre-waiting list, during waiting list and 
+#   6 months post-waiting list for people with a completed RTT pathway
+#   for orthopaedic surgery only
 ###########################################################
 
 from ehrql import INTERVAL, Measures, weeks, days, minimum_of, case, when
@@ -41,7 +41,7 @@ ortho_clockstops = wl_clockstops.where(
 rtt_start_date = ortho_clockstops.referral_to_treatment_period_start_date
 rtt_end_date = ortho_clockstops.referral_to_treatment_period_end_date
 
-# Set artificial start date for running Measures
+# Set artificial start/end date for running Measures
 tmp_rtt_start_date = "2000-01-01"
 tmp_rtt_end_date = "2000-01-01"
 
@@ -49,7 +49,7 @@ tmp_rtt_end_date = "2000-01-01"
 all_opioid_rx = medications.where(
                 ortho_clockstops.exists_for_patient()
                 & medications.dmd_code.is_in(codelists.opioid_codes)
-                & medications.date.is_on_or_after(rtt_start_date - days(182))
+                & medications.date.is_on_or_between(rtt_start_date - days(182), rtt_end_date + days(182))
             )
 
 # Standardise Rx dates relative to RTT start date for prescribing during WL 
@@ -62,10 +62,10 @@ all_opioid_rx.tmp_post_date = tmp_rtt_end_date + days((all_opioid_rx.date - rtt_
 all_opioid_rx.tmp_pre_date = tmp_rtt_start_date - days((all_opioid_rx.date - rtt_start_date).days)
 
 
-### Grouping/stratification variables (List TBD) ###
+### Grouping/stratification variables (Final list TBD) ###
 
 prior_opioid_rx = all_opioid_rx.where(
-        all_opioid_rx.date.is_between_but_not_on(rtt_start_date - days(183), rtt_start_date)
+        all_opioid_rx.date.is_on_or_between(rtt_start_date - days(182), rtt_start_date - days(1))
     ).exists_for_patient()
 
 

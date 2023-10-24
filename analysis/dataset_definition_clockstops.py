@@ -1,6 +1,5 @@
 ################################################################################
-# This script defines a function to extract
-# relevant variables for people with a completed
+# This script defines and extracts relevant variables for people with a completed
 # waiting list from May 2021 - May 2022 regardless of treatment type/specialty
 ################################################################################
 
