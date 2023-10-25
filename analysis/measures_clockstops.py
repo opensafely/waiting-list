@@ -5,12 +5,12 @@
 #   for orthopaedic surgery only
 ###########################################################
 
-from ehrql import INTERVAL, Measures, weeks, days, minimum_of, case, when
+from ehrql import INTERVAL, Measures, weeks, days, minimum_of, case, when, years
 from ehrql.tables.beta.tpp import (
     patients, 
     practice_registrations,
     medications,
-    addresses,
+    clinical_events,
     wl_clockstops)
 
 import codelists
@@ -18,12 +18,11 @@ import codelists
 ##########
 
 # WL data - one wait per person
-ortho_clockstops = wl_clockstops.where(
+last_clockstops = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-05-01")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
         & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-05-01")
         & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
-        & wl_clockstops.activity_treatment_function_code.is_in(["110"])
     ).sort_by(
         wl_clockstops.pseudo_patient_pathway_identifier,
         wl_clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer,
@@ -31,15 +30,12 @@ ortho_clockstops = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_start_date
     ).last_for_patient()
 
-# # Restrict to orthopaedic surgery 
-# ortho_clockstops = last_clockstops.where(
-#         last_clockstops.activity_treatment_function_code.is_in(["110"])
-#     )
-
+# Orthopaedic surgery 
+ortho_surgery = last_clockstops.activity_treatment_function_code.is_in(["110"])
 
 # RTT waiting list start date and end date
-rtt_start_date = ortho_clockstops.referral_to_treatment_period_start_date
-rtt_end_date = ortho_clockstops.referral_to_treatment_period_end_date
+rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
+rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
 
 # Set artificial start/end date for running Measures
 tmp_rtt_start_date = "2000-01-01"
@@ -47,8 +43,7 @@ tmp_rtt_end_date = "2000-01-01"
 
 # All opioid prescriptions 
 all_opioid_rx = medications.where(
-                ortho_clockstops.exists_for_patient()
-                & medications.dmd_code.is_in(codelists.opioid_codes)
+                medications.dmd_code.is_in(codelists.opioid_codes)
                 & medications.date.is_on_or_between(rtt_start_date - days(182), rtt_end_date + days(182))
             )
 
@@ -121,6 +116,14 @@ reg_end_date = registrations.sort_by(registrations.end_date).last_for_patient().
 end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(182))
 
 
+# Cancer diagnosis in past 5 years 
+cancer = clinical_events.where(
+        clinical_events.snomedct_code.is_in(codelists.cancer_codes)
+    ).where(
+        clinical_events.date.is_on_or_between(rtt_start_date - years(5), rtt_start_date)
+    ).exists_for_patient()
+
+
 ######
 
 
@@ -132,9 +135,11 @@ denominator = (
         (patients.age_on(rtt_start_date) >= 18) 
         & (patients.age_on(rtt_start_date) < 110)
         & (patients.sex.is_in(["male","female"]))
-        & ortho_clockstops.exists_for_patient()
+        & last_clockstops.exists_for_patient()
         & registrations.exists_for_patient()
         & (end_date > INTERVAL.end_date)
+        & ortho_surgery
+        & ~cancer
     )
 
 ## All opioids
