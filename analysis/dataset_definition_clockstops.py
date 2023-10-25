@@ -119,7 +119,7 @@ dataset.ad_post_count = count_med_post(codelists.antidepressant_codes)
 # NSAID
 dataset.nsaid_wait_count = count_med_wait(codelists.nsaid_codes)
 dataset.nsaid_pre_count = count_med_pre(codelists.nsaid_codes)
-dataset.nsaiad_post_count = count_med_post(codelists.nsaid_codes)
+dataset.nsaid_post_count = count_med_post(codelists.nsaid_codes)
 
 
 #### Demographics ####
@@ -246,9 +246,6 @@ dataset.depress_or_gad = clin_events_6mo.where(
         clin_events_6mo.snomedct_code.is_in(codelists.depress_gad_codes)
     ).exists_for_patient()
 
-# dataset.anxiety = clin_events_6mo.where(
-#         clin_events_6mo.snomedct_code.is_in(codelists.anxiety_codes)
-#     ).exists_for_patient()
 
 ### TO ADD MORE? ###
 
