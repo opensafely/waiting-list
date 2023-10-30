@@ -71,48 +71,95 @@ opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
 
 write.csv(opioid_rx, file = here::here("output", "clockstops", "opioid_by_week.csv"),
           row.names = FALSE)
-# 
-# 
-# # Plot - pre and during WL
-# ggplot(subset(opioid_rx, period %in% c("Pre-WL", "During WL"))) +
-#   geom_line(aes(x = week, y = rate, col = opioid_type)) +
-#   geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci), alpha = 0.2) +
-#   geom_vline(aes(xintercept = 0)) +
-#   scale_color_manual(values = c("dodgerblue3", "maroon")) +
-#   scale_x_continuous(limits = c(-26, 52)) +
-#   facet_wrap(~ opioid_type, nrow = 2) +
-#   ylab("Rate per 100 people") + xlab("Week") +
-#   theme_bw() +
-#   theme(strip.background = element_blank(),
-#         strip.text = element_text(hjust = 0),
-#         legend.title = element_blank(),
-#         panel.grid.major.x = element_blank(),
-#         panel.grid.minor.x = element_blank(),
-#         panel.grid.major.y = element_line(color = "gray95"))
-# 
-# 
-# ggsave(here::here("output", "clockstops", "plot_opioid_pre_during.png"), dpi = 300,
-#          height = 5, width = 6)
-# 
-# 
-# # Plot - post WL
-# ggplot(subset(opioid_rx, period %in% c("Post-WL"))) +
-#   geom_line(aes(x = week, y = rate, col = opioid_type)) +
-#   geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci), alpha = 0.2) +
-#   scale_color_manual(values = c("dodgerblue3", "maroon")) +
-#   scale_x_continuous(limits = c(-26, 26)) +
-#   facet_wrap(~ opioid_type, nrow = 2) +
-#   ylab("Rate per 100 people") + xlab("Week") +
-#   theme_bw() +
-#   theme(strip.background = element_blank(),
-#         strip.text = element_text(hjust = 0),
-#         legend.title = element_blank(),
-#         panel.grid.major.x = element_blank(),
-#         panel.grid.minor.x = element_blank(),
-#         panel.grid.major.y = element_line(color = "gray95"))
-# 
-# 
-# ggsave(here::here("output", "clockstops", "plot_opioid_post.png"), dpi = 300,
-#        height = 6, width = 4)
-# 
-# 
+
+
+# Plot - pre and during WL - FULL COHORT
+ggplot(subset(opioid_rx, period %in% c("Pre-WL", "During WL") 
+              & prior_opioid_rx == "Full cohort")) +
+  geom_line(aes(x = week, y = rate, col = opioid_type)) +
+  geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week), alpha = 0.2) +
+  geom_vline(aes(xintercept = 0)) +
+  scale_color_manual(values = c("dodgerblue3", "maroon")) +
+  scale_x_continuous(limits = c(-26, 52)) +
+  facet_wrap(~ opioid_type, nrow = 2) +
+  ylab("Rate per 100 people") + xlab("Week") +
+  theme_bw() +
+  theme(strip.background = element_blank(),
+        strip.text = element_text(hjust = 0),
+        legend.title = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(color = "gray95"))
+
+
+ggsave(here::here("output", "clockstops", "plot_opioid_pre_during.png"), dpi = 300,
+         height = 5, width = 6)
+
+
+# Plot - post WL - FULL COHORT
+ggplot(subset(opioid_rx, period %in% c("Post-WL")
+       & prior_opioid_rx == "Full cohort")) +
+  geom_line(aes(x = week, y = rate, col = opioid_type)) +
+  geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week), alpha = 0.2) +
+  scale_color_manual(values = c("dodgerblue3", "maroon")) +
+  scale_x_continuous(limits = c(1, 26)) +
+  facet_wrap(~ opioid_type, nrow = 2) +
+  ylab("Rate per 100 people") + xlab("Week") +
+  theme_bw() +
+  theme(strip.background = element_blank(),
+        strip.text = element_text(hjust = 0),
+        legend.title = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(color = "gray95"))
+
+
+ggsave(here::here("output", "clockstops", "plot_opioid_post.png"), dpi = 300,
+       height = 6, width = 4)
+
+
+# Plot - pre and during WL - BY PRIOR OPIOID
+ggplot(subset(opioid_rx, period %in% c("Pre-WL", "During WL") 
+              & prior_opioid_rx != "Full cohort")) +
+  geom_line(aes(x = week, y = rate, col = prior_opioid_rx, group = prior_opioid_rx)) +
+  geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week, group = prior_opioid_rx), alpha = 0.2) +
+  geom_vline(aes(xintercept = 0)) +
+  scale_color_manual(values = c("#0f85a0", "#dd4124")) +
+  scale_x_continuous(limits = c(-26, 52)) +
+  facet_wrap(~ opioid_type, nrow = 2) +
+  ylab("Rate per 100 people") + xlab("Week") +
+  theme_bw() +
+  theme(strip.background = element_blank(),
+        strip.text = element_text(hjust = 0),
+        legend.title = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(color = "gray95"))
+
+
+ggsave(here::here("output", "clockstops", "plot_opioid_pre_during_prior.png"), dpi = 300,
+       height = 5, width = 6)
+
+
+# Plot - post WL - BY PRIOR OPIOID
+ggplot(subset(opioid_rx, period %in% c("Post-WL")
+       & prior_opioid_rx != "Full cohort")) +
+  geom_line(aes(x = week, y = rate, col = prior_opioid_rx)) +
+  geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week, group = prior_opioid_rx), alpha = 0.2) +
+  scale_color_manual(values = c("#0f85a0", "#dd4124")) +
+  scale_x_continuous(limits = c(1, 26)) +
+  facet_wrap(~ opioid_type, nrow = 2) +
+  ylab("Rate per 100 people") + xlab("Week") +
+  theme_bw() +
+  theme(strip.background = element_blank(),
+        strip.text = element_text(hjust = 0),
+        legend.title = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(color = "gray95"))
+
+
+ggsave(here::here("output", "clockstops", "plot_opioid_post_prior.png"), dpi = 300,
+       height = 6, width = 4)
+
+
