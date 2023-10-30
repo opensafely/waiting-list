@@ -15,6 +15,7 @@ from ehrql.tables.beta.tpp import (
 
 import codelists
 
+
 ##########
 
 # WL data - one wait per person
@@ -43,7 +44,7 @@ tmp_rtt_end_date = "2000-01-01"
 
 # All opioid prescriptions 
 all_opioid_rx = medications.where(
-                medications.dmd_code.is_in(codelists.opioid_codes)
+                medications.dmd_code.is_in(codelists.hi_opioid_codes)
                 & medications.date.is_on_or_between(rtt_start_date - days(182), rtt_end_date + days(182))
             )
 
@@ -66,24 +67,6 @@ prior_opioid_rx = all_opioid_rx.where(
 
 
 ### Opioid variables ####
-
-### All opioids
-
-# Num opioid Rx during waiting list
-count_opioid_wait = all_opioid_rx.where(
-                all_opioid_rx.tmp_wait_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
-            ).count_for_patient()
-
-# Num opioid Rx post waiting list (up to 6 months)
-count_opioid_post = all_opioid_rx.where(
-                all_opioid_rx.tmp_post_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
-            ).count_for_patient()
-
-# Num opioid Rx pre waiting list (up to 6 months)
-count_opioid_pre = all_opioid_rx.where(
-                all_opioid_rx.tmp_pre_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
-            ).count_for_patient()
-
 
 ### High dose opioids
 
@@ -142,57 +125,6 @@ denominator = (
         & ~cancer
     )
 
-## All opioids
-# Prescribing during WL
-measures.define_measure(
-    name="count_opioid_wait",
-    numerator=count_opioid_wait,
-    denominator=denominator,
-    intervals=weeks(52).starting_on("2000-01-01")
-    )
-
-# Prescribing post WL
-measures.define_measure(
-    name="count_opioid_post",
-    numerator=count_opioid_post,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01")
-    )
-
-# Prescribing pre WL
-measures.define_measure(
-    name="count_opioid_pre",
-    numerator=count_opioid_pre,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01")
-    )
-
-# Prescribing during WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_opioid_wait_prior",
-    numerator=count_opioid_wait,
-    denominator=denominator,
-    intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
-    )
-
-# Prescribing post WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_opioid_post_prior",
-    numerator=count_opioid_post,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
-    )
-
-# Prescribing pre WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_opioid_pre_prior",
-    numerator=count_opioid_pre,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
-    )
 
 ## High dose opioids
 
