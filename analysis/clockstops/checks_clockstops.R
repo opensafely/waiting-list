@@ -4,7 +4,6 @@
 # for all people with a closed RTT pathway (May21-May22)
 ###############################################################
 
-
 # For running locally only #
 #setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/GitHub/waiting-list")
 #getwd()
@@ -28,34 +27,35 @@ dir_create(here::here("output", "clockstops"), showWarnings = FALSE, recurse = T
 
 ## Load data ##
 clockstops <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
-                col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
-                                 rtt_end_date = col_date(format="%Y-%m-%d"),
-                                 reg_end_date = col_date(format="%Y-%m-%d"),
-                                 dod = col_date(format="%Y-%m-%d"),
-                                 end_date = col_date(format="%Y-%m-%d"))
-                                ) %>%
+  col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
+                    rtt_end_date = col_date(format="%Y-%m-%d"),
+                    reg_end_date = col_date(format="%Y-%m-%d"),
+                    dod = col_date(format="%Y-%m-%d"),
+                    end_date = col_date(format="%Y-%m-%d"))
+                  ) %>%
                 mutate(# Month of WL start/end
-                       rtt_start_month = floor_date(rtt_start_date, "month"),
-                       rtt_end_month = floor_date(rtt_end_date, "month"),
+                    rtt_start_month = floor_date(rtt_start_date, "month"),
+                    rtt_end_month = floor_date(rtt_end_date, "month"),
                        
-                       # Were on multiple WL during study period
-                       rtt_multiple = ifelse(count_rtt_pathways > 1, 1, 0),
+                    # Were on multiple WL during study period
+                    rtt_multiple = ifelse(count_rtt_pathways > 1, 1, 0),
                        
-                       # Died while on WL
-                       died_during_wl = ifelse(!is.na(dod) & dod <= rtt_end_date, 1, 0),
+                    # Died while on WL
+                    died_during_wl = ifelse(!is.na(dod) & dod <= rtt_end_date, 1, 0),
                        
-                       # Time on WL, censored at death/deregistration
-                       wait_time_adjusted = as.numeric(
-                         pmin(rtt_end_date, end_date, na.rm = FALSE) - rtt_start_date
-                         ),
+                    # Time on WL, censored at death/deregistration
+                    wait_time_adjusted = as.numeric(
+                    pmin(rtt_end_date, end_date, na.rm = FALSE) - rtt_start_date + 1),
                        
-                       # Time post-WL, censored at death/deregistration (max 182 days)
-                       post_time_adjusted = as.numeric(
-                         pmin((rtt_end_date + 182), end_date, na.rm = FALSE) - rtt_end_date
-                         ),
+                    # Time post-WL, censored at death/deregistration (max 182 days)
+                    #    If study end date before RTT end date, set to zero
+                    post_time_adjusted = ifelse(
+                    end_date >= rtt_end_date, 
+                        as.numeric(pmin((rtt_end_date + 182), end_date, na.rm = FALSE) - rtt_end_date + 1),
+                        0),
                        
-                       # Time pre-WL (182 days for everyone)
-                       pre_time = 182)
+                    # Time pre-WL (182 days for everyone)
+                    pre_time = 182)
                          
   
 #### Check dates for problems ##
