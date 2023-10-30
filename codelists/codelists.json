@@ -107,6 +107,12 @@
       "url": "https://codelists.opensafely.org/codelist/user/anschaf/antidepressants-dmd/1b780211/",
       "downloaded_at": "2023-10-23 15:30:37.530716Z",
       "sha": "05de6c3a7ce613ef8ba282b0011b3188abffbc6c"
+    },
+    "ons-depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms.csv": {
+      "id": "ons/depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms/1b8a48a4",
+      "url": "https://codelists.opensafely.org/codelist/ons/depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms/1b8a48a4/",
+      "downloaded_at": "2023-10-24 13:20:29.817462Z",
+      "sha": "f3b30007f853459142981e027d5f2c672bd6e326"
     }
   }
 }
