@@ -81,8 +81,8 @@
     "opensafely-nsaids-oral.csv": {
       "id": "opensafely/nsaids-oral/3fe99055",
       "url": "https://codelists.opensafely.org/codelist/opensafely/nsaids-oral/3fe99055/",
-      "downloaded_at": "2023-10-20 16:07:11.020511Z",
-      "sha": "682cb2cd76e4209c8393a35e9aef866d48f35975"
+      "downloaded_at": "2023-10-31 17:18:34.296830Z",
+      "sha": "a5636f7a24e5100883f42399ba386032e0628cc7"
     },
     "opensafely-osteoarthritis.csv": {
       "id": "opensafely/osteoarthritis/2020-06-04",
