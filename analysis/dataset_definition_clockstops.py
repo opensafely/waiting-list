@@ -214,7 +214,7 @@ dataset.cancer = clinical_events.where(
 
 # All clinical events - past 6 months
 clin_events_6mo = clinical_events.where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date, dataset.rtt_start_date - days(182))
+        clinical_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date)
     )
 
 # Comorbidities in past 6 mos
