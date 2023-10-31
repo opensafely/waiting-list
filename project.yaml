@@ -41,7 +41,32 @@ actions:
    outputs:
       moderately_sensitive:
         data: output/clockstops/*.csv
-        plots: output/clockstops/*.png
+
+  full_cohort_clockstops:
+   run: r:latest analysis/clockstops/full_cohort_clockstops.R
+   needs: [generate_dataset_clockstops]
+   outputs:
+      highly_sensitive:
+        cohort: output/data/cohort_full*.csv.gz
+      moderately_sensitive:
+        data1: output/clockstops/rtt_dates.csv
+        data2: output/clockstops/cat_var_dist.csv
+        data3: output/clockstops/wait_time_pcent.csv
+        data4: output/clockstops/med_counts_by_period.csv
+        plots: output/clockstops/plot_*.png
+
+  ortho_clockstops:
+   run: r:latest analysis/clockstops/ortho_cohort_clockstops.R
+   needs: [full_cohort_clockstops]
+   outputs:
+      highly_sensitive:
+        cohort: output/data/cohort_ortho*.csv.gz
+      moderately_sensitive:
+        data1: output/clockstops/rtt_dates_ortho.csv
+        data2: output/clockstops/cat_var_dist_ortho.csv
+        data3: output/clockstops/wait_time_pcent_ortho.csv
+        data4: output/clockstops/med_counts_by_period_ortho.csv
+        plots: output/clockstops/plot*.png  
 
   opioids_by_week:
    run: r:latest analysis/clockstops/opioids_by_week.R
@@ -49,5 +74,5 @@ actions:
    outputs:
       moderately_sensitive:
         data: output/clockstops/opioid*.csv
-       # plots: output/clockstops/plot*.png
+        plots: output/clockstops/plo*.png
 
