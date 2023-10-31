@@ -56,7 +56,7 @@ actions:
         plots: output/clockstops/plot_*.png
 
   ortho_clockstops:
-   run: r:latest analysis/clockstops/ortho_clockstops.R
+   run: r:latest analysis/clockstops/ortho_cohort_clockstops.R
    needs: [full_cohort_clockstops]
    outputs:
       highly_sensitive:
