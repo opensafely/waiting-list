@@ -74,5 +74,5 @@ actions:
    outputs:
       moderately_sensitive:
         data: output/clockstops/opioid*.csv
-        plots: output/clockstops/plot*.png
+        plots: output/clockstops/plo*.png
 
