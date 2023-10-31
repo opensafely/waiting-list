@@ -16,6 +16,7 @@ actions:
   measures_any_opioid:
     run: ehrql:v0 generate-measures analysis/measures_any_opioid.py 
       --output output/measures/measures_any_opioid.csv
+      --dummy-data-file dummy/dummy_any_opioid.csv
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_any_opioid.csv
@@ -23,6 +24,7 @@ actions:
   measures_hi_opioid:
     run: ehrql:v0 generate-measures analysis/measures_hi_opioid.py 
       --output output/measures/measures_hi_opioid.csv
+      --dummy-data-file dummy/dummy_hi_opioid.csv
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_hi_opioid.csv
@@ -47,7 +49,7 @@ actions:
    needs: [generate_dataset_clockstops]
    outputs:
       highly_sensitive:
-        cohort: output/data/cohort_full*.csv.gz
+        cohort: output/data/cohort_full_clockstops.csv.gz
       moderately_sensitive:
         data1: output/clockstops/rtt_dates.csv
         data2: output/clockstops/cat_var_dist.csv
@@ -60,7 +62,7 @@ actions:
    needs: [full_cohort_clockstops]
    outputs:
       highly_sensitive:
-        cohort: output/data/cohort_ortho*.csv.gz
+        cohort: output/data/cohort_ortho_clockstops.csv.gz
       moderately_sensitive:
         data1: output/clockstops/rtt_dates_ortho.csv
         data2: output/clockstops/cat_var_dist_ortho.csv
