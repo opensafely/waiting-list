@@ -49,7 +49,7 @@ actions:
    needs: [generate_dataset_clockstops]
    outputs:
       highly_sensitive:
-        cohort: output/data/cohort_fhttps://github.com/opensafely/waiting-list/pull/7/conflict?name=project.yaml&ancestor_oid=c7e4674b0c9b0b77832ca82a78411dec57a50007&base_oid=578c57ddd0d783d72e11809826a786474d7b74d1&head_oid=035712819bbd4f4eed23372fa74e6f193e9e4d63ull*.csv.gz
+        cohort: output/data/cohort_full_clockstops.csv.gz
       moderately_sensitive:
         data1: output/clockstops/rtt_dates.csv
         data2: output/clockstops/cat_var_dist.csv
@@ -62,7 +62,7 @@ actions:
    needs: [full_cohort_clockstops]
    outputs:
       highly_sensitive:
-        cohort: output/data/cohort_ortho*.csv.gz
+        cohort: output/data/cohort_ortho_clockstops.csv.gz
       moderately_sensitive:
         data1: output/clockstops/rtt_dates_ortho.csv
         data2: output/clockstops/cat_var_dist_ortho.csv
