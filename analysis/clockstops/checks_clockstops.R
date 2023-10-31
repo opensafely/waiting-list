@@ -3,7 +3,6 @@
 # for all people with a closed RTT pathway (May21-May22)
 ###############################################################
 
-
 # For running locally only #
 #setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/GitHub/waiting-list")
 #getwd()
@@ -32,9 +31,7 @@ clockstops <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz")
                     reg_end_date = col_date(format="%Y-%m-%d"),
                     dod = col_date(format="%Y-%m-%d"),
                     end_date = col_date(format="%Y-%m-%d"))
-                  )
-                        
-                        
+
 #### Check dates for problems ##
 
 check_dates <- clockstops %>%

@@ -37,7 +37,7 @@ hi_opioid_rx <- read_csv(here::here("output", "measures", "measures_hi_opioid.cs
               mutate(opioid_type = "High dose opioid")
 
 opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
-  
+ 
        mutate(# Convert interval start date to number of weeks 
               week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
        
