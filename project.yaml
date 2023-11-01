@@ -16,12 +16,12 @@ actions:
         cohort: output/data/dataset_clockstops.csv.gz  
 
   # Open (incomplete) RTT pathways
-  generate_dataset_openpathways:
-    run: ehrql:v0 generate-dataset analysis/dataset_definition_openpathways.py 
-      --output output/data/dataset_openpathways.csv.gz
-    outputs:
-      highly_sensitive:
-        cohort: output/data/dataset_openpathways.csv.gz  
+  # generate_dataset_openpathways:
+  #   run: ehrql:v0 generate-dataset analysis/dataset_definition_openpathways.py 
+  #     --output output/data/dataset_openpathways.csv.gz
+  #   outputs:
+  #     highly_sensitive:
+  #       cohort: output/data/dataset_openpathways.csv.gz  
 
   ##### Analysis - closed pathways #####
   
