@@ -45,7 +45,7 @@ opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
               week = ifelse(grepl("_pre", measure, fixed=TRUE), week*(-1), week),
                   
               # Create variables for prior opioid Rx, opioid type, and time period
-              prior_opioid_rx = ifelse(is.na(prior_opioid_rx), "Full cohort",
+              prior_opioid_gp = ifelse(is.na(prior_opioid_rx), "Full cohort",
                             ifelse(prior_opioid_rx == TRUE, "Prior opioid Rx",
                                    "No prior opioid Rx")),
                   
@@ -62,10 +62,10 @@ opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
               rate_uci = rate + (1.96 * sqrt( ( rate * (100 - rate) ) / denominator)),
               ) %>%
   
-       dplyr::select(c(week, prior_opioid_rx, opioid_rx, denominator, rate,
+       dplyr::select(c(week, prior_opioid_gp, opioid_rx, denominator, rate,
                      rate_lci, rate_uci, opioid_type, period)) %>%
                      
-       arrange(prior_opioid_rx, opioid_type, period, week)
+       arrange(prior_opioid_gp, opioid_type, period, week)
 
 write.csv(opioid_rx, file = here::here("output", "clockstops", "opioid_by_week.csv"),
           row.names = FALSE)
@@ -73,7 +73,7 @@ write.csv(opioid_rx, file = here::here("output", "clockstops", "opioid_by_week.c
 
 # Plot - pre and during WL - FULL COHORT
 ggplot(subset(opioid_rx, period %in% c("Pre-WL", "During WL") 
-              & prior_opioid_rx == "Full cohort")) +
+              & prior_opioid_gp == "Full cohort")) +
   geom_line(aes(x = week, y = rate, col = opioid_type)) +
   geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week), alpha = 0.15) +
   geom_vline(aes(xintercept = 0)) +
@@ -96,7 +96,7 @@ ggsave(here::here("output", "clockstops", "plot_opioid_pre_during.png"), dpi = 3
 
 # Plot - post WL - FULL COHORT
 ggplot(subset(opioid_rx, period %in% c("Post-WL")
-       & prior_opioid_rx == "Full cohort")) +
+       & prior_opioid_gp == "Full cohort")) +
   geom_line(aes(x = week, y = rate, col = opioid_type)) +
   geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week), alpha = 0.15) +
   scale_color_manual(values = c("dodgerblue3", "maroon")) +
@@ -116,11 +116,11 @@ ggsave(here::here("output", "clockstops", "plot_opioid_post.png"), dpi = 300,
        height = 6, width = 4)
 
 
-# Plot - pre and during WL - BY PRIOR OPIOID
-ggplot(subset(opioid_rx, period %in% c("Pre-WL", "During WL") 
-              & prior_opioid_rx != "Full cohort")) +
-  geom_line(aes(x = week, y = rate, col = prior_opioid_rx, group = prior_opioid_rx)) +
-  geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week, group = prior_opioid_rx), alpha = 0.15) +
+# Plot - during WL - BY PRIOR OPIOID
+ggplot(subset(opioid_rx, period %in% c("During WL") 
+              & prior_opioid_gp != "Full cohort")) +
+  geom_line(aes(x = week, y = rate, col = prior_opioid_gp, group = prior_opioid_gp)) +
+  geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week, group = prior_opioid_gp), alpha = 0.15) +
   geom_vline(aes(xintercept = 0)) +
   scale_color_manual(values = c("#0f85a0", "#dd4124")) +
   scale_x_continuous(limits = c(-26, 52)) +
@@ -135,29 +135,6 @@ ggplot(subset(opioid_rx, period %in% c("Pre-WL", "During WL")
         panel.grid.major.y = element_line(color = "gray95"))
 
 
-ggsave(here::here("output", "clockstops", "plot_opioid_pre_during_prior.png"), dpi = 300,
+ggsave(here::here("output", "clockstops", "plot_opioid_during_prior.png"), dpi = 300,
        height = 5, width = 6)
-
-
-# Plot - post WL - BY PRIOR OPIOID
-ggplot(subset(opioid_rx, period %in% c("Post-WL")
-       & prior_opioid_rx != "Full cohort")) +
-  geom_line(aes(x = week, y = rate, col = prior_opioid_rx)) +
-  geom_ribbon(aes(ymin = rate_lci, ymax = rate_uci, x = week, group = prior_opioid_rx), alpha = 0.15) +
-  scale_color_manual(values = c("#0f85a0", "#dd4124")) +
-  scale_x_continuous(limits = c(1, 26)) +
-  facet_wrap(~ opioid_type, nrow = 2) +
-  ylab("Rate per 100 people") + xlab("Week") +
-  theme_bw() +
-  theme(strip.background = element_blank(),
-        strip.text = element_text(hjust = 0),
-        legend.title = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.grid.major.y = element_line(color = "gray95"))
-
-
-ggsave(here::here("output", "clockstops", "plot_opioid_post_prior.png"), dpi = 300,
-       height = 6, width = 4)
-
 
