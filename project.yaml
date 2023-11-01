@@ -52,7 +52,7 @@ actions:
         plots: output/clockstops/plot_*.png
 
   ortho_stats_clockstops:
-   run: r:latest analysis/clockstops/ortho_stats_openpathways.R
+   run: r:latest analysis/clockstops/ortho_stats_clockstops.R
    needs: [final_cohort_clockstops]
    outputs:
       moderately_sensitive:
