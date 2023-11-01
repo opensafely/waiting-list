@@ -145,7 +145,7 @@ measures.define_measure(
     name="count_opioid_pre",
     numerator=count_opioid_pre,
     denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-02")
+    intervals=weeks(26).starting_on("2000-01-01")
     )
 
 # Prescribing during WL - stratified by prior opioid Rx

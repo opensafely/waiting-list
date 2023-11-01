@@ -135,7 +135,6 @@ ggplot(subset(opioid_rx, period %in% c("During WL")
         panel.grid.major.y = element_line(color = "gray95"))
 
 
-ggsave(here::here("output", "clockstops", "plot_opioid_pre_during_prior.png"), dpi = 300,
+ggsave(here::here("output", "clockstops", "plot_opioid_during_prior.png"), dpi = 300,
        height = 5, width = 6)
 
-=
