@@ -26,20 +26,16 @@ source(here("analysis", "custom_functions.R"))
 dir_create(here::here("output", "clockstops"), showWarnings = FALSE, recurse = TRUE)
 dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
 
+
 ## Load data ##
-ortho <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv.gz"),
-  col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
-                    rtt_end_date = col_date(format="%Y-%m-%d"),
-                    reg_end_date = col_date(format="%Y-%m-%d"),
-                    dod = col_date(format="%Y-%m-%d"),
-                    end_date = col_date(format="%Y-%m-%d"),
-                    rtt_start_month = col_date(format="%Y-%m-%d"),
-                    rtt_end_month = col_date(format="%Y-%m-%d"))) %>%
-  subset(ortho_surgery == TRUE)
-                         
-## Save as final
-write.csv(ortho, file = here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
-          row.names = FALSE)
+ortho <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
+                 col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
+                                  rtt_end_date = col_date(format="%Y-%m-%d"),
+                                  reg_end_date = col_date(format="%Y-%m-%d"),
+                                  dod = col_date(format="%Y-%m-%d"),
+                                  end_date = col_date(format="%Y-%m-%d"),
+                                  rtt_start_month =  col_date(format="%Y-%m-%d"),
+                                  rtt_end_month =  col_date(format="%Y-%m-%d"))) 
 
 
 ################ Plot end dates by month ################
@@ -60,7 +56,8 @@ rtt_end_month <- ortho %>%
   summarise(count = n()) 
 
 rtt_month <- rbind(rtt_start_month, rtt_end_month) %>%
-  mutate(count_round = rounding(count)) %>%
+  mutate(count_round = rounding(count),
+         source = "ClockStops", cohort = "Orthopaedic surgery") %>%
   dplyr::select(!count)
 
 # Save plot data 
@@ -80,8 +77,7 @@ plot1 <- ggplot(rtt_month) +
   xlab("") + ylab("No. people") +
   theme_bw() + theme(panel.grid.major.x = element_blank(),
                      panel.grid.minor.x = element_blank(),
-                     legend.title = element_blank(),
-                     legend.text = element_text(size = 10),
+                     legend.position = "none",
                      axis.text.x = element_text(angle = 45, hjust = 1),
                      axis.title.y = element_text(size = 10),
                      strip.background = element_blank(),
@@ -114,6 +110,7 @@ categorical_dist <- rbind(
   cat(censor_before_rtt_end, "Censor before WL end"),
   cat(censor_before_study_end, "Censor before study end"),
   cat(rtt_multiple, "Multiple RTT pathways"),
+  
   cat(age_group, "Age group"),
   cat(sex, "Sex"),
   cat(imd10, "IMD decile"),
@@ -129,7 +126,9 @@ categorical_dist <- rbind(
   cat(ckd, "CKD"),
   cat(osteoarthritis, "Osteoarthritis"),
   cat(depress_or_gad, "Depression/GAD"),
+  
   cat(died_during_wl, "Died while on WL"),
+  cat(died_during_post, "Died during post-WL follow-up"),
   
   cat(any_opioid_pre, "Any opioid (pre-WL)"),
   cat(any_opioid_wait, "Any opioid (during WL)"),
@@ -152,7 +151,8 @@ categorical_dist <- rbind(
 categorical_dist <- categorical_dist %>%
   arrange(var, -pcent) %>%
   group_by(var) %>%
-  mutate(count = row_number()) %>%
+  mutate(count = row_number(),
+         source = "ClockStops", cohort = "Orthopaedic surgery") %>%
   subset(var != "Treatment function" | (var == "Treatment function" & count <=20)) %>%
   select(!count)
   
@@ -190,11 +190,12 @@ wait_time <- ortho %>%
   group_by(week, total) %>%
   summarise(count = n()) %>%
   mutate(count_round = rounding(count),
-         total_round = rounding(total)) %>%
+         total_round = rounding(total),
+         source = "ClockStops", cohort = "Orthopaedic surgery") %>%
   dplyr::select(!c(count_round, total_round))
 
 # Save data for plot
-write.csv(wait_time, file = here::here("output", "clockstops", "plot_wait_time_ortho.csv"),
+write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.csv"),
           row.names = FALSE)
 
 # Plot 
@@ -259,13 +260,14 @@ med_count <- rbind(
   summ(hi_opioid_wait_count, hi_opioid_pre_count, hi_opioid_post_count, "High dose opioid"),
   summ(nsaid_wait_count, nsaid_pre_count, nsaid_post_count, "NSAID"),
   summ(gaba_wait_count, gaba_pre_count, gaba_post_count, "Gabapentinoid"),
-  summ(ad_wait_count, ad_wait_count, ad_wait_count, "Antidepressant")
+  summ(ad_wait_count, ad_pre_count, ad_post_count, "Antidepressant")
 )
 
 med_count_2 <- med_count %>%
   mutate(total_rx_round = rounding(total_rx),
          pdays_round = rounding(person_days), 
-         rate_pmonth = total_rx_round / person_days * 100 * 30) %>%
+         rate_pmonth = total_rx_round / person_days * 100 * 30, 
+         source = "ClockStops", cohort = "Orthopaedic surgery") %>%
   dplyr::select(!c(total_rx, person_days))
 
 write.csv(med_count_2, here::here("output", "clockstops", "med_counts_by_period_ortho.csv"),
