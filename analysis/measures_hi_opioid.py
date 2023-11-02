@@ -170,3 +170,4 @@ measures.define_measure(
     intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx}
     )
+
