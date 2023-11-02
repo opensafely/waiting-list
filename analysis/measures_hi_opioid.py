@@ -39,9 +39,12 @@ rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
 rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
 
 # Set artificial start/end date for running Measures
+#   this is to standardise dates, as every person's 
+#   start is different (and Measures works on calendar dates only)
 tmp_rtt_start_date = "2000-01-01"
 tmp_rtt_end_date = "2000-01-01"
 tmp_study_start_date = "2000-01-01"
+
 
 # All opioid prescriptions 
 all_opioid_rx = medications.where(
@@ -61,7 +64,7 @@ hi_opioid_rx.tmp_wait_date = tmp_rtt_start_date + days((hi_opioid_rx.date - rtt_
 hi_opioid_rx.tmp_post_date = tmp_rtt_end_date + days((hi_opioid_rx.date - rtt_end_date).days)
 
 # Standardise Rx dates relative to RTT start date for pre-WL prescribing 
-hi_opioid_rx.tmp_pre_date = tmp_study_start_date - days((hi_opioid_rx.date - (rtt_start_date - days(182))).days)
+hi_opioid_rx.tmp_pre_date = tmp_study_start_date + days((hi_opioid_rx.date - (rtt_start_date - days(182))).days)
 
 
 ### Grouping/stratification variables (Final list TBD) ###
@@ -101,6 +104,7 @@ registrations = practice_registrations.where(
 reg_end_date = registrations.sort_by(registrations.end_date).last_for_patient().end_date
 end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(182))
 
+# Standardise end date to relative to start dates
 tmp_end_date_rtt_start = tmp_rtt_start_date + days((end_date - rtt_start_date).days)
 tmp_end_date_rtt_end = tmp_rtt_end_date + days((end_date - rtt_end_date).days)
 
@@ -120,6 +124,7 @@ measures = Measures()
 
 # Denominator = everyone on the waiting list with non-missing age/sex, 
 #   and whose end date (i.e. death or deregistration) is after the end of the interval
+#   and is waiting for orthopaedic surgery and no history of cancer
 denominator = (        
         (patients.age_on(rtt_start_date) >= 18) 
         & (patients.age_on(rtt_start_date) < 110)
@@ -165,3 +170,4 @@ measures.define_measure(
     intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx}
     )
+
