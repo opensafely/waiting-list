@@ -64,7 +64,7 @@ hi_opioid_rx.tmp_wait_date = tmp_rtt_start_date + days((hi_opioid_rx.date - rtt_
 hi_opioid_rx.tmp_post_date = tmp_rtt_end_date + days((hi_opioid_rx.date - rtt_end_date).days)
 
 # Standardise Rx dates relative to RTT start date for pre-WL prescribing 
-hi_opioid_rx.tmp_pre_date = tmp_study_start_date - days((hi_opioid_rx.date - (rtt_start_date - days(182))).days)
+hi_opioid_rx.tmp_pre_date = tmp_study_start_date + days((hi_opioid_rx.date - (rtt_start_date - days(182))).days)
 
 
 ### Grouping/stratification variables (Final list TBD) ###
