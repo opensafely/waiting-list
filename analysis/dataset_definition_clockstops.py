@@ -1,6 +1,6 @@
 ################################################################################
 # This script defines and extracts relevant variables for people with a completed
-# waiting list from May 2021 - May 2022 regardless of treatment type/specialty
+# RTT pathway from May 2021 - May 2022 regardless of treatment type/specialty
 ################################################################################
 
 
@@ -30,7 +30,11 @@ clockstops = wl_clockstops.where(
     )
 
 # Number of RTT pathways per person
-dataset.count_rtt_pathways = clockstops.count_for_patient()
+dataset.count_rtt_rows = clockstops.count_for_patient()
+dataset.count_rtt_start_date = clockstops.referral_to_treatment_period_start_date.count_distinct_for_patient()
+dataset.count_patient_id = clockstops.pseudo_patient_pathway_identifier.count_distinct_for_patient()
+dataset.count_organisation_id = clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer.count_distinct_for_patient()
+dataset.count_referral_id = clockstops.pseudo_referral_identifier.count_distinct_for_patient()
 
 # Latest waiting list
 #   Sort by IDs and start date to identify unique RTT pathways
@@ -87,7 +91,7 @@ def count_med_pre(codelist):
             & medications.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
         ).count_for_patient()
 
-# Number of prescriptions after waiting list
+# Number of prescriptions after waiting list 
 def count_med_post(codelist):
     return medications.where(
             medications.dmd_code.is_in(codelist)

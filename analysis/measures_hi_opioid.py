@@ -39,23 +39,32 @@ rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
 rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
 
 # Set artificial start/end date for running Measures
+#   this is to standardise dates, as every person's 
+#   start is different (and Measures works on calendar dates only)
 tmp_rtt_start_date = "2000-01-01"
 tmp_rtt_end_date = "2000-01-01"
+tmp_study_start_date = "2000-01-01"
+
 
 # All opioid prescriptions 
 all_opioid_rx = medications.where(
+                medications.dmd_code.is_in(codelists.opioid_codes)
+                & medications.date.is_on_or_between(rtt_start_date - days(182), rtt_end_date + days(182))
+            )
+
+hi_opioid_rx = all_opioid_rx.where(
                 medications.dmd_code.is_in(codelists.hi_opioid_codes)
                 & medications.date.is_on_or_between(rtt_start_date - days(182), rtt_end_date + days(182))
             )
 
 # Standardise Rx dates relative to RTT start date for prescribing during WL 
-all_opioid_rx.tmp_wait_date = tmp_rtt_start_date + days((all_opioid_rx.date - rtt_start_date).days)
+hi_opioid_rx.tmp_wait_date = tmp_rtt_start_date + days((hi_opioid_rx.date - rtt_start_date).days)
 
 # Standardise Rx dates relative to RTT end date for post-WL prescribing
-all_opioid_rx.tmp_post_date = tmp_rtt_end_date + days((all_opioid_rx.date - rtt_end_date).days)
+hi_opioid_rx.tmp_post_date = tmp_rtt_end_date + days((hi_opioid_rx.date - rtt_end_date).days)
 
-# Standardise Rx dates relative to RTT start date for pre-WL prescribing (note: dates count backwards from start date)
-all_opioid_rx.tmp_pre_date = tmp_rtt_start_date - days((all_opioid_rx.date - rtt_start_date).days)
+# Standardise Rx dates relative to RTT start date for pre-WL prescribing 
+hi_opioid_rx.tmp_pre_date = tmp_study_start_date - days((hi_opioid_rx.date - (rtt_start_date - days(182))).days)
 
 
 ### Grouping/stratification variables (Final list TBD) ###
@@ -71,21 +80,18 @@ prior_opioid_rx = all_opioid_rx.where(
 ### High dose opioids
 
 # Num opioid Rx during waiting list
-count_hi_opioid_wait = all_opioid_rx.where(
-                all_opioid_rx.dmd_code.is_in(codelists.hi_opioid_codes)
-                & all_opioid_rx.tmp_wait_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+count_hi_opioid_wait = hi_opioid_rx.where(
+                hi_opioid_rx.tmp_wait_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
             ).count_for_patient()
 
 # Num opioid Rx post waiting list (up to 6 months)
-count_hi_opioid_post = all_opioid_rx.where(
-                all_opioid_rx.dmd_code.is_in(codelists.hi_opioid_codes)
-                & all_opioid_rx.tmp_post_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+count_hi_opioid_post = hi_opioid_rx.where(
+                hi_opioid_rx.tmp_post_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
             ).count_for_patient()
 
 # Num opioid Rx pre waiting list (up to 6 months)
-count_hi_opioid_pre = all_opioid_rx.where(
-                all_opioid_rx.dmd_code.is_in(codelists.hi_opioid_codes)
-                & all_opioid_rx.tmp_pre_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+count_hi_opioid_pre = hi_opioid_rx.where(
+                hi_opioid_rx.tmp_pre_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
             ).count_for_patient()
 
 
@@ -97,6 +103,10 @@ registrations = practice_registrations.where(
 
 reg_end_date = registrations.sort_by(registrations.end_date).last_for_patient().end_date
 end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(182))
+
+# Standardise end date to relative to start dates
+tmp_end_date_rtt_start = tmp_rtt_start_date + days((end_date - rtt_start_date).days)
+tmp_end_date_rtt_end = tmp_rtt_end_date + days((end_date - rtt_end_date).days)
 
 
 # Cancer diagnosis in past 5 years 
@@ -114,13 +124,13 @@ measures = Measures()
 
 # Denominator = everyone on the waiting list with non-missing age/sex, 
 #   and whose end date (i.e. death or deregistration) is after the end of the interval
+#   and is waiting for orthopaedic surgery and no history of cancer
 denominator = (        
         (patients.age_on(rtt_start_date) >= 18) 
         & (patients.age_on(rtt_start_date) < 110)
         & (patients.sex.is_in(["male","female"]))
         & last_clockstops.exists_for_patient()
         & registrations.exists_for_patient()
-        & (end_date > INTERVAL.end_date)
         & ortho_surgery
         & ~cancer
     )
@@ -132,7 +142,7 @@ denominator = (
 measures.define_measure(
     name="count_hi_opioid_wait",
     numerator=count_hi_opioid_wait,
-    denominator=denominator,
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01")
     )
 
@@ -140,7 +150,7 @@ measures.define_measure(
 measures.define_measure(
     name="count_hi_opioid_post",
     numerator=count_hi_opioid_post,
-    denominator=denominator,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(26).starting_on("2000-01-01")
     )
 
@@ -158,23 +168,5 @@ measures.define_measure(
     numerator=count_hi_opioid_wait,
     denominator=denominator,
     intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
-    )
-
-# Prescribing post WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_hi_opioid_post_prior",
-    numerator=count_hi_opioid_post,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
-    )
-
-# Prescribing pre WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_hi_opioid_pre_prior",
-    numerator=count_hi_opioid_pre,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx}
     )
