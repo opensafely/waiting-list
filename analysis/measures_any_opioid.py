@@ -5,7 +5,7 @@
 #   for orthopaedic surgery only
 ###########################################################
 
-from ehrql import INTERVAL, Measures, weeks, days, minimum_of, case, when, years
+from ehrql import INTERVAL, Measures, weeks, days, minimum_of, years
 from ehrql.tables.beta.tpp import (
     patients, 
     practice_registrations,
@@ -57,16 +57,15 @@ all_opioid_rx.tmp_wait_date = tmp_rtt_start_date + days((all_opioid_rx.date - rt
 # Standardise Rx dates relative to RTT end date for post-WL prescribing
 all_opioid_rx.tmp_post_date = tmp_rtt_end_date + days((all_opioid_rx.date - rtt_end_date).days)
 
-# Standardise Rx dates relative to RTT start date for pre-WL prescribing (note: dates count backwards from start date)
+
+# Standardise Rx dates relative to RTT start date for pre-WL prescribing 
 all_opioid_rx.tmp_pre_date = tmp_study_start_date - days((all_opioid_rx.date - (rtt_start_date - days(182))).days)
 
 
 ### Grouping/stratification variables (Final list TBD) ###
-
 prior_opioid_rx = all_opioid_rx.where(
         all_opioid_rx.date.is_on_or_between(rtt_start_date - days(182), rtt_start_date - days(1))
     ).exists_for_patient()
-
 
 
 ### Opioid variables ####
@@ -164,3 +163,4 @@ measures.define_measure(
     intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx}
     )
+
