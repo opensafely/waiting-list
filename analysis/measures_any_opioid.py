@@ -41,9 +41,7 @@ rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
 # Set artificial start/end date for running Measures
 #   this is to standardise dates, as every person's 
 #   start is different (and Measures works on calendar dates only)
-tmp_rtt_start_date = "2000-01-01"
-tmp_rtt_end_date = "2000-01-01"
-tmp_study_start_date = "2000-01-01"
+tmp_date = "2000-01-01"
 
 # All opioid prescriptions during study period
 all_opioid_rx = medications.where(
@@ -52,13 +50,13 @@ all_opioid_rx = medications.where(
             )
 
 # Standardise Rx dates relative to RTT start date for prescribing during WL 
-all_opioid_rx.tmp_wait_date = tmp_rtt_start_date + days((all_opioid_rx.date - rtt_start_date).days)
+all_opioid_rx.tmp_wait_date = tmp_date + days((all_opioid_rx.date - rtt_start_date).days)
 
 # Standardise Rx dates relative to RTT end date for post-WL prescribing
-all_opioid_rx.tmp_post_date = tmp_rtt_end_date + days((all_opioid_rx.date - rtt_end_date).days)
+all_opioid_rx.tmp_post_date = tmp_date + days((all_opioid_rx.date - rtt_end_date).days)
 
 # Standardise Rx dates relative to RTT start date for pre-WL prescribing (note: dates count backwards from start date)
-all_opioid_rx.tmp_pre_date = tmp_study_start_date + days((all_opioid_rx.date - (rtt_start_date - days(182))).days)
+all_opioid_rx.tmp_pre_date = tmp_date + days((all_opioid_rx.date - (rtt_start_date - days(182))).days)
 
 
 ### Grouping/stratification variables (Final list TBD) ###
@@ -97,8 +95,8 @@ reg_end_date = registrations.sort_by(registrations.end_date).last_for_patient().
 end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(182))
 
 # Standardise end date to relative to start dates
-tmp_end_date_rtt_start = tmp_rtt_start_date + days((end_date - rtt_start_date).days)
-tmp_end_date_rtt_end = tmp_rtt_end_date + days((end_date - rtt_end_date).days)
+tmp_end_date_rtt_start = tmp_date + days((end_date - rtt_start_date).days)
+tmp_end_date_rtt_end = tmp_date + days((end_date - rtt_end_date).days)
 
 
 # Cancer diagnosis in past 5 years 
