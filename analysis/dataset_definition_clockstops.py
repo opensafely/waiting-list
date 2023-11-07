@@ -39,10 +39,10 @@ dataset.count_referral_id = clockstops.pseudo_referral_identifier.count_distinct
 # Latest waiting list
 #   Sort by IDs and start date to identify unique RTT pathways
 last_clockstops = clockstops.sort_by(
+        clockstops.referral_to_treatment_period_start_date,
         clockstops.pseudo_patient_pathway_identifier,
         clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer,
-        clockstops.pseudo_referral_identifier,
-        clockstops.referral_to_treatment_period_start_date
+        clockstops.pseudo_referral_identifier
     ).last_for_patient()
 
 # RTT waiting list start date and end date
