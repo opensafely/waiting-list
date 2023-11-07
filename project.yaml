@@ -23,6 +23,15 @@ actions:
   #     highly_sensitive:
   #       cohort: output/data/dataset_openpathways.csv.gz  
   
+  #### Check pathways over time ####
+  measures_checks:
+    run: ehrql:v0 generate-measures analysis/measures_checks.py 
+      --output output/measures/measures_checks.csv
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_checks.csv
+
+
   ##### Opioid measures - closed pathways #####
   
   measures_any_opioid:
