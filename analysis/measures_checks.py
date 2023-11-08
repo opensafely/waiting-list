@@ -16,34 +16,36 @@ from ehrql.tables.beta.tpp import (
 
 count_rtt_end_date = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
-    ).count_for_patient()
+        #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1","ORTT","PTLO","RTTO","PTL0"])
+    ).pseudo_referral_identifier.count_distinct_for_patient()
 
 count_rtt_end_date_ortho = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+        #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1","ORTT","PTLO","RTTO","PTL0"])
         & wl_clockstops.activity_treatment_function_code.is_in(["110"])
-    ).count_for_patient()
+    ).pseudo_referral_identifier.count_distinct_for_patient()
 
 count_admitted = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
-        & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1"])
-    ).count_for_patient()
+        #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1"])
+    ).pseudo_referral_identifier.count_distinct_for_patient()
 
 count_admitted_ortho = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
-        & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1"])
+        #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1"])
         & wl_clockstops.activity_treatment_function_code.is_in(["110"])
-    ).count_for_patient()
+    ).pseudo_referral_identifier.count_distinct_for_patient()
 
 count_not_admitted = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
-        & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO","PTL0"])
-    ).count_for_patient()
+        #& wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO","PTL0"])
+    ).pseudo_referral_identifier.count_distinct_for_patient()
 
 count_not_admitted_ortho = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
-        & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO","PTL0"])
+        #& wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO","PTL0"])
         & wl_clockstops.activity_treatment_function_code.is_in(["110"])
-    ).count_for_patient()
+    ).pseudo_referral_identifier.count_distinct_for_patient()
 
 
 ######
