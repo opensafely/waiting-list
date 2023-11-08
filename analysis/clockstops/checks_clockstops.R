@@ -23,6 +23,8 @@ source(here("analysis", "custom_functions.R"))
 
 ## Create directories if needed
 dir_create(here::here("output", "clockstops"), showWarnings = FALSE, recurse = TRUE)
+dir_create(here::here("output", "measures"), showWarnings = FALSE, recurse = TRUE)
+
 
 ## Load data ##
 clockstops <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
@@ -98,6 +100,18 @@ all <- rbind(
 
 write.csv(all,  here::here("output", "clockstops", "check_num_per_person.csv"), row.names = FALSE)
 
+
 ####################################
 
+
+# Check overall counts over time to compare with published data
+overall <- read_csv(here::here("output", "measures", "measures_checks_clockstops.csv"),
+                       col_types = cols(interval_start = col_date(format="%Y-%m-%d"),
+                                        interval_end = col_date(format="%Y-%m-%d"))) %>%
+  rename(month = interval_start) %>%
+  mutate(count = rounding(numerator)) %>%
+  dplyr::select(!c(ratio, denominator, interval_end, numerator)) %>%
+  pivot_wider(names_from = measure, values_from = count)
+
+write.csv(overall, here::here("output", "clockstops", "check_overall_month.csv"), row.names = FALSE)
 
