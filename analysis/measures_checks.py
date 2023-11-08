@@ -15,27 +15,36 @@ from ehrql.tables.beta.tpp import (
 ##########
 
 count_rtt_end_date = wl_clockstops.where(
-        (wl_clockstops.referral_to_treatment_period_end_date >= INTERVAL.start_date)
-        & (wl_clockstops.referral_to_treatment_period_end_date <= INTERVAL.end_date)
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
     ).count_for_patient()
 
 count_rtt_end_date_ortho = wl_clockstops.where(
-        (wl_clockstops.referral_to_treatment_period_end_date >= INTERVAL.start_date)
-        & (wl_clockstops.referral_to_treatment_period_end_date <= INTERVAL.end_date)
-        & (wl_clockstops.activity_treatment_function_code.is_in(["110"]))
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+        & wl_clockstops.activity_treatment_function_code.is_in(["110"])
     ).count_for_patient()
 
-count_rtt_start_date = wl_clockstops.where(
-        (wl_clockstops.referral_to_treatment_period_start_date >= INTERVAL.start_date)
-        & (wl_clockstops.referral_to_treatment_period_start_date <= INTERVAL.end_date)
+count_admitted = wl_clockstops.where(
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+        & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1"])
     ).count_for_patient()
 
-count_week_ending_date = wl_clockstops.where(
-        (wl_clockstops.week_ending_date >= INTERVAL.start_date)
-        &  (wl_clockstops.week_ending_date >= INTERVAL.end_date)
+count_admitted_ortho = wl_clockstops.where(
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+        & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1"])
+        & wl_clockstops.activity_treatment_function_code.is_in(["110"])
     ).count_for_patient()
 
-wl_type = wl_clockstops.waiting_list_type
+count_not_admitted = wl_clockstops.where(
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+        & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO","PTL0"])
+    ).count_for_patient()
+
+count_not_admitted_ortho = wl_clockstops.where(
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+        & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO","PTL0"])
+        & wl_clockstops.activity_treatment_function_code.is_in(["110"])
+    ).count_for_patient()
+
 
 ######
 
@@ -54,23 +63,34 @@ measures.define_defaults(
     )
 
 measures.define_measure(
-    name="end_date",
+    name="closed_total",
     numerator=count_rtt_end_date
     )
 
 measures.define_measure(
-    name="ortho_end_date",
+    name="closed_ortho",
     numerator=count_rtt_end_date_ortho
     )
 
 measures.define_measure(
-    name="start_date",
-    numerator=count_rtt_start_date
+    name="closed_admit_total",
+    numerator=count_admitted
     )
 
 measures.define_measure(
-    name="week_ending_date",
-    numerator=count_week_ending_date
+    name="closed_admit_ortho",
+    numerator=count_admitted_ortho
     )
+
+measures.define_measure(
+    name="closed_not_admit_total",
+    numerator=count_not_admitted
+    )
+
+measures.define_measure(
+    name="closed_not_admit_ortho",
+    numerator=count_not_admitted_ortho
+    )
+
 
 
