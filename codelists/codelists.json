@@ -63,26 +63,26 @@
     "user-anschaf-opioids-for-analgesia-dmd.csv": {
       "id": "user/anschaf/opioids-for-analgesia-dmd/3b7a5c50",
       "url": "https://codelists.opensafely.org/codelist/user/anschaf/opioids-for-analgesia-dmd/3b7a5c50/",
-      "downloaded_at": "2023-10-19 12:45:37.147042Z",
-      "sha": "32c2336610a7650aee873fc22c55959d6f932d73"
+      "downloaded_at": "2023-11-08 12:16:53.885332Z",
+      "sha": "d91984752a16e04aeffa827ab5644b2288c570ae"
     },
     "opensafely-high-dose-long-acting-opioids-openprescribing-dmd.csv": {
       "id": "opensafely/high-dose-long-acting-opioids-openprescribing-dmd/44885cb2",
       "url": "https://codelists.opensafely.org/codelist/opensafely/high-dose-long-acting-opioids-openprescribing-dmd/44885cb2/",
-      "downloaded_at": "2023-10-20 16:07:10.054125Z",
-      "sha": "99853f502fc3294ba1a4c92e5181fe089218cf59"
+      "downloaded_at": "2023-11-08 12:16:54.037966Z",
+      "sha": "eb0ba41f684fe71e1bccf21603bd25e28ab402e6"
     },
     "user-anschaf-gabapentinoids-dmd.csv": {
       "id": "user/anschaf/gabapentinoids-dmd/7d030eef",
       "url": "https://codelists.opensafely.org/codelist/user/anschaf/gabapentinoids-dmd/7d030eef/",
-      "downloaded_at": "2023-10-23 15:30:36.461965Z",
-      "sha": "74290623c349638574cc5ad4b45bac2566d87577"
+      "downloaded_at": "2023-11-08 12:16:54.209614Z",
+      "sha": "d26dc7cb08aebfeea3878bb079fd3f1d083eae35"
     },
     "opensafely-nsaids-oral.csv": {
       "id": "opensafely/nsaids-oral/3fe99055",
       "url": "https://codelists.opensafely.org/codelist/opensafely/nsaids-oral/3fe99055/",
-      "downloaded_at": "2023-10-31 17:18:34.296830Z",
-      "sha": "a5636f7a24e5100883f42399ba386032e0628cc7"
+      "downloaded_at": "2023-11-08 12:16:54.473980Z",
+      "sha": "c13c23b4019466b4e87736fa1fbeae47b2d3b192"
     },
     "opensafely-osteoarthritis.csv": {
       "id": "opensafely/osteoarthritis/2020-06-04",
@@ -105,8 +105,8 @@
     "user-anschaf-antidepressants-dmd.csv": {
       "id": "user/anschaf/antidepressants-dmd/1b780211",
       "url": "https://codelists.opensafely.org/codelist/user/anschaf/antidepressants-dmd/1b780211/",
-      "downloaded_at": "2023-10-23 15:30:37.530716Z",
-      "sha": "05de6c3a7ce613ef8ba282b0011b3188abffbc6c"
+      "downloaded_at": "2023-11-08 12:16:58.442332Z",
+      "sha": "a099a487e76e3b21c23009ce2e2705cb19ea668f"
     },
     "ons-depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms.csv": {
       "id": "ons/depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms/1b8a48a4",
