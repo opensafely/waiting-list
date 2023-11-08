@@ -105,7 +105,7 @@ write.csv(all,  here::here("output", "clockstops", "check_num_per_person.csv"), 
 
 
 # Check overall counts over time to compare with published data
-overall <- read_csv(here::here("output", "measures", "measures_checks_clockstops.csv"),
+overall <- read_csv(here::here("output", "measures", "measures_checks.csv"),
                        col_types = cols(interval_start = col_date(format="%Y-%m-%d"),
                                         interval_end = col_date(format="%Y-%m-%d"))) %>%
   rename(month = interval_start) %>%
