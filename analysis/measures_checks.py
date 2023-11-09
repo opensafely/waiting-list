@@ -48,6 +48,24 @@ count_not_admitted_ortho = wl_clockstops.where(
     ).pseudo_referral_identifier.count_distinct_for_patient()
 
 
+count_pat = wl_clockstops.where(
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+    ).sort_by(
+        wl_clockstops.referral_to_treatment_period_end_date
+    ).first_for_patient().exists_for_patient()
+
+treatment_function_code = wl_clockstops.where(
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+    ).sort_by(
+        wl_clockstops.referral_to_treatment_period_end_date
+    ).first_for_patient().activity_treatment_function_code
+
+waiting_list_type = wl_clockstops.where(
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+    ).sort_by(
+        wl_clockstops.referral_to_treatment_period_end_date
+    ).first_for_patient().waiting_list_type
+
 ######
 
 measures = Measures()
@@ -62,6 +80,19 @@ denominator = (
 measures.define_defaults(
     denominator = denominator,
     intervals=months(13).starting_on("2021-05-01")
+    )
+
+
+measures.define_measure(
+    name="closed_pat_by_trt",
+    numerator=count_pat,
+    group_by={"treatment_function": treatment_function_code}
+    )
+
+measures.define_measure(
+    name="closed_pat_by_wl_type",
+    numerator=count_pat,
+    group_by={"wl_type": waiting_list_type}
     )
 
 measures.define_measure(
