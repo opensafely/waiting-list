@@ -36,10 +36,10 @@ last_clockstops = wl_clockstops.where(
         & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
     ).sort_by(
-        wl_clockstops.pseudo_patient_pathway_identifier,
-        wl_clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer,
+        wl_clockstops.referral_to_treatment_period_start_date,
         wl_clockstops.pseudo_referral_identifier,
-        wl_clockstops.referral_to_treatment_period_start_date
+        wl_clockstops.pseudo_patient_pathway_identifier,
+        wl_clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer
     ).last_for_patient()
 
 # Orthopaedic surgery 
