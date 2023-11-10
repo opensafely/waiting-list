@@ -31,10 +31,9 @@ codelist = getattr(codelists, codelist_name)
 
 # WL data - exclude rows with missing dates/dates outside study period/end date before start date
 last_clockstops = wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-01")
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
-        & wl_clockstops.referral_to_treatment_period_start_date.is_not_null()
-        & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-01")
+        & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
     ).sort_by(
         wl_clockstops.pseudo_patient_pathway_identifier,
@@ -44,7 +43,7 @@ last_clockstops = wl_clockstops.where(
     ).last_for_patient()
 
 # Orthopaedic surgery 
-ortho_surgery = last_clockstops.activity_treatment_function_code.is_in(["110"])
+ortho_surgery = last_clockstops.activity_treatment_function_code.is_in(["110","111","108","115"])
 
 # RTT waiting list start date and end date
 rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
@@ -172,7 +171,7 @@ measures.define_measure(
 measures.define_measure(
     name="count_wait_prior",
     numerator=count_opioid_wait,
-    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date),
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx}
     )
