@@ -40,7 +40,6 @@ actions:
       --dummy-data-file dummy/dummy_any_opioid.csv
       --
       --codelist "opioid_codes"
-      --dummy-data-file dummy/dummy_any_opioid.csv
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_any_opioid.csv
@@ -51,7 +50,6 @@ actions:
       --dummy-data-file dummy/dummy_hi_opioid.csv
       --
       --codelist "hi_opioid_codes"
-      --dummy-data-file dummy/dummy_hi_opioid.csv
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_hi_opioid.csv
