@@ -47,7 +47,7 @@ actions:
     run: ehrql:v0 generate-measures analysis/measures_opioid.py 
       --output output/measures/measures_hi_opioid.csv
       --
-      --codelist "opioid_codes"
+      --codelist "hi_opioid_codes"
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_hi_opioid.csv
