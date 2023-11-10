@@ -37,6 +37,7 @@ actions:
   measures_any_opioid:
     run: ehrql:v0 generate-measures analysis/measures_opioid.py 
       --output output/measures/measures_any_opioid.csv
+      --dummy-data-file dummy/dummy_any_opioid.csv
       --
       --codelist "opioid_codes"
     outputs:
@@ -46,19 +47,20 @@ actions:
   measures_hi_opioid:
     run: ehrql:v0 generate-measures analysis/measures_opioid.py 
       --output output/measures/measures_hi_opioid.csv
+      --dummy-data-file dummy/dummy_hi_opioid.csv
       --
       --codelist "hi_opioid_codes"
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_hi_opioid.csv
       
-  # opioids_by_week:
-  #  run: r:latest analysis/clockstops/opioids_by_week.R
-  #  needs: [measures_any_opioid, measures_hi_opioid]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data: output/clockstops/opioid*.csv
-  #       plots: output/clockstops/plo*.png
+  opioids_by_week:
+   run: r:latest analysis/clockstops/opioids_by_week.R
+   needs: [measures_any_opioid, measures_hi_opioid]
+   outputs:
+      moderately_sensitive:
+        data: output/clockstops/opioid*.csv
+        plots: output/clockstops/plo*.png
         
   ##### Analysis - closed pathways #####
   
@@ -69,12 +71,12 @@ actions:
       moderately_sensitive:
         data: output/clockstops/check*.csv
 
-  # final_cohort_clockstops:
-  #  run: r:latest analysis/clockstops/final_cohort_clockstops.R
-  #  needs: [generate_dataset_clockstops]
-  #  outputs:
-  #     highly_sensitive:
-  #       cohort: output/data/cohort*.csv.gz
+  final_cohort_clockstops:
+   run: r:latest analysis/clockstops/final_cohort_clockstops.R
+   needs: [generate_dataset_clockstops]
+   outputs:
+      highly_sensitive:
+        cohort: output/data/cohort*.csv.gz
 
   # full_stats_clockstops:
   #  run: r:latest analysis/clockstops/full_stats_clockstops.R
@@ -139,3 +141,4 @@ actions:
   #       data4: output/openpathways/wait_time_ortho_open.csv
   #       data5: output/openpathways/med_counts_by_period_ortho_open.csv
   #       plots: output/openpathways/plot*.png  
+
