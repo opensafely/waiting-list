@@ -20,11 +20,12 @@ import codelists
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument("--codelist", nargs="+")
+parser.add_argument("--codelist")
 
 args = parser.parse_args()
 
-codelist = args.codelist
+codelist_name = args.codelist
+codelist = getattr(codelists, codelist_name)
 
 ##########
 
@@ -32,6 +33,7 @@ codelist = args.codelist
 last_clockstops = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-01")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
+        & wl_clockstops.referral_to_treatment_period_start_date.is_not_null()
         & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-01")
         & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
     ).sort_by(
@@ -75,25 +77,21 @@ prior_opioid_rx = all_opioid_rx.where(
     ).exists_for_patient()
 
 
-### Opioid variables for numerator ####
+### Prescribing variables for numerator ####
 
-### All opioids
-
-#### HERE IS WHERE I WOULD USE PARAMETERISATION ####
-
-# Num opioid Rx during waiting list
+# Num Rx during waiting list (up to 1 year)
 count_opioid_wait = all_opioid_rx.where(
                 all_opioid_rx.dmd_code.is_in(codelist)
                 & all_opioid_rx.tmp_wait_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
             ).count_for_patient()
 
-# Num opioid Rx post waiting list (up to 6 months)
+# Num Rx post waiting list (up to 6 months)
 count_opioid_post = all_opioid_rx.where(
                 all_opioid_rx.dmd_code.is_in(codelist)
                 & all_opioid_rx.tmp_post_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
             ).count_for_patient()
 
-# Num opioid Rx pre waiting list (up to 6 months)
+# Num Rx pre waiting list (up to 6 months)
 count_opioid_pre = all_opioid_rx.where(
                 all_opioid_rx.dmd_code.is_in(codelist)
                 & all_opioid_rx.tmp_pre_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
@@ -114,7 +112,8 @@ tmp_end_date_rtt_start = tmp_date + days((end_date - rtt_start_date).days)
 tmp_end_date_rtt_end = tmp_date + days((end_date - rtt_end_date).days)
 tmp_rtt_end = tmp_date + days((rtt_end_date - rtt_start_date).days)
 
-# Cancer diagnosis in past 5 years 
+
+## Cancer diagnosis in past 5 years 
 cancer = clinical_events.where(
         clinical_events.snomedct_code.is_in(codelists.cancer_codes)
     ).where(
@@ -141,12 +140,9 @@ denominator = (
         & (end_date >= rtt_start_date)
     )
 
-## All opioids
-
-
 # Prescribing during WL
 measures.define_measure(
-    name="count_opioid_wait",
+    name="count_wait",
     numerator=count_opioid_wait,
     # Denominator = only include people whose RTT end date and study end date are after interval end date
     #   IOW, exclude people who are no longer on waiting list or have been censored
@@ -156,7 +152,7 @@ measures.define_measure(
 
 # Prescribing post WL
 measures.define_measure(
-    name="count_opioid_post",
+    name="count_post",
     numerator=count_opioid_post,
     # Denominator = only include people whose RTT end date is after interval end date
     #   IOW, exclude people who have been censored
@@ -166,7 +162,7 @@ measures.define_measure(
 
 # Prescribing pre WL
 measures.define_measure(
-    name="count_opioid_pre",
+    name="count_pre",
     numerator=count_opioid_pre,
     denominator=denominator,
     intervals=weeks(26).starting_on("2000-01-01")
@@ -174,7 +170,7 @@ measures.define_measure(
 
 # Prescribing during WL - stratified by prior opioid Rx
 measures.define_measure(
-    name="count_opioid_wait_prior",
+    name="count_wait_prior",
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),

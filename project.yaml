@@ -34,30 +34,23 @@ actions:
 
   ##### Opioid measures - closed pathways #####
 
-  measures_opioid:
+  measures_any_opioid:
     run: ehrql:v0 generate-measures analysis/measures_opioid.py 
-      --output output/measures/measures_opioid.csv
+      --output output/measures/measures_any_opioid.csv
       --
-      --codelist "codelists.opioid_codes"
+      --codelist "opioid_codes"
     outputs:
       moderately_sensitive:
-        measure_csv: output/measures/measures_opioid.csv
+        measure_csv: output/measures/measures_any_opioid.csv
 
-  # measures_any_opioid:
-  #   run: ehrql:v0 generate-measures analysis/measures_any_opioid.py 
-  #     --output output/measures/measures_any_opioid.csv
-  #     --dummy-data-file dummy/dummy_any_opioid.csv
-  #   outputs:
-  #     moderately_sensitive:
-  #       measure_csv: output/measures/measures_any_opioid.csv
-
-  # measures_hi_opioid:
-  #   run: ehrql:v0 generate-measures analysis/measures_hi_opioid.py 
-  #     --output output/measures/measures_hi_opioid.csv
-  #     --dummy-data-file dummy/dummy_hi_opioid.csv
-  #   outputs:
-  #     moderately_sensitive:
-  #       measure_csv: output/measures/measures_hi_opioid.csv
+  measures_hi_opioid:
+    run: ehrql:v0 generate-measures analysis/measures_opioid.py 
+      --output output/measures/measures_hi_opioid.csv
+      --
+      --codelist "opioid_codes"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_hi_opioid.csv
       
   # opioids_by_week:
   #  run: r:latest analysis/clockstops/opioids_by_week.R
@@ -106,7 +99,6 @@ actions:
   #       data4: output/clockstops/wait_time_ortho.csv
   #       data5: output/clockstops/med_counts_by_period_ortho.csv
   #       plots: output/clockstops/plot*.png  
-
 
   ##### Analysis - open pathways #####
 
