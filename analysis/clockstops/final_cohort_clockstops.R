@@ -44,7 +44,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     rtt_end_month = floor_date(rtt_end_date, "month"),
                        
                     # Were on multiple WL during study period
-                    rtt_multiple = ifelse(count_rtt_pathways > 1, 1, 0),
+                    rtt_multiple = ifelse(count_rtt_start_date > 1, 1, 0),
                     
                     # Orthopaedic surgery
                     ortho_surgery = (treatment_function == "110"),
