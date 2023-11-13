@@ -24,7 +24,7 @@ dataset = create_dataset()
 # WL data - exclude rows with missing dates/dates outside study period/end date before start date
 openpathways = wl_openpathways.where(
         wl_openpathways.referral_to_treatment_period_start_date.is_not_null()
-        & (wl_openpathways.week_ending_date == "2021-05-01")
+        & (wl_openpathways.week_ending_date == "2022-05-01")
         & wl_openpathways.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
     )
 
