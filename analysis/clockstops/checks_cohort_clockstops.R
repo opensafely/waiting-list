@@ -97,3 +97,4 @@ all <- rbind(
 )
 
 write.csv(all,  here::here("output", "clockstops", "check_num_per_person.csv"), row.names = FALSE)
+

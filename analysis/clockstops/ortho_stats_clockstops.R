@@ -36,7 +36,6 @@ dat <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
                     rtt_start_month =  col_date(format="%Y-%m-%d"),
                     rtt_end_month =  col_date(format="%Y-%m-%d")))
                         
-
 ############## Plot start/end dates by month #################
 
 rtt_dates("clockstops", "ortho")
@@ -98,7 +97,6 @@ categorical_dist <- rbind(
 write.csv(categorical_dist, here::here("output", "clockstops", "cat_var_dist_ortho.csv"),
           row.names = FALSE)
   
-
 ################## Medicine Rx count variables ####################
 
 # Count total number of Rx, total person-days, and p25/median/75

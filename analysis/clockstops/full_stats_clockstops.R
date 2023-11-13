@@ -35,17 +35,15 @@ dat <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv.gz"),
                     end_date = col_date(format="%Y-%m-%d"),
                     rtt_start_month =  col_date(format="%Y-%m-%d"),
                     rtt_end_month =  col_date(format="%Y-%m-%d")))
-                        
+                       
 
 ############## Plot start/end dates by month #################
 
 rtt_dates("clockstops", "full")
 
-
 ############### Waiting time distribution #################
 
 wait("clockstops", "full")
-
 
 ############ Categorical variable relative frequency distributions #############
 
@@ -97,7 +95,6 @@ categorical_dist <- rbind(
   
 write.csv(categorical_dist, here::here("output", "clockstops", "cat_var_dist_full.csv"),
           row.names = FALSE)
-  
 
 ################## Medicine Rx count variables ####################
 
