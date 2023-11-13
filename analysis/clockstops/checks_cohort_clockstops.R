@@ -98,3 +98,14 @@ all <- rbind(
 
 write.csv(all,  here::here("output", "clockstops", "check_num_per_person.csv"), row.names = FALSE)
 
+# Check overall counts over time to compare with published data
+overall <- read_csv(here::here("output", "measures", "measures_checks.csv"),
+                       col_types = cols(interval_start = col_date(format="%Y-%m-%d"),
+                                        interval_end = col_date(format="%Y-%m-%d"))) %>%
+  rename(month = interval_start) %>%
+  mutate(count = rounding(numerator)) %>%
+  dplyr::select(!c(ratio, denominator, interval_end, numerator)) %>%
+  pivot_wider(names_from = measure, values_from = count)
+
+write.csv(overall, here::here("output", "clockstops", "check_overall_month.csv"), row.names = FALSE)
+

@@ -1,6 +1,6 @@
 ################################################################################
 # This script defines and extracts relevant variables for people with a completed
-# waiting list from May 2021 - May 2022 regardless of treatment type/specialty
+# RTT pathway from May 2021 - May 2022 regardless of treatment type/specialty
 ################################################################################
 
 
@@ -91,7 +91,7 @@ def count_med_pre(codelist):
             & medications.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
         ).count_for_patient()
 
-# Number of prescriptions after waiting list
+# Number of prescriptions after waiting list 
 def count_med_post(codelist):
     return medications.where(
             medications.dmd_code.is_in(codelist)
@@ -218,7 +218,7 @@ dataset.cancer = clinical_events.where(
 
 # All clinical events - past 6 months
 clin_events_6mo = clinical_events.where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date, dataset.rtt_start_date - days(182))
+        clinical_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date)
     )
 
 # Comorbidities in past 6 mos
