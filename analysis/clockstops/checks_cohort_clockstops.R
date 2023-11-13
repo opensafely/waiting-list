@@ -23,6 +23,8 @@ source(here("analysis", "custom_functions.R"))
 
 ## Create directories if needed
 dir_create(here::here("output", "clockstops"), showWarnings = FALSE, recurse = TRUE)
+dir_create(here::here("output", "measures"), showWarnings = FALSE, recurse = TRUE)
+
 
 ## Load data ##
 clockstops <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
@@ -35,7 +37,6 @@ clockstops <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz")
 #### Check dates for problems ##
 
 check_dates <- clockstops %>%
-  
   mutate(# These should all be 0 
          rtt_end_before_start = ifelse(rtt_end_date < rtt_start_date, 1, 0),
          rtt_end_after_dod = ifelse(!is.na(dod) & (rtt_end_date > dod), 1, 0),
@@ -44,7 +45,6 @@ check_dates <- clockstops %>%
          rtt_start_missing = ifelse(is.na(rtt_start_date), 1, 0),
          end_before_start = ifelse(end_date < rtt_start_date, 1, 0)
          ) %>%
-  
   summarise(rtt_end_before_start = sum(rtt_end_before_start),
             rtt_end_after_dod = sum(rtt_end_after_dod),
             dereg_before_rtt_start = sum(dereg_before_rtt_start),
@@ -71,6 +71,30 @@ write.csv(dod_end_time, here::here("output", "clockstops", "check_end_dod_time.c
           row.names = FALSE)
 
 
-####################################
+# Number of rows/pathways/etc.
+num_per_person <- clockstops %>%
+  mutate(count_rtt_rows = ifelse(count_rtt_rows >= 10, 10, count_rtt_rows),
+         count_rtt_start_date = ifelse(count_rtt_start_date >= 10, 10, count_rtt_start_date),
+         count_patient_id = ifelse(count_patient_id >= 10, 10, count_patient_id),
+         count_organisation_id = ifelse(count_organisation_id >= 10, 10, count_organisation_id),
+         count_referral_id = ifelse(count_rtt_rows >= 10, 10, count_referral_id)) 
 
+group_summ <- function(variable, name){
+  num_per_person %>%
+    mutate(total_count = sum({{variable}})) %>%
+    group_by({{variable}}, total_count) %>%
+    summarise(count = n()) %>%
+    mutate(var = name) %>%
+    rename(num_per_person = {{variable}})
+}
+
+all <- rbind(
+  group_summ(count_rtt_rows, "RTT rows"),
+  group_summ(count_rtt_start_date, "RTT start dates"),
+  group_summ(count_patient_id, "Patient IDs"),
+  group_summ(count_organisation_id, "Organisation IDs"),
+  group_summ(count_referral_id, "Referral IDs")
+)
+
+write.csv(all,  here::here("output", "clockstops", "check_num_per_person.csv"), row.names = FALSE)
 

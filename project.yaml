@@ -22,15 +22,61 @@ actions:
   #   outputs:
   #     highly_sensitive:
   #       cohort: output/data/dataset_openpathways.csv.gz  
-
-  ##### Analysis - closed pathways #####
   
-  checks_clockstops:
-   run: r:latest analysis/clockstops/checks_clockstops.R
-   needs: [generate_dataset_clockstops]
+  #### Check number of pathways over time ####
+
+  measures_checks:
+    run: ehrql:v0 generate-measures analysis/measures_checks.py 
+      --output output/measures/measures_checks.csv
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_checks.csv
+
+  checks_overall_clockstops:
+   run: r:latest analysis/clockstops/checks_overall_clockstops.R
+   needs: [measures_checks]
    outputs:
       moderately_sensitive:
-        data: output/clockstops/*.csv
+        data: output/clockstops/chec*.csv
+
+  ##### Opioid measures - closed pathways #####
+
+  measures_any_opioid:
+    run: ehrql:v0 generate-measures analysis/measures_opioid.py 
+      --output output/measures/measures_any_opioid.csv
+      --dummy-data-file dummy/dummy_any_opioid.csv
+      --
+      --codelist "opioid_codes"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_any_opioid.csv
+
+  measures_hi_opioid:
+    run: ehrql:v0 generate-measures analysis/measures_opioid.py 
+      --output output/measures/measures_hi_opioid.csv
+      --dummy-data-file dummy/dummy_hi_opioid.csv
+      --
+      --codelist "hi_opioid_codes"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_hi_opioid.csv
+      
+  opioids_by_week:
+   run: r:latest analysis/clockstops/opioids_by_week.R
+   needs: [measures_any_opioid, measures_hi_opioid]
+   outputs:
+      moderately_sensitive:
+        data: output/clockstops/opioid*.csv
+        plots: output/clockstops/plo*.png
+        
+  ##### Analysis - closed pathways #####
+  
+  checks_cohort_clockstops:
+   run: r:latest analysis/clockstops/checks_cohort_clockstops.R
+   needs: [generate_dataset_clockstops, measures_checks]
+   outputs:
+      moderately_sensitive:
+        data: output/clockstops/check*.csv
 
   final_cohort_clockstops:
    run: r:latest analysis/clockstops/final_cohort_clockstops.R
@@ -44,11 +90,11 @@ actions:
    needs: [final_cohort_clockstops]
    outputs:
       moderately_sensitive:
-        data1: output/clockstops/rtt_dates.csv
-        data2: output/clockstops/cat_var_dist.csv
-        data3: output/clockstops/wait_time_pcent.csv
-        data4: output/clockstops/wait_time.csv
-        data5: output/clockstops/med_counts_by_period.csv
+        data1: output/clockstops/rtt_dates_full.csv
+        data2: output/clockstops/cat_var_dist_full.csv
+        data3: output/clockstops/wait_time_pcent_full.csv
+        data4: output/clockstops/wait_time_full.csv
+        data5: output/clockstops/med_by_period_full.csv
         plots: output/clockstops/plot_*.png
 
   ortho_stats_clockstops:
@@ -60,32 +106,8 @@ actions:
         data2: output/clockstops/cat_var_dist_ortho.csv
         data3: output/clockstops/wait_time_pcent_ortho.csv
         data4: output/clockstops/wait_time_ortho.csv
-        data5: output/clockstops/med_counts_by_period_ortho.csv
+        data5: output/clockstops/med_by_period_ortho.csv
         plots: output/clockstops/plot*.png  
-
-  ##### Opioid measures - closed pathways #####
-  
-  measures_any_opioid:
-    run: ehrql:v0 generate-measures analysis/measures_any_opioid.py 
-      --output output/measures/measures_any_opioid.csv
-    outputs:
-      moderately_sensitive:
-        measure_csv: output/measures/measures_any_opioid.csv
-  
-  measures_hi_opioid:
-    run: ehrql:v0 generate-measures analysis/measures_hi_opioid.py 
-      --output output/measures/measures_hi_opioid.csv
-    outputs:
-      moderately_sensitive:
-        measure_csv: output/measures/measures_hi_opioid.csv
-      
-  opioids_by_week:
-   run: r:latest analysis/clockstops/opioids_by_week.R
-   needs: [measures_any_opioid, measures_hi_opioid]
-   outputs:
-      moderately_sensitive:
-        data: output/clockstops/opioid*.csv
-        plots: output/clockstops/plo*.png
 
   ##### Analysis - open pathways #####
 
