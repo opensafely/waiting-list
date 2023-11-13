@@ -95,7 +95,8 @@ actions:
         data3: output/clockstops/wait_time_pcent_full.csv
         data4: output/clockstops/wait_time_full.csv
         data5: output/clockstops/med_by_period_full.csv
-        plots: output/clockstops/plot_*.png
+        plot1: output/clockstops/wait_time_full.png
+        plot2: output/clockstops/rtt_dates_full.png
 
   ortho_stats_clockstops:
    run: r:latest analysis/clockstops/ortho_stats_clockstops.R
@@ -107,7 +108,8 @@ actions:
         data3: output/clockstops/wait_time_pcent_ortho.csv
         data4: output/clockstops/wait_time_ortho.csv
         data5: output/clockstops/med_by_period_ortho.csv
-        plots: output/clockstops/plot*.png  
+        plot1: output/clockstops/wait_time_ortho.png
+        plot2: output/clockstops/rtt_dates_ortho.png
 
   ##### Analysis - open pathways #####
 
