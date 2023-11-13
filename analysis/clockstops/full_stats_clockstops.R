@@ -27,7 +27,7 @@ dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-full <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv.gz"),
+dat <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv.gz"),
   col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
                     rtt_end_date = col_date(format="%Y-%m-%d"),
                     reg_end_date = col_date(format="%Y-%m-%d"),
@@ -35,14 +35,15 @@ full <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv.gz"),
                     end_date = col_date(format="%Y-%m-%d"),
                     rtt_start_month =  col_date(format="%Y-%m-%d"),
                     rtt_end_month =  col_date(format="%Y-%m-%d")))
-                        
-dat <- full 
+                       
 
-############## Plot end dates by month #################
+############## Plot start/end dates by month #################
 
 rtt_dates("clockstops", "full")
 
+############### Waiting time distribution #################
 
+wait("clockstops", "full")
 
 ############ Categorical variable relative frequency distributions #############
 
@@ -95,36 +96,30 @@ categorical_dist <- rbind(
 write.csv(categorical_dist, here::here("output", "clockstops", "cat_var_dist_full.csv"),
           row.names = FALSE)
 
-
-############### Waiting time #################
-
-wait("clockstops", "full")
-  
-
 ################## Medicine Rx count variables ####################
 
 # Count total number of Rx, total person-days, and p25/median/75
 #   for each period and each medicine group
 med_count <- rbind(
-    summ(pre_time, opioid_pre_count,"Any opioid", "Pre-WL"),
-    summ(wait_time_adj, opioid_wait_count,"Any opioid", "During WL"),
-    summ(post_time_adj, opioid_post_count,"Any opioid", "Post-WL"),
+    summ(pre_time, opioid_pre_count, "Any opioid", "Pre-WL"),
+    summ(wait_time_adj, opioid_wait_count, "Any opioid", "During WL"),
+    summ(post_time_adj, opioid_post_count, "Any opioid", "Post-WL"),
     
-    summ(pre_time, hi_opioid_pre_count,"High dose opioid", "Pre-WL"),
-    summ(wait_time_adj, hi_opioid_wait_count,"High dose opioid", "During WL"),
-    summ(post_time_adj, hi_opioid_post_count,"High dose opioid", "Post-WL"),
+    summ(pre_time, hi_opioid_pre_count, "High dose opioid", "Pre-WL"),
+    summ(wait_time_adj, hi_opioid_wait_count, "High dose opioid", "During WL"),
+    summ(post_time_adj, hi_opioid_post_count, "High dose opioid", "Post-WL"),
     
-    summ(pre_time, gaba_pre_count,"Gabapentinoid", "Pre-WL"),
-    summ(wait_time_adj, gaba_wait_count,"Gabapentinoid", "During WL"),
-    summ(post_time_adj, gaba_post_count,"Gabapentinoid", "Post-WL"),
+    summ(pre_time, gaba_pre_count, "Gabapentinoid", "Pre-WL"),
+    summ(wait_time_adj, gaba_wait_count, "Gabapentinoid", "During WL"),
+    summ(post_time_adj, gaba_post_count, "Gabapentinoid", "Post-WL"),
     
-    summ(pre_time, nsaid_pre_count,"NSAID", "Pre-WL"),
-    summ(wait_time_adj, nsaid_wait_count,"NSAID", "During WL"),
-    summ(post_time_adj, nsaid_post_count,"NSAID", "Post-WL"),
+    summ(pre_time, nsaid_pre_count, "NSAID", "Pre-WL"),
+    summ(wait_time_adj, nsaid_wait_count, "NSAID", "During WL"),
+    summ(post_time_adj, nsaid_post_count, "NSAID", "Post-WL"),
     
-    summ(pre_time, ad_pre_count,"Antidepressant", "Pre-WL"),
-    summ(wait_time_adj, ad_wait_count,"Antidepressant", "During WL"),
-    summ(post_time_adj, ad_post_count,"Antidepressant", "Post-WL")
+    summ(pre_time, ad_pre_count, "Antidepressant", "Pre-WL"),
+    summ(wait_time_adj, ad_wait_count, "Antidepressant", "During WL"),
+    summ(post_time_adj, ad_post_count, "Antidepressant", "Post-WL")
   ) %>%
   mutate(source = "clockstops", cohort = "full") 
   
