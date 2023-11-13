@@ -1,8 +1,9 @@
-######################################
-# Some covariates used in the study are created from codelists of clinical conditions or 
-# numerical values available on a patient's records.
-# This script fetches all of the codelists identified in codelists.txt from OpenCodelists.
-######################################
+##################################################################
+# Some covariates used in the study are created from codelists
+# of clinical conditions or numerical values available on a
+# patient's records. This script fetches all of the codelists 
+# identified in codelists.txt from OpenCodelists.
+####################################################################
 
 
 # --- IMPORT STATEMENTS ---
@@ -83,16 +84,6 @@ depress_gad_codes = codelist_from_csv(
     "codelists/ons-depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms.csv",
     column = "code"
 )
-
-# depression_codes = codelist_from_csv(
-#   "codelists/opensafely-depression.csv",
-#    column = "CTV3Code"
-# )
-
-# anxiety_codes = codelist_from_csv(
-#   "codelists/opensafely-anxiety-disorders.csv",
-#   column = "code"
-# )
 
 cardiac_codes = codelist_from_csv(
   "codelists/opensafely-chronic-cardiac-disease.csv",

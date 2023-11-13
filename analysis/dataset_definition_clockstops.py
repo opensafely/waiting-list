@@ -23,9 +23,9 @@ dataset = create_dataset()
 
 # WL data - exclude rows with missing dates/dates outside study period/end date before start date
 clockstops = wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-05-01")
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
-        & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-05-01")
+        & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
     )
 
