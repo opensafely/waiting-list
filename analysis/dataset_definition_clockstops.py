@@ -30,7 +30,11 @@ clockstops = wl_clockstops.where(
     )
 
 # Number of RTT pathways per person
-dataset.count_rtt_pathways = clockstops.count_for_patient()
+dataset.count_rtt_rows = clockstops.count_for_patient()
+dataset.count_rtt_start_date = clockstops.referral_to_treatment_period_start_date.count_distinct_for_patient()
+dataset.count_patient_id = clockstops.pseudo_patient_pathway_identifier.count_distinct_for_patient()
+dataset.count_organisation_id = clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer.count_distinct_for_patient()
+dataset.count_referral_id = clockstops.pseudo_referral_identifier.count_distinct_for_patient()
 
 # Latest waiting list
 #   Sort by IDs and start date to identify unique RTT pathways
