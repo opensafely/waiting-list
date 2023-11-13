@@ -37,7 +37,6 @@ clockstops <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz")
 #### Check dates for problems ##
 
 check_dates <- clockstops %>%
-  
   mutate(# These should all be 0 
          rtt_end_before_start = ifelse(rtt_end_date < rtt_start_date, 1, 0),
          rtt_end_after_dod = ifelse(!is.na(dod) & (rtt_end_date > dod), 1, 0),
@@ -46,7 +45,6 @@ check_dates <- clockstops %>%
          rtt_start_missing = ifelse(is.na(rtt_start_date), 1, 0),
          end_before_start = ifelse(end_date < rtt_start_date, 1, 0)
          ) %>%
-  
   summarise(rtt_end_before_start = sum(rtt_end_before_start),
             rtt_end_after_dod = sum(rtt_end_after_dod),
             dereg_before_rtt_start = sum(dereg_before_rtt_start),
@@ -99,10 +97,6 @@ all <- rbind(
 )
 
 write.csv(all,  here::here("output", "clockstops", "check_num_per_person.csv"), row.names = FALSE)
-
-
-####################################
-
 
 # Check overall counts over time to compare with published data
 overall <- read_csv(here::here("output", "measures", "measures_checks.csv"),

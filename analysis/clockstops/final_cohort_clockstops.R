@@ -46,20 +46,23 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     # Were on multiple WL during study period
                     rtt_multiple = ifelse(count_rtt_start_date > 1, 1, 0),
                     
+                    # ADmitted
+                    admitted = (waiting_list_type %in% c("IRTT","PTLI","PLTI","RTTI","PTL1")),
+
                     # Orthopaedic surgery
-                    ortho_surgery = (treatment_function == "110"),
+                    ortho_surgery = (treatment_function %in% c("110", "111")),
                     
                     # Died while on WL
                     died_during_wl = ifelse(!is.na(dod) & dod <= rtt_end_date, 1, 0),
                     died_during_post = ifelse(!is.na(dod) & dod <= (rtt_end_date + 182), 1, 0),
                        
                     # Time on WL, censored at death/deregistration
-                    wait_time_adjusted = as.numeric(
+                    wait_time_adj = as.numeric(
                         pmin(rtt_end_date, end_date, na.rm = FALSE) - rtt_start_date + 1),
                        
                     # Time post-WL, censored at death/deregistration (max 182 days)
                     #    If study end date before RTT end date, set to zero
-                    post_time_adjusted = ifelse(
+                    post_time_adj = ifelse(
                         end_date >= rtt_end_date, 
                         as.numeric(pmin((rtt_end_date + 182), end_date, na.rm = FALSE) - rtt_end_date + 1),
                         0),

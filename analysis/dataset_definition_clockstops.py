@@ -23,9 +23,9 @@ dataset = create_dataset()
 
 # WL data - exclude rows with missing dates/dates outside study period/end date before start date
 clockstops = wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-05-01")
+        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
-        & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-05-01")
+        & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
     )
 
@@ -61,10 +61,9 @@ dataset.priority_type = last_clockstops.priority_type_code
 # Registered 6 months before WL start
 registrations = practice_registrations.where(
         practice_registrations.start_date.is_on_or_before(dataset.rtt_start_date - days(182))
-        & (practice_registrations.end_date.is_after(dataset.rtt_start_date) | practice_registrations.end_date.is_null())
-    )
+    ).for_patient_on(dataset.rtt_start_date)
 
-dataset.reg_end_date = registrations.sort_by(registrations.end_date).last_for_patient().end_date
+dataset.reg_end_date = registrations.end_date
 dataset.dod = patients.date_of_death
 dataset.end_date = minimum_of(dataset.reg_end_date, dataset.dod, dataset.rtt_end_date + days(182))
 
@@ -251,10 +250,10 @@ dataset.depress_or_gad = clin_events_6mo.where(
     ).exists_for_patient()
 
 
-### TO ADD MORE? ###
+# ### TO ADD MORE? ###
 
 
-#### DEFINE POPULATION ####
+# #### DEFINE POPULATION ####
 
 dataset.define_population(
     (dataset.age >= 18) 
