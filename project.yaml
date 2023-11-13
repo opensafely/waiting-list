@@ -16,12 +16,12 @@ actions:
         cohort: output/data/dataset_clockstops.csv.gz  
 
   # Open (incomplete) RTT pathways
-  # generate_dataset_openpathways:
-  #   run: ehrql:v0 generate-dataset analysis/dataset_definition_openpathways.py 
-  #     --output output/data/dataset_openpathways.csv.gz
-  #   outputs:
-  #     highly_sensitive:
-  #       cohort: output/data/dataset_openpathways.csv.gz  
+  generate_dataset_openpathways:
+    run: ehrql:v0 generate-dataset analysis/dataset_definition_openpathways.py 
+      --output output/data/dataset_openpathways.csv.gz
+    outputs:
+      highly_sensitive:
+        cohort: output/data/dataset_openpathways.csv.gz  
   
   #### Check number of pathways over time ####
 
@@ -114,41 +114,40 @@ actions:
 
   ##### Analysis - open pathways #####
 
-  # checks_openpathways:
-  #  run: r:latest analysis/openpathways/checks_openpathways.R
-  #  needs: [generate_dataset_openpathways]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data: output/openpathways/*.csv
+  checks_cohort_openpathways:
+   run: r:latest analysis/openpathways/checks_cohort_openpathways.R
+   needs: [generate_dataset_openpathways]
+   outputs:
+      moderately_sensitive:
+        data: output/openpathways/chec*.csv
 
-  # final_cohort_openpathways:
-  #  run: r:latest analysis/openpathways/final_cohort_openpathways.R
-  #  needs: [generate_dataset_openpathways]
-  #  outputs:
-  #     highly_sensitive:
-  #       cohort: output/data/cohor*.csv.gz
+  final_cohort_openpathways:
+   run: r:latest analysis/openpathways/final_cohort_openpathways.R
+   needs: [generate_dataset_openpathways]
+   outputs:
+      highly_sensitive:
+        cohort: output/data/cohor*.csv.gz
 
-  # full_stats_openpathways:
-  #  run: r:latest analysis/openpathways/full_stats_openpathways.R
-  #  needs: [final_cohort_openpathways]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data1: output/openpathways/rtt_dates_open.csv
-  #       data2: output/openpathways/cat_var_dist_open.csv
-  #       data3: output/openpathways/wait_time_pcent_open.csv
-  #       data4: output/openpathways/wait_time_open.csv
-  #       data5: output/openpathways/med_counts_by_period_open.csv
-  #       plots: output/openpathways/plot_*.png
+  full_stats_openpathways:
+   run: r:latest analysis/openpathways/full_stats_openpathways.R
+   needs: [final_cohort_openpathways]
+   outputs:
+      moderately_sensitive:
+        data1: output/openpathways/rtt_dates_full.csv
+        data2: output/openpathways/cat_var_dist_full.csv
+        data3: output/openpathways/wait_time_pcent_full.csv
+        data4: output/openpathways/wait_time_full.csv
+        plot1: output/openpathways/wait_time_full.png
+        plot2: output/openpathways/rtt_dates_full.png
 
-  # ortho_stats_openpathways:
-  #  run: r:latest analysis/openpathways/ortho_stats_openpathways.R
-  #  needs: [final_cohort_openpathways]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data1: output/openpathways/rtt_dates_ortho_open.csv
-  #       data2: output/openpathways/cat_var_dist_ortho_open.csv
-  #       data3: output/openpathways/wait_time_pcent_ortho_open.csv
-  #       data4: output/openpathways/wait_time_ortho_open.csv
-  #       data5: output/openpathways/med_counts_by_period_ortho_open.csv
-  #       plots: output/openpathways/plot*.png  
-
+  ortho_stats_openpathways:
+   run: r:latest analysis/openpathways/ortho_stats_openpathways.R
+   needs: [final_cohort_openpathways]
+   outputs:
+      moderately_sensitive:
+        data1: output/openpathways/rtt_dates_ortho.csv
+        data2: output/openpathways/cat_var_dist_ortho.csv
+        data3: output/openpathways/wait_time_pcent_ortho.csv
+        data4: output/openpathways/wait_time_ortho.csv
+        plot1: output/openpathways/wait_time_ortho.png
+        plot2: output/openpathways/rtt_dates_ortho.png
