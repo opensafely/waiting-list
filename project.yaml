@@ -32,13 +32,6 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_checks.csv
 
-  checks_overall_clockstops:
-   run: r:latest analysis/clockstops/checks_overall_clockstops.R
-   needs: [measures_checks]
-   outputs:
-      moderately_sensitive:
-        data: output/clockstops/chec*.csv
-
   ##### Opioid measures - closed pathways #####
 
   measures_any_opioid:
@@ -71,8 +64,8 @@ actions:
         
   ##### Analysis - closed pathways #####
   
-  checks_cohort_clockstops:
-   run: r:latest analysis/clockstops/checks_cohort_clockstops.R
+  checks_clockstops:
+   run: r:latest analysis/clockstops/checks_clockstops.R
    needs: [generate_dataset_clockstops, measures_checks]
    outputs:
       moderately_sensitive:
@@ -85,31 +78,29 @@ actions:
       highly_sensitive:
         cohort: output/data/cohort*.csv.gz
 
-  full_stats_clockstops:
-   run: r:latest analysis/clockstops/full_stats_clockstops.R
-   needs: [final_cohort_clockstops]
-   outputs:
-      moderately_sensitive:
-        data1: output/clockstops/rtt_dates_full.csv
-        data2: output/clockstops/cat_var_dist_full.csv
-        data3: output/clockstops/wait_time_pcent_full.csv
-        data4: output/clockstops/wait_time_full.csv
-        data5: output/clockstops/med_by_period_full.csv
-        plot1: output/clockstops/wait_time_full.png
-        plot2: output/clockstops/rtt_dates_full.png
+  # full_stats_clockstops:
+  #  run: r:latest analysis/clockstops/full_stats_clockstops.R
+  #  needs: [final_cohort_clockstops]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data1: output/clockstops/rtt_dates.csv
+  #       data2: output/clockstops/cat_var_dist.csv
+  #       data3: output/clockstops/wait_time_pcent.csv
+  #       data4: output/clockstops/wait_time.csv
+  #       data5: output/clockstops/med_counts_by_period.csv
+  #       plots: output/clockstops/plot_*.png
 
-  ortho_stats_clockstops:
-   run: r:latest analysis/clockstops/ortho_stats_clockstops.R
-   needs: [final_cohort_clockstops]
-   outputs:
-      moderately_sensitive:
-        data1: output/clockstops/rtt_dates_ortho.csv
-        data2: output/clockstops/cat_var_dist_ortho.csv
-        data3: output/clockstops/wait_time_pcent_ortho.csv
-        data4: output/clockstops/wait_time_ortho.csv
-        data5: output/clockstops/med_by_period_ortho.csv
-        plot1: output/clockstops/wait_time_ortho.png
-        plot2: output/clockstops/rtt_dates_ortho.png
+  # ortho_stats_clockstops:
+  #  run: r:latest analysis/clockstops/ortho_stats_clockstops.R
+  #  needs: [final_cohort_clockstops]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data1: output/clockstops/rtt_dates_ortho.csv
+  #       data2: output/clockstops/cat_var_dist_ortho.csv
+  #       data3: output/clockstops/wait_time_pcent_ortho.csv
+  #       data4: output/clockstops/wait_time_ortho.csv
+  #       data5: output/clockstops/med_counts_by_period_ortho.csv
+  #       plots: output/clockstops/plot*.png  
 
   ##### Analysis - open pathways #####
 
