@@ -11,7 +11,7 @@ from ehrql.tables.beta.tpp import (
     addresses,
     practice_registrations,
     clinical_events,
-    wl_clockstops)
+    wl_openpathways)
 
 import codelists
 
@@ -22,39 +22,36 @@ dataset = create_dataset()
 #### Waiting list variables ####
 
 # WL data - exclude rows with missing dates/dates outside study period/end date before start date
-clockstops = wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
-        & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
-        & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
-        & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
+openpathways = wl_openpathways.where(
+        wl_openpathways.referral_to_treatment_period_start_date.is_not_null()
+        & (wl_openpathways.week_ending_date == "2021-05-01")
+        & wl_openpathways.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
     )
 
 # Number of RTT pathways per person
-dataset.count_rtt_rows = clockstops.count_for_patient()
-dataset.count_rtt_start_date = clockstops.referral_to_treatment_period_start_date.count_distinct_for_patient()
-dataset.count_patient_id = clockstops.pseudo_patient_pathway_identifier.count_distinct_for_patient()
-dataset.count_organisation_id = clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer.count_distinct_for_patient()
-dataset.count_referral_id = clockstops.pseudo_referral_identifier.count_distinct_for_patient()
+dataset.count_rtt_rows = openpathways.count_for_patient()
+dataset.count_rtt_start_date = openpathways.referral_to_treatment_period_start_date.count_distinct_for_patient()
+dataset.count_patient_id = openpathways.pseudo_patient_pathway_identifier.count_distinct_for_patient()
+dataset.count_organisation_id = openpathways.pseudo_organisation_code_patient_pathway_identifier_issuer.count_distinct_for_patient()
+dataset.count_referral_id = openpathways.pseudo_referral_identifier.count_distinct_for_patient()
 
 # Latest waiting list
 #   Sort by IDs and start date to identify unique RTT pathways
-last_clockstops = clockstops.sort_by(
-        clockstops.referral_to_treatment_period_end_date,
-        clockstops.referral_to_treatment_period_start_date,
-        clockstops.pseudo_referral_identifier,
-        clockstops.pseudo_patient_pathway_identifier,
-        clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer
+last_openpathways = openpathways.sort_by(
+        openpathways.referral_to_treatment_period_start_date,
+        openpathways.pseudo_referral_identifier,
+        openpathways.pseudo_patient_pathway_identifier,
+        openpathways.pseudo_organisation_code_patient_pathway_identifier_issuer
     ).last_for_patient()
 
 # RTT waiting list start date and end date
-dataset.rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
-dataset.rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
-dataset.wait_time = (dataset.rtt_end_date - dataset.rtt_start_date).days
+dataset.rtt_start_date = last_openpathways.referral_to_treatment_period_start_date
+dataset.wait_time = ("2022-05-01" - dataset.rtt_start_date).days
 
 # Other relevant columns
-dataset.treatment_function = last_clockstops.activity_treatment_function_code
-dataset.waiting_list_type = last_clockstops.waiting_list_type
-dataset.priority_type = last_clockstops.priority_type_code
+dataset.treatment_function = last_openpathways.activity_treatment_function_code
+dataset.waiting_list_type = last_openpathways.waiting_list_type
+dataset.priority_type = last_openpathways.priority_type_code
 
 
 #### Censoring dates ####
@@ -66,64 +63,10 @@ registrations = practice_registrations.where(
 
 dataset.reg_end_date = registrations.end_date
 dataset.dod = patients.date_of_death
-dataset.end_date = minimum_of(dataset.reg_end_date, dataset.dod, dataset.rtt_end_date + days(182))
+dataset.end_date = minimum_of(dataset.reg_end_date, dataset.dod, "2022-05-01")
 
-# Flag if censored before WL end date
-dataset.censor_before_rtt_end = dataset.end_date < dataset.rtt_end_date
-
-# Flag if censored before study end date (RTT end + 6 months)
-dataset.censor_before_study_end = dataset.end_date < dataset.rtt_end_date + days(182)
-
-
-#### Medicines data ####
-
-# Number of prescriptions during waiting list (this time period is variable, will account for this later)
-def count_med_wait(codelist):
-    return medications.where(
-            medications.dmd_code.is_in(codelist)
-            & medications.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
-        ).count_for_patient()
-
-# Number of prescriptions before waiting list
-def count_med_pre(codelist):
-    return medications.where(
-            medications.dmd_code.is_in(codelist)
-            & medications.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
-        ).count_for_patient()
-
-# Number of prescriptions after waiting list 
-def count_med_post(codelist):
-    return medications.where(
-            medications.dmd_code.is_in(codelist)
-            & medications.date.is_on_or_between(dataset.rtt_end_date + days(1), minimum_of(dataset.rtt_end_date + days(182), dataset.end_date))
-            & (dataset.end_date > dataset.rtt_end_date)
-        ).count_for_patient()
-
-
-# Any opioid
-dataset.opioid_wait_count = count_med_wait(codelists.opioid_codes)
-dataset.opioid_pre_count = count_med_pre(codelists.opioid_codes)
-dataset.opioid_post_count = count_med_post(codelists.opioid_codes)
-
-# High dose/long-acting opioids
-dataset.hi_opioid_wait_count = count_med_wait(codelists.hi_opioid_codes)
-dataset.hi_opioid_pre_count = count_med_pre(codelists.hi_opioid_codes)
-dataset.hi_opioid_post_count = count_med_post(codelists.hi_opioid_codes)
-
-# Gabapentinoids
-dataset.gaba_wait_count = count_med_wait(codelists.gabapentinoid_codes)
-dataset.gaba_pre_count = count_med_pre(codelists.gabapentinoid_codes)
-dataset.gaba_post_count = count_med_post(codelists.gabapentinoid_codes)
-
-# Antidepressant
-dataset.ad_wait_count = count_med_wait(codelists.antidepressant_codes)
-dataset.ad_pre_count = count_med_pre(codelists.antidepressant_codes)
-dataset.ad_post_count = count_med_post(codelists.antidepressant_codes)
-
-# NSAID
-dataset.nsaid_wait_count = count_med_wait(codelists.nsaid_codes)
-dataset.nsaid_pre_count = count_med_pre(codelists.nsaid_codes)
-dataset.nsaid_post_count = count_med_post(codelists.nsaid_codes)
+# Flag if censored before May 2022
+dataset.censor_before_study_end = dataset.end_date < "2022-05-01"
 
 
 #### Demographics ####
@@ -262,5 +205,5 @@ dataset.define_population(
     & dataset.sex.is_in(["male","female"])
     & dataset.end_date.is_after(dataset.rtt_start_date)
     & registrations.exists_for_patient()
-    & last_clockstops.exists_for_patient()
+    & last_openpathways.exists_for_patient()
 )
