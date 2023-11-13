@@ -28,7 +28,7 @@ dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-ortho <- read_csv(here::here("output", "data", "dataset_openpathways.csv.gz"),
+full <- read_csv(here::here("output", "data", "dataset_openpathways.csv.gz"),
   col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
                     reg_end_date = col_date(format="%Y-%m-%d"),
                     dod = col_date(format="%Y-%m-%d"),
@@ -53,7 +53,7 @@ ortho <- read_csv(here::here("output", "data", "dataset_openpathways.csv.gz"),
                          
 
 ## Save as final
-write.csv(ortho, file = here::here("output", "data", "cohort_ortho_openpathways.csv.gz"),
+write.csv(full, file = here::here("output", "data", "cohort_full_openpathways.csv.gz"),
           row.names = FALSE)
 
 
@@ -61,7 +61,7 @@ write.csv(ortho, file = here::here("output", "data", "cohort_ortho_openpathways.
 
 
 # Restrict to people with trauma/orthopaedic surgery
-ortho <- ortho %>%
+ortho <- full %>%
   subset(ortho_surgery == TRUE & cancer == FALSE)
 
 ## Save as final
