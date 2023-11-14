@@ -51,11 +51,13 @@ count_not_admitted_ortho = wl_clockstops.where(
     ).pseudo_referral_identifier.count_distinct_for_patient()
 
 
-key_measures = ["100","110","120","130","140","150","160","170","300","301","320","330","340","400","410","430","502",]
+# By treatment specialty (only include most common groups reported in public statistics)
+
+trt_func = ["100","110","120","130","140","150","160","170","300","301","320","330","340","400","410","430","502",]
 
 count_var = {}
 
-for code in key_measures:
+for code in trt_func:
 
     count_var["count_" + code] =  wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
@@ -121,7 +123,7 @@ measures.define_measure(
     numerator=count_not_admitted_ortho
     )
 
-for code in key_measures:
+for code in trt_func:
     measures.define_measure(
         name=f"count_{code}",
         numerator=count_var["count_" + code]
