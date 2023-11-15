@@ -91,26 +91,26 @@ for med in med_classes:
     med_events = medications.where(medications.dmd_code.is_in(med_codes[med]))
                                    
     # Number of prescriptions during waiting list (this time period is variable, will account for this later)
-    name = f"{med}_wait_count"
-    query = med_events.where(
+    wait_count = f"{med}_wait_count"
+    wait_query = med_events.where(
             med_events.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
         ).count_for_patient()
-    setattr(dataset, name, query)
+    setattr(dataset, wait_count, wait_query)
 
     # Number of prescriptions before waiting list
-    name = f"{med}_pre_count"
-    query = med_events.where(
+    pre_count = f"{med}_pre_count"
+    pre_query = med_events.where(
             med_events.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
         ).count_for_patient()
-    setattr(dataset, name, query)
+    setattr(dataset, pre_count, pre_query)
 
     # Number of prescriptions before waiting list
-    name = f"{med}_post_count"
-    query = med_events.where(
+    post_count = f"{med}_post_count"
+    post_query = med_events.where(
             med_events.date.is_on_or_between(dataset.rtt_end_date + days(1), minimum_of(dataset.rtt_end_date + days(182), dataset.end_date))
             & (dataset.end_date > dataset.rtt_end_date)
         ).count_for_patient()
-    setattr(dataset, name, query)
+    setattr(dataset, post_count, post_query)
 
 
 #### Demographics ####
@@ -203,39 +203,41 @@ dataset.cancer = clinical_events.where(
         clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
     ).exists_for_patient()
 
+comorbidities = ["diabetes","cardiac","copd","liver","ckd","osteoarthritis","depress_or_gad"]
+comorb_codes = {
+    "diabetes": codelists.diabetes_codes,
+    "cardiac": codelists.cardiac_codes,
+    "copd": codelists.copd_codes,
+    "liver": codelists.liver_codes,
+    "ckd": codelists.ckd_codes,
+    "osteoarthritis": codelists.osteoarthritis_codes,
+    "depress_or_gad": codelists.depress_or_gad_codes,
+    }
+
+
 # All clinical events - past 6 months
 clin_events_6mo = clinical_events.where(
         clinical_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date)
     )
 
 # Comorbidities in past 6 mos
-dataset.diabetes = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.diabetes_codes)
-    ).exists_for_patient()
+for comorb in comorbidities:
+        
+    if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis"]:
 
-dataset.cardiac = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.cardiac_codes)
-    ).exists_for_patient()
+        ctv3_name = comorb
+        ctv3_query = clin_events_6mo.where(
+                clin_events_6mo.ctv3_code.is_in(comorb_codes[comorb])
+            ).exists_for_patient()
+        setattr(dataset, ctv3_name, ctv3_query)
+    
+    else:
 
-dataset.copd = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.copd_codes)
-    ).exists_for_patient()
-
-dataset.liver = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.liver_codes)
-    ).exists_for_patient()
-
-dataset.ckd = clin_events_6mo.where(
-        clin_events_6mo.snomedct_code.is_in(codelists.ckd_codes)
-    ).exists_for_patient()
-
-dataset.osteoarthritis = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.osteo_codes)
-    ).exists_for_patient()
-
-dataset.depress_or_gad = clin_events_6mo.where(
-        clin_events_6mo.snomedct_code.is_in(codelists.depress_gad_codes)
-    ).exists_for_patient()
+        snomed_name = comorb
+        snomed_query = clin_events_6mo.where(
+                clin_events_6mo.snomedct_code.is_in(comorb_codes[comorb])
+            ).exists_for_patient()
+        setattr(dataset, snomed_name, snomed_query)
 
 
 # ### TO ADD MORE? ###
