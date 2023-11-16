@@ -98,7 +98,7 @@ for med in med_classes:
     # Number of prescriptions before waiting list
     pre_count = f"{med}_pre_count"
     pre_query = med_events.where(
-            med_events.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
+            med_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
         ).count_for_patient()
     setattr(dataset, pre_count, pre_query)
 
