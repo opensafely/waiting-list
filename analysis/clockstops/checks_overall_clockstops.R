@@ -17,6 +17,7 @@ library('ggplot2')
 library('zoo')
 library('reshape2')
 library('fs')
+library(stringr)
 
 ## Rounding function
 source(here("analysis", "custom_functions.R"))
@@ -31,9 +32,16 @@ overall <- read_csv(here::here("output", "measures", "measures_checks.csv"),
                        col_types = cols(interval_start = col_date(format="%Y-%m-%d"),
                                         interval_end = col_date(format="%Y-%m-%d"))) %>%
   rename(month = interval_start) %>%
-  mutate(count = rounding(numerator)) %>%
+  mutate(count = rounding(numerator),
+         admit_type = ifelse(grepl("_not_admit_", measure, fixed = TRUE), "Not admitted", 
+                             ifelse(grepl("_admit_", measure, fixed = TRUE), "Admitted",
+                                    "Total")),
+         trt_func = ifelse(grepl("_ortho", measure, fixed = TRUE), "Orthopaedic",
+                           ifelse(grepl("_total", measure, fixed = TRUE), "Total",
+                                  paste0("Treatment_function_",str_sub(measure, start= -3))))) %>%
   dplyr::select(!c(ratio, denominator, interval_end, numerator)) %>%
-  pivot_wider(names_from = measure, values_from = count)
+  pivot_wider(names_from = trt_func,values_from = count) %>%
+  dplyr::select(!measure)
 
 write.csv(overall, here::here("output", "clockstops", "check_overall_month.csv"), row.names = FALSE)
 

@@ -75,12 +75,12 @@ cancer_codes = (
   haem_ca_codes
 )
 
-osteo_codes = codelist_from_csv(
+osteoarthritis_codes = codelist_from_csv(
     "codelists/opensafely-osteoarthritis.csv",
     column = "CTV3ID"
 )
 
-depress_gad_codes = codelist_from_csv(
+depress_or_gad_codes = codelist_from_csv(
     "codelists/ons-depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms.csv",
     column = "code"
 )

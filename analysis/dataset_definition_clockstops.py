@@ -15,9 +15,7 @@ from ehrql.tables.beta.tpp import (
 
 import codelists
 
-
 dataset = create_dataset()
-
 
 #### Waiting list variables ####
 
@@ -26,7 +24,7 @@ clockstops = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
         & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
-        & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
+        & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","RTTO","RTTI"])
     )
 
 # Number of RTT pathways per person
@@ -69,61 +67,48 @@ dataset.dod = patients.date_of_death
 dataset.end_date = minimum_of(dataset.reg_end_date, dataset.dod, dataset.rtt_end_date + days(182))
 
 # Flag if censored before WL end date
-dataset.censor_before_rtt_end = dataset.end_date < dataset.rtt_end_date
+dataset.censor_before_rtt_end = (dataset.end_date < dataset.rtt_end_date)
 
 # Flag if censored before study end date (RTT end + 6 months)
-dataset.censor_before_study_end = dataset.end_date < dataset.rtt_end_date + days(182)
+dataset.censor_before_study_end = (dataset.end_date < dataset.rtt_end_date + days(182))
 
 
 #### Medicines data ####
 
-# Number of prescriptions during waiting list (this time period is variable, will account for this later)
-def count_med_wait(codelist):
-    return medications.where(
-            medications.dmd_code.is_in(codelist)
-            & medications.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
-        ).count_for_patient()
+med_classes = ["opioid","hi_opioid","gabapentinoid","antidepressant","nsaid",]
+med_codes = {
+    "opioid": codelists.opioid_codes,
+    "hi_opioid": codelists.hi_opioid_codes,
+    "gabapentinoid": codelists.gabapentinoid_codes,
+    "antidepressant": codelists.antidepressant_codes,
+    "nsaid": codelists.nsaid_codes,
+    }
 
-# Number of prescriptions before waiting list
-def count_med_pre(codelist):
-    return medications.where(
-            medications.dmd_code.is_in(codelist)
-            & medications.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
-        ).count_for_patient()
+for med in med_classes:
 
-# Number of prescriptions after waiting list 
-def count_med_post(codelist):
-    return medications.where(
-            medications.dmd_code.is_in(codelist)
-            & medications.date.is_on_or_between(dataset.rtt_end_date + days(1), minimum_of(dataset.rtt_end_date + days(182), dataset.end_date))
+    med_events = medications.where(medications.dmd_code.is_in(med_codes[med]))
+                                   
+    # Number of prescriptions during waiting list (this time period is variable, will account for this later)
+    wait_count = f"{med}_wait_count"
+    wait_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
+        ).count_for_patient()
+    setattr(dataset, wait_count, wait_query)
+
+    # Number of prescriptions before waiting list
+    pre_count = f"{med}_pre_count"
+    pre_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
+        ).count_for_patient()
+    setattr(dataset, pre_count, pre_query)
+
+    # Number of prescriptions before waiting list
+    post_count = f"{med}_post_count"
+    post_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_end_date + days(1), minimum_of(dataset.rtt_end_date + days(182), dataset.end_date))
             & (dataset.end_date > dataset.rtt_end_date)
         ).count_for_patient()
-
-
-# Any opioid
-dataset.opioid_wait_count = count_med_wait(codelists.opioid_codes)
-dataset.opioid_pre_count = count_med_pre(codelists.opioid_codes)
-dataset.opioid_post_count = count_med_post(codelists.opioid_codes)
-
-# High dose/long-acting opioids
-dataset.hi_opioid_wait_count = count_med_wait(codelists.hi_opioid_codes)
-dataset.hi_opioid_pre_count = count_med_pre(codelists.hi_opioid_codes)
-dataset.hi_opioid_post_count = count_med_post(codelists.hi_opioid_codes)
-
-# Gabapentinoids
-dataset.gaba_wait_count = count_med_wait(codelists.gabapentinoid_codes)
-dataset.gaba_pre_count = count_med_pre(codelists.gabapentinoid_codes)
-dataset.gaba_post_count = count_med_post(codelists.gabapentinoid_codes)
-
-# Antidepressant
-dataset.ad_wait_count = count_med_wait(codelists.antidepressant_codes)
-dataset.ad_pre_count = count_med_pre(codelists.antidepressant_codes)
-dataset.ad_post_count = count_med_post(codelists.antidepressant_codes)
-
-# NSAID
-dataset.nsaid_wait_count = count_med_wait(codelists.nsaid_codes)
-dataset.nsaid_pre_count = count_med_pre(codelists.nsaid_codes)
-dataset.nsaid_post_count = count_med_post(codelists.nsaid_codes)
+    setattr(dataset, post_count, post_query)
 
 
 #### Demographics ####
@@ -213,42 +198,44 @@ dataset.region = practice_registrations.for_patient_on(dataset.rtt_start_date).p
 dataset.cancer = clinical_events.where(
         clinical_events.snomedct_code.is_in(codelists.cancer_codes)
     ).where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
+        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
     ).exists_for_patient()
 
-# All clinical events - past 6 months
-clin_events_6mo = clinical_events.where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date)
-    )
+comorbidities = ["diabetes","cardiac","copd","liver","ckd","osteoarthritis","depress_or_gad"]
+comorb_codes = {
+    "diabetes": codelists.diabetes_codes,
+    "cardiac": codelists.cardiac_codes,
+    "copd": codelists.copd_codes,
+    "liver": codelists.liver_codes,
+    "ckd": codelists.ckd_codes,
+    "osteoarthritis": codelists.osteoarthritis_codes,
+    "depress_or_gad": codelists.depress_or_gad_codes,
+    }
+
 
 # Comorbidities in past 6 mos
-dataset.diabetes = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.diabetes_codes)
-    ).exists_for_patient()
 
-dataset.cardiac = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.cardiac_codes)
-    ).exists_for_patient()
+clin_events_6mo = clinical_events.where(
+        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - days(183), dataset.rtt_start_date)
+    )
 
-dataset.copd = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.copd_codes)
-    ).exists_for_patient()
+for comorb in comorbidities:
+        
+    if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis"]:
 
-dataset.liver = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.liver_codes)
-    ).exists_for_patient()
+        ctv3_name = comorb
+        ctv3_query = clin_events_6mo.where(
+                clin_events_6mo.ctv3_code.is_in(comorb_codes[comorb])
+            ).exists_for_patient()
+        setattr(dataset, ctv3_name, ctv3_query)
+    
+    else:
 
-dataset.ckd = clin_events_6mo.where(
-        clin_events_6mo.snomedct_code.is_in(codelists.ckd_codes)
-    ).exists_for_patient()
-
-dataset.osteoarthritis = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.osteo_codes)
-    ).exists_for_patient()
-
-dataset.depress_or_gad = clin_events_6mo.where(
-        clin_events_6mo.snomedct_code.is_in(codelists.depress_gad_codes)
-    ).exists_for_patient()
+        snomed_name = comorb
+        snomed_query = clin_events_6mo.where(
+                clin_events_6mo.snomedct_code.is_in(comorb_codes[comorb])
+            ).exists_for_patient()
+        setattr(dataset, snomed_name, snomed_query)
 
 
 # ### TO ADD MORE? ###

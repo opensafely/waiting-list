@@ -25,7 +25,7 @@ dataset = create_dataset()
 openpathways = wl_openpathways.where(
         wl_openpathways.referral_to_treatment_period_start_date.is_not_null()
         & (wl_openpathways.week_ending_date == "2022-05-01")
-        & wl_openpathways.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
+        & wl_openpathways.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","RTTO","RTTI"])
     )
 
 # Number of RTT pathways per person
@@ -156,42 +156,44 @@ dataset.region = practice_registrations.for_patient_on(dataset.rtt_start_date).p
 dataset.cancer = clinical_events.where(
         clinical_events.snomedct_code.is_in(codelists.cancer_codes)
     ).where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
+        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
     ).exists_for_patient()
 
-# All clinical events - past 6 months
-clin_events_6mo = clinical_events.where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date)
-    )
+comorbidities = ["diabetes","cardiac","copd","liver","ckd","osteoarthritis","depress_or_gad"]
+comorb_codes = {
+    "diabetes": codelists.diabetes_codes,
+    "cardiac": codelists.cardiac_codes,
+    "copd": codelists.copd_codes,
+    "liver": codelists.liver_codes,
+    "ckd": codelists.ckd_codes,
+    "osteoarthritis": codelists.osteoarthritis_codes,
+    "depress_or_gad": codelists.depress_or_gad_codes,
+    }
+
 
 # Comorbidities in past 6 mos
-dataset.diabetes = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.diabetes_codes)
-    ).exists_for_patient()
 
-dataset.cardiac = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.cardiac_codes)
-    ).exists_for_patient()
+clin_events_6mo = clinical_events.where(
+        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - days(183), dataset.rtt_start_date)
+    )
 
-dataset.copd = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.copd_codes)
-    ).exists_for_patient()
+for comorb in comorbidities:
+        
+    if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis"]:
 
-dataset.liver = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.liver_codes)
-    ).exists_for_patient()
+        ctv3_name = comorb
+        ctv3_query = clin_events_6mo.where(
+                clin_events_6mo.ctv3_code.is_in(comorb_codes[comorb])
+            ).exists_for_patient()
+        setattr(dataset, ctv3_name, ctv3_query)
+    
+    else:
 
-dataset.ckd = clin_events_6mo.where(
-        clin_events_6mo.snomedct_code.is_in(codelists.ckd_codes)
-    ).exists_for_patient()
-
-dataset.osteoarthritis = clin_events_6mo.where(
-        clin_events_6mo.ctv3_code.is_in(codelists.osteo_codes)
-    ).exists_for_patient()
-
-dataset.depress_or_gad = clin_events_6mo.where(
-        clin_events_6mo.snomedct_code.is_in(codelists.depress_gad_codes)
-    ).exists_for_patient()
+        snomed_name = comorb
+        snomed_query = clin_events_6mo.where(
+                clin_events_6mo.snomedct_code.is_in(comorb_codes[comorb])
+            ).exists_for_patient()
+        setattr(dataset, snomed_name, snomed_query)
 
 
 # ### TO ADD MORE? ###

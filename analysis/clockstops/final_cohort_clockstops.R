@@ -46,8 +46,8 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     # Were on multiple WL during study period
                     rtt_multiple = ifelse(count_rtt_start_date > 1, 1, 0),
                     
-                    # ADmitted
-                    admitted = (waiting_list_type %in% c("IRTT","PTLI","PLTI","RTTI","PTL1")),
+                    # Admitted
+                    admitted = (waiting_list_type %in% c("IRTT","PTLI","RTTI")),
 
                     # Orthopaedic surgery
                     ortho_surgery = (treatment_function %in% c("110", "111")),
@@ -63,7 +63,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     # Time post-WL, censored at death/deregistration (max 182 days)
                     #    If study end date before RTT end date, set to zero
                     post_time_adj = ifelse(
-                        end_date >= rtt_end_date, 
+                        end_date >= rtt_end_date,
                         as.numeric(pmin((rtt_end_date + 182), end_date, na.rm = FALSE) - rtt_end_date + 1),
                         0),
                        
@@ -78,17 +78,17 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     hi_opioid_wait = ifelse(hi_opioid_wait_count > 0, 1, 0),
                     hi_opioid_post = ifelse(hi_opioid_post_count > 0, 1, 0),
                     
-                    gaba_pre = ifelse(gaba_pre_count > 0, 1, 0),
-                    gaba_wait = ifelse(gaba_wait_count > 0, 1, 0),
-                    gaba_post = ifelse(gaba_post_count > 0, 1, 0),
+                    gabapentinoid_pre = ifelse(gabapentinoid_pre_count > 0, 1, 0),
+                    gabapentinoid_wait = ifelse(gabapentinoid_wait_count > 0, 1, 0),
+                    gabapentinoid_post = ifelse(gabapentinoid_post_count > 0, 1, 0),
                     
                     nsaid_pre = ifelse(nsaid_pre_count > 0, 1, 0),
                     nsaid_wait = ifelse(nsaid_wait_count > 0, 1, 0),
                     nsaid_post = ifelse(nsaid_post_count > 0, 1, 0),
                     
-                    ad_pre = ifelse(ad_pre_count > 0, 1, 0),
-                    ad_wait = ifelse(ad_wait_count > 0, 1, 0),
-                    ad_post = ifelse(ad_post_count > 0, 1, 0))
+                    antidepressant_pre = ifelse(antidepressant_pre_count > 0, 1, 0),
+                    antidepressant_wait = ifelse(antidepressant_wait_count > 0, 1, 0),
+                    antidepressant_post = ifelse(antidepressant_post_count > 0, 1, 0))
                          
 
 ## Save as final
