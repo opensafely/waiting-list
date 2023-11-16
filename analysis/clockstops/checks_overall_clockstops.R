@@ -39,9 +39,8 @@ overall <- read_csv(here::here("output", "measures", "measures_checks.csv"),
          trt_func = ifelse(grepl("_ortho", measure, fixed = TRUE), "Orthopaedic",
                            ifelse(grepl("_total", measure, fixed = TRUE), "Total",
                                   paste0("Treatment_function_",str_sub(measure, start= -3))))) %>%
-  dplyr::select(!c(ratio, denominator, interval_end, numerator)) %>%
-  pivot_wider(names_from = trt_func,values_from = count) %>%
-  dplyr::select(!measure)
+  dplyr::select(!c(ratio, denominator, interval_end, numerator, measure)) %>%
+  pivot_wider(names_from = trt_func, values_from = count) 
 
 write.csv(overall, here::here("output", "clockstops", "check_overall_month.csv"), row.names = FALSE)
 
