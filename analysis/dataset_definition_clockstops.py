@@ -15,9 +15,7 @@ from ehrql.tables.beta.tpp import (
 
 import codelists
 
-
 dataset = create_dataset()
-
 
 #### Waiting list variables ####
 
@@ -26,7 +24,7 @@ clockstops = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
         & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
-        & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","PLTI","RTTO","RTTI","PTL0","PTL1"])
+        & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","RTTO","RTTI"])
     )
 
 # Number of RTT pathways per person
@@ -69,10 +67,10 @@ dataset.dod = patients.date_of_death
 dataset.end_date = minimum_of(dataset.reg_end_date, dataset.dod, dataset.rtt_end_date + days(182))
 
 # Flag if censored before WL end date
-dataset.censor_before_rtt_end = dataset.end_date < dataset.rtt_end_date
+dataset.censor_before_rtt_end = (dataset.end_date < dataset.rtt_end_date)
 
 # Flag if censored before study end date (RTT end + 6 months)
-dataset.censor_before_study_end = dataset.end_date < dataset.rtt_end_date + days(182)
+dataset.censor_before_study_end = (dataset.end_date < dataset.rtt_end_date + days(182))
 
 
 #### Medicines data ####
@@ -200,7 +198,7 @@ dataset.region = practice_registrations.for_patient_on(dataset.rtt_start_date).p
 dataset.cancer = clinical_events.where(
         clinical_events.snomedct_code.is_in(codelists.cancer_codes)
     ).where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
+        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
     ).exists_for_patient()
 
 comorbidities = ["diabetes","cardiac","copd","liver","ckd","osteoarthritis","depress_or_gad"]
@@ -215,12 +213,12 @@ comorb_codes = {
     }
 
 
-# All clinical events - past 6 months
+# Comorbidities in past 6 mos
+
 clin_events_6mo = clinical_events.where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date)
+        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - days(183), dataset.rtt_start_date)
     )
 
-# Comorbidities in past 6 mos
 for comorb in comorbidities:
         
     if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis"]:

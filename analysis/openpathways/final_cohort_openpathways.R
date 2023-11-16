@@ -44,6 +44,9 @@ full <- read_csv(here::here("output", "data", "dataset_openpathways.csv.gz"),
                        
                     # Were on multiple WL during study period
                     rtt_multiple = ifelse(count_rtt_start_date > 1, 1, 0),
+                    
+                    # Admitted
+                    admitted = (waiting_list_type %in% c("IRTT","PTLI","RTTI")),
 
                     # Orthopaedic surgery
                     ortho_surgery = (treatment_function %in% c("110", "111")),

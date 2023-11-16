@@ -84,13 +84,17 @@ categorical_dist <- rbind(
     cat_dist(hi_opioid_wait, "High dose opioid (during WL)"),
     cat_dist(hi_opioid_post, "High dose opioid (post-WL)"),
     
-    cat_dist(gaba_pre, "Gabapentinoid (pre-WL)"),
-    cat_dist(gaba_wait, "Gabapentinoid (during WL)"),
-    cat_dist(gaba_post, "Gabapentinoid (post-WL)"),
+    cat_dist(gabapentinoid_pre, "Gabapentinoid (pre-WL)"),
+    cat_dist(gabapentinoid_wait, "Gabapentinoid (during WL)"),
+    cat_dist(gabapentinoid_post, "Gabapentinoid (post-WL)"),
     
     cat_dist(nsaid_pre, "NSAID (pre-WL)"),
     cat_dist(nsaid_wait, "NSAID (during WL)"),
-    cat_dist(nsaid_post, "NSAID (post-WL)")
+    cat_dist(nsaid_post, "NSAID (post-WL)"),
+    
+    cat_dist(antidepressant_pre, "Antidepressant (pre-WL)"),
+    cat_dist(antidepressant_wait, "Antidepressant (during WL)"),
+    cat_dist(antidepressant_post, "Antidepressant (post-WL)")
   ) %>%
   mutate(source = "clockstops", cohort = "ortho") 
   
@@ -110,17 +114,17 @@ med_count <- rbind(
     summ(wait_time_adj, hi_opioid_wait_count, "High dose opioid", "During WL"),
     summ(post_time_adj, hi_opioid_post_count, "High dose opioid", "Post-WL"),
     
-    summ(pre_time, gaba_pre_count, "Gabapentinoid", "Pre-WL"),
-    summ(wait_time_adj, gaba_wait_count, "Gabapentinoid", "During WL"),
-    summ(post_time_adj, gaba_post_count, "Gabapentinoid", "Post-WL"),
+    summ(pre_time, gabapentinoid_pre_count, "Gabapentinoid", "Pre-WL"),
+    summ(wait_time_adj, gabapentinoid_wait_count, "Gabapentinoid", "During WL"),
+    summ(post_time_adj, gabapentinoid_post_count, "Gabapentinoid", "Post-WL"),
     
     summ(pre_time, nsaid_pre_count, "NSAID", "Pre-WL"),
     summ(wait_time_adj, nsaid_wait_count, "NSAID", "During WL"),
     summ(post_time_adj, nsaid_post_count, "NSAID", "Post-WL"),
     
-    summ(pre_time, ad_pre_count, "Antidepressant", "Pre-WL"),
-    summ(wait_time_adj, ad_wait_count, "Antidepressant", "During WL"),
-    summ(post_time_adj, ad_post_count, "Antidepressant", "Post-WL")
+    summ(pre_time, antidepressant_pre_count, "Antidepressant", "Pre-WL"),
+    summ(wait_time_adj, antidepressant_wait_count, "Antidepressant", "During WL"),
+    summ(post_time_adj, antidepressant_post_count, "Antidepressant", "Post-WL")
   ) %>%
   mutate(source = "clockstops", cohort = "ortho") 
   
