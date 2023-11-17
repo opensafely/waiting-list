@@ -45,6 +45,18 @@ rtt_dates("clockstops", "ortho")
 
 wait("clockstops", "ortho")
 
+# Stratified by demographics
+wait_by_group <- rbind(
+  wait_gp(age_group, "Age group"),
+  wait_gp(sex, "Sex"),
+  wait_gp(ethnicity6, "Ethnicity"),
+  wait_gp(imd10, "IMD decile"),
+  wait_gp(region, "Region")
+) %>%
+  mutate(source = "clockstops", cohort = "ortho") 
+
+write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group_ortho.csv"),
+  row.names = FALSE) 
 
 ############ Categorical variable relative frequency distributions #############
 

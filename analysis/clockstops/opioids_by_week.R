@@ -40,9 +40,6 @@ opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
  
        mutate(# Convert interval start date to number of weeks 
               week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
-       
-              # If pre-WL, count backward
-              week = ifelse(grepl("_pre", measure, fixed=TRUE), week*(-1), week),
                   
               # Create variables for prior opioid Rx, opioid type, and time period
               prior_opioid_gp = ifelse(is.na(prior_opioid_rx), "Full cohort",

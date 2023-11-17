@@ -132,6 +132,33 @@ wait <- function(source, cohort){
 
 }
 
+
+
+# Waiting time distribution
+wait_gp <- function(gp, name){
+  
+  dat %>%
+    mutate(week = ceiling(wait_time / 7),
+           week_gp = ifelse(week <= 18, "<=18 weeks", 
+                            ifelse(week > 18 & week <= 52, "19-52 weeks", 
+                                   "52+ weeks"))) %>%
+    group_by({{gp}}) %>%
+    mutate(total = n(),
+              p25 = quantile(wait_time, .25, na.rm=TRUE),
+              p50 = quantile(wait_time, .5, na.rm=TRUE),
+              p75 = quantile(wait_time, .75, na.rm=TRUE)) %>%
+    group_by({{gp}}, week_gp, total, p25, p50, p75) %>%
+    summarise(count = n()) %>%
+    mutate(count_round = rounding(count),
+           total_round = rounding(total),
+           var = name,
+           pcent = count_round / total_round * 100) %>%
+    rename(category = {{gp}}) %>%
+    ungroup() %>%
+    dplyr::select(!c(count, total))
+}
+
+
 # Frequency distribution of categoriacal variables
 cat_dist <- function(variable, name) {
   
