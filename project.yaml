@@ -139,6 +139,7 @@ actions:
         data2: output/openpathways/cat_var_dist_full.csv
         data3: output/openpathways/wait_time_pcent_full.csv
         data4: output/openpathways/wait_time_full.csv
+        data5: output/openpathways/wait_by_group_full.csv
         plot1: output/openpathways/wait_time_full.png
         plot2: output/openpathways/rtt_dates_full.png
 
@@ -151,5 +152,6 @@ actions:
         data2: output/openpathways/cat_var_dist_ortho.csv
         data3: output/openpathways/wait_time_pcent_ortho.csv
         data4: output/openpathways/wait_time_ortho.csv
+        data5: output/openpathways/wait_by_group_ortho.csv
         plot1: output/openpathways/wait_time_ortho.png
         plot2: output/openpathways/rtt_dates_ortho.png

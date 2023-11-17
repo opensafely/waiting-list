@@ -156,6 +156,7 @@ wait_gp <- function(gp, name){
     rename(category = {{gp}}) %>%
     ungroup() %>%
     dplyr::select(!c(count, total))
+
 }
 
 

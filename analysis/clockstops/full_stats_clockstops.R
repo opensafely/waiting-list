@@ -57,7 +57,8 @@ wait_by_group <- rbind(
 
 write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group_full.csv"),
           row.names = FALSE) 
-  
+
+
 ############ Categorical variable relative frequency distributions #############
 
 categorical_dist <- rbind(
