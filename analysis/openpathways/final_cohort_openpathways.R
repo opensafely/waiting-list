@@ -52,7 +52,13 @@ full <- read_csv(here::here("output", "data", "dataset_openpathways.csv.gz"),
                     ortho_surgery = (treatment_function %in% c("110", "111")),
                     
                     # Died while on WL
-                    died_during_wl = ifelse(!is.na(dod) & dod <= as.Date("2022-05-01"), 1, 0))
+                    died_during_wl = ifelse(!is.na(dod) & dod <= as.Date("2022-05-01"), 1, 0),
+                    
+                    week = ceiling(wait_time / 7),
+                    week52 =  ifelse(week > 52, 52, week),
+                    week_gp = ifelse(week <= 18, "<=18 weeks", 
+                                     ifelse(week > 18 & week <= 52, "19-52 weeks", 
+                                            "52+ weeks")))
                          
 
 ## Save as final
