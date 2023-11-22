@@ -99,10 +99,8 @@ wait <- function(source, cohort){
   
   # By week
   wait_time <- dat %>%
-    mutate(week = ceiling(wait_time / 7),
-           week = ifelse(week > 52, 52, week)) %>%
     mutate(total = n()) %>%
-    group_by(week, total) %>%
+    group_by(week52, total) %>%
     summarise(count = n()) %>%
     mutate(count_round = rounding(count),
            total_round = rounding(total),
@@ -115,7 +113,7 @@ wait <- function(source, cohort){
   
   # Plot 
   ggplot(wait_time) +
-    geom_bar(aes(x = week, y = count_round), 
+    geom_bar(aes(x = week52, y = count_round), 
              position = "dodge", stat = "identity", col = "white", fill = "dodgerblue3") + 
     scale_x_continuous(breaks = c(4, 8, 12, 18, 26, 34, 42, 52)) +
     xlab("No. weeks") + ylab("No. people") +
@@ -133,15 +131,10 @@ wait <- function(source, cohort){
 }
 
 
-
 # Waiting time distribution
 wait_gp <- function(gp, name){
   
   dat %>%
-    mutate(week = ceiling(wait_time / 7),
-           week_gp = ifelse(week <= 18, "<=18 weeks", 
-                            ifelse(week > 18 & week <= 52, "19-52 weeks", 
-                                   "52+ weeks"))) %>%
     group_by({{gp}}) %>%
     mutate(total = n(),
               p25 = quantile(wait_time, .25, na.rm=TRUE),
@@ -160,7 +153,7 @@ wait_gp <- function(gp, name){
 }
 
 
-# Frequency distribution of categoriacal variables
+# Frequency distribution of categorical variables
 cat_dist <- function(variable, name) {
   
   dat %>%
@@ -206,5 +199,3 @@ summ <- function(wait_time, var, med, time) {
            rate_pmonth = total_rx_round / person_days * 100 * 30) %>%
     dplyr::select(!c(total_rx, person_days))
 }
-
-

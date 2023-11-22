@@ -110,6 +110,13 @@ for med in med_classes:
         ).count_for_patient()
     setattr(dataset, post_count, post_query)
 
+    # Date of first prescription
+    first_date = f"{med}_first_date"
+    first_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_start_date - days(182), minimum_of(dataset.end_date, dataset.rtt_end_date + days(182)))
+        ).sort_by(med_events.date).first_for_patient().date
+    setattr(dataset, first_date, first_query)
+
 
 #### Demographics ####
 

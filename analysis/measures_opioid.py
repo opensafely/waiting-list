@@ -5,12 +5,13 @@
 #   for orthopaedic surgery only
 ###########################################################
 
-from ehrql import INTERVAL, Measures, weeks, days, minimum_of, years
+from ehrql import INTERVAL, Measures, weeks, days, minimum_of, years, when, case
 from ehrql.tables.beta.tpp import (
     patients, 
     practice_registrations,
     medications,
     clinical_events,
+    addresses,
     wl_clockstops)
 
 import codelists
@@ -119,6 +120,57 @@ cancer = clinical_events.where(
         clinical_events.date.is_on_or_between(rtt_start_date - years(5), rtt_start_date)
     ).exists_for_patient()
 
+## Demographics
+
+
+age = patients.age_on(rtt_start_date)
+age_group = case(
+        when(age < 40).then("18-39"),
+        when(age < 50).then("40-49"),
+        when(age < 60).then("50-59"),
+        when(age < 70).then("60-69"),
+        when(age < 80).then("70-79"),
+        when(age >= 80).then("80+"),
+        default="Missing",
+)
+
+sex = patients.sex
+
+# IMD decile
+imd = addresses.for_patient_on(rtt_start_date).imd_rounded
+imd10 = case(
+        when((imd >= 0) & (imd < int(32844 * 1 / 10))).then("1 (most deprived)"),
+        when(imd < int(32844 * 2 / 10)).then("2"),
+        when(imd < int(32844 * 3 / 10)).then("3"),
+        when(imd < int(32844 * 4 / 10)).then("4"),
+        when(imd < int(32844 * 5 / 10)).then("5"),
+        when(imd < int(32844 * 6 / 10)).then("6"),
+        when(imd < int(32844 * 7 / 10)).then("7"),
+        when(imd < int(32844 * 8 / 10)).then("8"),
+        when(imd < int(32844 * 9 / 10)).then("9"),
+        when(imd >= int(32844 * 9 / 10)).then("10 (least deprived)"),
+        default="Unknown"
+)
+
+# Ethnicity 6 categories
+ethnicity6 = clinical_events.where(
+        clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
+    ).where(
+        clinical_events.date.is_on_or_before(rtt_start_date)
+    ).sort_by(
+        clinical_events.date
+    ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_6)
+
+ethnicity6 = case(
+    when(ethnicity6 == "1").then("White"),
+    when(ethnicity6 == "2").then("Mixed"),
+    when(ethnicity6 == "3").then("South Asian"),
+    when(ethnicity6 == "4").then("Black"),
+    when(ethnicity6 == "5").then("Other"),
+    when(ethnicity6 == "6").then("Not stated"),
+    default="Unknown"
+)
+
 
 ######
 
@@ -146,7 +198,7 @@ measures.define_measure(
     # Denominator = only include people whose RTT end date and study end date are after interval end date
     #   IOW, exclude people who are no longer on waiting list or have been censored
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(52).starting_on("2000-01-01")
+    intervals=weeks(104).starting_on("2000-01-01")
     )
 
 # Prescribing post WL
@@ -167,12 +219,87 @@ measures.define_measure(
     intervals=weeks(26).starting_on("2000-01-01")
     )
 
+
+
+# Prescribing pre WL - stratified by prior opioid Rx
+measures.define_measure(
+    name="count_pre_prior",
+    numerator=count_opioid_pre,
+    denominator=denominator,
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"prior_opioid_rx": prior_opioid_rx}
+    )
+
 # Prescribing during WL - stratified by prior opioid Rx
 measures.define_measure(
     name="count_wait_prior",
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(52).starting_on("2000-01-01"),
+    intervals=weeks(104).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx}
     )
 
+# Prescribing post WL - stratified by prior opioid Rx
+measures.define_measure(
+    name="count_post_prior",
+    numerator=count_opioid_post,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"prior_opioid_rx": prior_opioid_rx}
+    )
+
+
+# Prescribing pre WL - stratified by age
+measures.define_measure(
+    name="count_pre_age",
+    numerator=count_opioid_pre,
+    denominator=denominator,
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"age_group": age_group}
+    )
+
+# Prescribing during WL - stratified by age
+measures.define_measure(
+    name="count_wait_age",
+    numerator=count_opioid_wait,
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+    intervals=weeks(104).starting_on("2000-01-01"),
+    group_by={"age_group": age_group}
+    )
+
+# Prescribing post WL - stratified by age
+measures.define_measure(
+    name="count_post_age",
+    numerator=count_opioid_post,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"age_group": age_group}
+    )
+
+
+# Prescribing pre WL - stratified by imd
+measures.define_measure(
+    name="count_pre_imd",
+    numerator=count_opioid_pre,
+    denominator=denominator,
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"imd_decile": imd10}
+    )
+
+# Prescribing during WL - stratified by prior opioid Rx
+measures.define_measure(
+    name="count_wait_imd",
+    numerator=count_opioid_wait,
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+    intervals=weeks(104).starting_on("2000-01-01"),
+    group_by={"imd_decile": imd10}
+    )
+
+# Prescribing post WL - stratified by prior opioid Rx
+measures.define_measure(
+    name="count_post_imd",
+    numerator=count_opioid_post,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"imd_decile": imd10}
+    )
