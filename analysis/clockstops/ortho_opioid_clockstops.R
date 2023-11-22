@@ -34,9 +34,7 @@ dat <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
                                  dod = col_date(format="%Y-%m-%d"),
                                  end_date = col_date(format="%Y-%m-%d"),
                                  rtt_start_month =  col_date(format="%Y-%m-%d"),
-                                 rtt_end_month =  col_date(format="%Y-%m-%d")))
-
-dat <- dat %>%
+                                 rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
   mutate(opioid_pre_gp = ifelse(opioid_pre_count >3, 4, opioid_pre_count),
          opioid_wait_gp = ifelse(opioid_wait_count >3, 4, opioid_wait_count),
          opioid_post_gp = ifelse(opioid_post_count >3, 4, opioid_post_count),
@@ -47,13 +45,12 @@ dat <- dat %>%
 cumulative_opi <- dat %>%
   subset(end_date > rtt_end_date) %>%
   group_by(week52) %>%
-  reframe(p50 = quantile(opioid_wait_count, .5, na.rm=TRUE),
+  summarise(p50 = quantile(opioid_wait_count, .5, na.rm=TRUE),
             p75 = quantile(opioid_wait_count, .75, na.rm=TRUE),
             total_opioid_rx = sum(opioid_wait_count),   
             n_round = rounding(n()),
-            mean = total_opioid_rx / n_round
-          ) %>%
-  unique()
+            mean = total_opioid_rx / n_round) %>%
+  ungroup()
 
 write.csv(cumulative_opi, here::here("output", "clockstops", "cumulative_opi.csv"),
           row.names = FALSE)
