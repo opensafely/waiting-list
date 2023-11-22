@@ -70,25 +70,31 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     # Time pre-WL (182 days for everyone)
                     pre_time = 182,
                     
-                    any_opioid_pre = ifelse(opioid_pre_count > 0, 1, 0),
-                    any_opioid_wait = ifelse(opioid_wait_count > 0, 1, 0),
-                    any_opioid_post = ifelse(opioid_post_count > 0, 1, 0),
+                    any_opioid_pre = (opioid_pre_count > 0),
+                    any_opioid_wait = (opioid_wait_count > 0),
+                    any_opioid_post = (opioid_post_count > 0),
                     
-                    hi_opioid_pre = ifelse(hi_opioid_pre_count > 0, 1, 0),
-                    hi_opioid_wait = ifelse(hi_opioid_wait_count > 0, 1, 0),
-                    hi_opioid_post = ifelse(hi_opioid_post_count > 0, 1, 0),
+                    hi_opioid_pre = (hi_opioid_pre_count > 0),
+                    hi_opioid_wait = (hi_opioid_wait_count > 0),
+                    hi_opioid_post = (hi_opioid_post_count > 0),
                     
-                    gabapentinoid_pre = ifelse(gabapentinoid_pre_count > 0, 1, 0),
-                    gabapentinoid_wait = ifelse(gabapentinoid_wait_count > 0, 1, 0),
-                    gabapentinoid_post = ifelse(gabapentinoid_post_count > 0, 1, 0),
+                    gabapentinoid_pre = (gabapentinoid_pre_count > 0),
+                    gabapentinoid_wait = (gabapentinoid_wait_count > 0),
+                    gabapentinoid_post = (gabapentinoid_post_count > 0),
                     
-                    nsaid_pre = ifelse(nsaid_pre_count > 0, 1, 0),
-                    nsaid_wait = ifelse(nsaid_wait_count > 0, 1, 0),
-                    nsaid_post = ifelse(nsaid_post_count > 0, 1, 0),
+                    nsaid_pre = (nsaid_pre_count > 0),
+                    nsaid_wait = (nsaid_wait_count > 0),
+                    nsaid_post = (nsaid_post_count > 0),
                     
-                    antidepressant_pre = ifelse(antidepressant_pre_count > 0, 1, 0),
-                    antidepressant_wait = ifelse(antidepressant_wait_count > 0, 1, 0),
-                    antidepressant_post = ifelse(antidepressant_post_count > 0, 1, 0))
+                    antidepressant_pre = (antidepressant_pre_count > 0),
+                    antidepressant_wait = (antidepressant_wait_count > 0),
+                    antidepressant_post = (antidepressant_post_count > 0),
+                    
+                    week = ceiling(wait_time / 7),
+                    week52 =  ifelse(week > 52, 52, week),
+                    week_gp = ifelse(week <= 18, "<=18 weeks", 
+                                     ifelse(week > 18 & week <= 52, "19-52 weeks", 
+                                            "52+ weeks")))
                          
 
 ## Save as final

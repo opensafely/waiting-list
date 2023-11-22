@@ -51,7 +51,7 @@ wait_by_group <- rbind(
   wait_gp(imd10, "IMD decile"),
   wait_gp(region, "Region")
 ) %>%
-  mutate(source = "openpathways", cohort = "full") 
+  mutate(source = "openpathways", cohort = "ortho") 
 
 write.csv(wait_by_group, here::here("output", "openpathways", "wait_by_group_ortho.csv"),
           row.names = FALSE) 

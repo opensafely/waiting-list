@@ -114,6 +114,15 @@ actions:
         plot1: output/clockstops/wait_time_ortho.png
         plot2: output/clockstops/rtt_dates_ortho.png
 
+  ortho_opioid_clockstops:
+    run: r:latest analysis/clockstops/ortho_opioid_clockstops.R
+    needs: [final_cohort_clockstops]
+    outputs:
+      moderately_sensitive:
+        data1: output/clockstops/cumulative_opi.csv
+        plot1: output/clockstops/cumulative_opi.png
+
+
   ##### Analysis - open pathways #####
 
   checks_cohort_openpathways:
