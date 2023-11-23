@@ -159,7 +159,7 @@ dataset.cancer = clinical_events.where(
         clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
     ).exists_for_patient()
 
-comorbidities = ["diabetes","cardiac","copd","liver","ckd","osteoarthritis","depress_or_gad"]
+comorbidities = ["diabetes","cardiac","copd","liver","ckd","osteoarthritis","depress_or_gad","ra"]
 comorb_codes = {
     "diabetes": codelists.diabetes_codes,
     "cardiac": codelists.cardiac_codes,
@@ -168,6 +168,7 @@ comorb_codes = {
     "ckd": codelists.ckd_codes,
     "osteoarthritis": codelists.osteoarthritis_codes,
     "depress_or_gad": codelists.depress_or_gad_codes,
+    "ra": codelists.ra_codes,
     }
 
 
@@ -179,7 +180,7 @@ clin_events_6mo = clinical_events.where(
 
 for comorb in comorbidities:
         
-    if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis"]:
+    if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis","ra"]:
 
         ctv3_name = comorb
         ctv3_query = clin_events_6mo.where(
