@@ -307,36 +307,6 @@ measures.define_measure(
     
 # Prescribing pre WL - stratified by ethnicity
 measures.define_measure(
-    name="count_pre_eth",
-    numerator=count_opioid_pre,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"ethnicity": ethnicity6}
-    )
-
-# Prescribing during WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_wait_eth",
-    numerator=count_opioid_wait,
-    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(104).starting_on("2000-01-01"),
-    group_by={"ethnicity": ethnicity6}
-    )
-
-# Prescribing post WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_post_eth",
-    numerator=count_opioid_post,
-    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"ethnicity": ethnicity6}
-    )
-
-
-
-    
-# Prescribing pre WL - stratified by ethnicity
-measures.define_measure(
     name="count_pre_sex",
     numerator=count_opioid_pre,
     denominator=denominator,

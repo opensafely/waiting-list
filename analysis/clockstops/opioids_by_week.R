@@ -28,8 +28,6 @@ dir_create(here::here("output", "measures"), showWarnings = FALSE, recurse = TRU
 
 
 # Load data
-
-
 hi_opioid_rx <- read_csv(here::here("output", "measures", "measures_hi_opioid.csv"),
                          col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
               mutate(opioid_type = "High dose opioid", var = "Full cohort", category = "Full cohort") %>%
@@ -70,9 +68,9 @@ opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
     rate_lci = rate - (1.96 * sqrt( ( rate * (100 - rate) ) / denominator)),
     rate_uci = rate + (1.96 * sqrt( ( rate * (100 - rate) ) / denominator)),
     
-    rate = ifelse((var == "Prior opioid Rx" & period == "Pre-WL"), 0, rate),
-    rate_lci = ifelse((var == "Prior opioid Rx" & period == "Pre-WL"), 0, rate_lci),
-    rate_uci = ifelse((var == "Prior opioid Rx" & period == "Pre-WL"), 0, rate_lci)
+    rate = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate),
+    rate_lci = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate_lci),
+    rate_uci = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate_lci)
   )%>% 
   dplyr::select(!c(interval_start, numerator, measure)) %>%
   arrange(opioid_type, var, category, period, week)
