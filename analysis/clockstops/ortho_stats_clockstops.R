@@ -83,7 +83,8 @@ categorical_dist <- rbind(
     cat_dist(liver, "Liver"),
     cat_dist(ckd, "CKD"),
     cat_dist(osteoarthritis, "Osteoarthritis"),
-    cat_dist(depress_or_gad, "Depression/GAD"),
+    cat_dist(depress_or_gad, "Depression/GAD"),   
+    cat_dist(ra, "Rheumatoid arthritis"),
     
     cat_dist(died_during_wl, "Died while on WL"),
     cat_dist(died_during_post, "Died during post-WL follow-up"),
@@ -95,6 +96,18 @@ categorical_dist <- rbind(
     cat_dist(hi_opioid_pre, "High dose opioid (pre-WL)"),
     cat_dist(hi_opioid_wait, "High dose opioid (during WL)"),
     cat_dist(hi_opioid_post, "High dose opioid (post-WL)"),
+    
+    cat_dist(codeine_pre, "Codeine (pre-WL)"),
+    cat_dist(codeine_wait, "Codeine (during WL)"),
+    cat_dist(codeine_post, "Codeine (post-WL)"),
+    
+    cat_dist(tramadol_pre, "Tramadol (pre-WL)"),
+    cat_dist(tramadol_wait, "Tramadol (during WL)"),
+    cat_dist(tramadol_post, "Tramadol (post-WL)"),
+    
+    cat_dist(oxycodone_pre, "Oxycodone (pre-WL)"),
+    cat_dist(oxycodone_wait, "Oxycodone (during WL)"),
+    cat_dist(oxycodone_post, "Oxycodone (post-WL)"),
     
     cat_dist(gabapentinoid_pre, "Gabapentinoid (pre-WL)"),
     cat_dist(gabapentinoid_wait, "Gabapentinoid (during WL)"),
@@ -113,6 +126,7 @@ categorical_dist <- rbind(
 write.csv(categorical_dist, here::here("output", "clockstops", "cat_var_dist_ortho.csv"),
           row.names = FALSE)
   
+
 ################## Medicine Rx count variables ####################
 
 # Count total number of Rx, total person-days, and p25/median/75
@@ -125,6 +139,18 @@ med_count <- rbind(
     summ(pre_time, hi_opioid_pre_count, "High dose opioid", "Pre-WL"),
     summ(wait_time_adj, hi_opioid_wait_count, "High dose opioid", "During WL"),
     summ(post_time_adj, hi_opioid_post_count, "High dose opioid", "Post-WL"),
+    
+    summ(pre_time, codeine_pre_count, "Codeine", "Pre-WL"),
+    summ(wait_time_adj, codeine_wait_count, "Codeine", "During WL"),
+    summ(post_time_adj, codeine_post_count, "Codeine", "Post-WL"),
+    
+    summ(pre_time, tramadol_pre_count, "Tramadol", "Pre-WL"),
+    summ(wait_time_adj, tramadol_wait_count, "Tramadol", "During WL"),
+    summ(post_time_adj, tramadol_post_count, "Tramadol", "Post-WL"),
+    
+    summ(pre_time, oxycodone_pre_count, "Oxycodone", "Pre-WL"),
+    summ(wait_time_adj, oxycodone_wait_count, "Oxycodone", "During WL"),
+    summ(post_time_adj, oxycodone_post_count, "Oxycodone", "Post-WL"),
     
     summ(pre_time, gabapentinoid_pre_count, "Gabapentinoid", "Pre-WL"),
     summ(wait_time_adj, gabapentinoid_wait_count, "Gabapentinoid", "During WL"),

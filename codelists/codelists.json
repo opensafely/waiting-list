@@ -113,6 +113,30 @@
       "url": "https://www.opencodelists.org/codelist/ons/depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms/1b8a48a4/",
       "downloaded_at": "2023-10-24 13:20:29.817462Z",
       "sha": "f3b30007f853459142981e027d5f2c672bd6e326"
+    },
+    "opensafely-rheumatoid-arthritis.csv": {
+      "id": "opensafely/rheumatoid-arthritis/2020-05-12",
+      "url": "https://www.opencodelists.org/codelist/opensafely/rheumatoid-arthritis/2020-05-12/",
+      "downloaded_at": "2023-11-23 13:54:57.880289Z",
+      "sha": "4042d1daebf9ab893093d0eeff6b62ad5927c86e"
+    },
+    "user-anschaf-codeine-for-pain-dmd.csv": {
+      "id": "user/anschaf/codeine-for-pain-dmd/3a4b9a7b",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/codeine-for-pain-dmd/3a4b9a7b/",
+      "downloaded_at": "2023-11-23 14:13:48.817124Z",
+      "sha": "4053966b87f1ee030138e07055ebb2af4b699732"
+    },
+    "user-anschaf-oxycodone-dmd.csv": {
+      "id": "user/anschaf/oxycodone-dmd/6c6a80e5",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/oxycodone-dmd/6c6a80e5/",
+      "downloaded_at": "2023-11-23 14:13:49.516985Z",
+      "sha": "4a4effdc20cb4ad72cb3faed6ab3b2406b64aafe"
+    },
+    "user-anschaf-tramadol-dmd.csv": {
+      "id": "user/anschaf/tramadol-dmd/535b0db0",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/tramadol-dmd/535b0db0/",
+      "downloaded_at": "2023-11-23 14:13:50.236737Z",
+      "sha": "09f0e28cbf31dd385f2fc1b033cc54b733967308"
     }
   }
 }

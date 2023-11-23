@@ -39,6 +39,22 @@ nsaid_codes = codelist_from_csv(
     column = "code"
 )
 
+oxycodone_codes = codelist_from_csv(
+    "codelists/user-anschaf-oxycodone-dmd.csv",
+    column = "code"
+)
+
+codeine_codes = codelist_from_csv(
+    "codelists/user-anschaf-codeine-for-pain-dmd.csv",
+    column = "code"
+)
+
+
+tramadol_codes = codelist_from_csv(
+    "codelists/user-anschaf-tramadol-dmd.csv",
+    column = "code"
+)
+
 # Demographics
 ethnicity_codes_16 = codelist_from_csv(
     "codelists/opensafely-ethnicity-snomed-0removed.csv",
@@ -107,5 +123,10 @@ diabetes_codes = codelist_from_csv(
 
 copd_codes = codelist_from_csv(
   "codelists/opensafely-chronic-respiratory-disease.csv",
+  column = "CTV3ID"
+)
+
+ra_codes = codelist_from_csv(
+  "codelists/opensafely-rheumatoid-arthritis.csv",
   column = "CTV3ID"
 )
