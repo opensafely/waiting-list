@@ -79,7 +79,8 @@ categorical_dist <- rbind(
     cat_dist(liver, "Liver"),
     cat_dist(ckd, "CKD"),
     cat_dist(osteoarthritis, "Osteoarthritis"),
-    cat_dist(depress_or_gad, "Depression/GAD"),
+    cat_dist(depress_or_gad, "Depression/GAD"),   
+    cat_dist(ra, "Rheumatoid arthritis"),
     
     cat_dist(died_during_wl, "Died while on WL")
   ) %>%

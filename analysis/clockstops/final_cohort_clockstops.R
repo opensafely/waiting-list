@@ -78,6 +78,18 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     hi_opioid_wait = (hi_opioid_wait_count > 0),
                     hi_opioid_post = (hi_opioid_post_count > 0),
                     
+                    codeine_pre = (codeine_pre_count > 0),
+                    codeine_wait = (codeine_wait_count > 0),
+                    codeine_post = (codeine_post_count > 0),
+                    
+                    tramadol_pre = (tramadol_pre_count > 0),
+                    tramadol_wait = (tramadol_wait_count > 0),
+                    tramadol_post = (tramadol_post_count > 0),
+                    
+                    oxycodone_pre = (oxycodone_pre_count > 0),
+                    oxycodone_wait = (oxycodone_wait_count > 0),
+                    oxycodone_post = (oxycodone_post_count > 0),
+                    
                     gabapentinoid_pre = (gabapentinoid_pre_count > 0),
                     gabapentinoid_wait = (gabapentinoid_wait_count > 0),
                     gabapentinoid_post = (gabapentinoid_post_count > 0),
@@ -103,7 +115,6 @@ write.csv(full, file = here::here("output", "data", "cohort_full_clockstops.csv.
 
 
 ####################################################
-
 
 # Restrict to people with trauma/orthopaedic surgery
 ortho <- full %>%
