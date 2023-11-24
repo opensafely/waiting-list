@@ -196,7 +196,7 @@ summ <- function(wait_time, var, med, time) {
     mutate(med_gp = med, time = time,
            total_rx_round = rounding(total_rx),
            pdays_round = rounding(person_days), 
-           rate_pmonth = total_rx_round / person_days * 100 * 30) %>%
+           rate_pmonth = total_rx_round / pdays_round * 100 * 30) %>%
     ungroup() %>%
     dplyr::select(!c(total_rx, person_days))
 }

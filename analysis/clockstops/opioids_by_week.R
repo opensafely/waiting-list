@@ -70,7 +70,7 @@ opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
     
     rate = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate),
     rate_lci = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate_lci),
-    rate_uci = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate_lci)
+    rate_uci = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate_uci)
   )%>% 
   dplyr::select(!c(interval_start, numerator, measure)) %>%
   arrange(opioid_type, var, category, period, week)
