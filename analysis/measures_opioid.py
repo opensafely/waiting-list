@@ -198,7 +198,7 @@ measures.define_measure(
     # Denominator = only include people whose RTT end date and study end date are after interval end date
     #   IOW, exclude people who are no longer on waiting list or have been censored
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(104).starting_on("2000-01-01")
+    intervals=weeks(52).starting_on("2000-01-01")
     )
 
 # Prescribing post WL
@@ -235,7 +235,7 @@ measures.define_measure(
     name="count_wait_prior",
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(104).starting_on("2000-01-01"),
+    intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx}
     )
 
@@ -263,7 +263,7 @@ measures.define_measure(
     name="count_wait_age",
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(104).starting_on("2000-01-01"),
+    intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"age_group": age_group}
     )
 
@@ -291,7 +291,7 @@ measures.define_measure(
     name="count_wait_imd",
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(104).starting_on("2000-01-01"),
+    intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"imd_decile": imd10}
     )
 
@@ -319,7 +319,7 @@ measures.define_measure(
     name="count_wait_sex",
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(104).starting_on("2000-01-01"),
+    intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"sex": sex}
     )
 
