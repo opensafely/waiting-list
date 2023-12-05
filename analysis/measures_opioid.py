@@ -68,11 +68,11 @@ all_opioid_rx.tmp_wait_date = tmp_date + days((all_opioid_rx.date - rtt_start_da
 # Standardise Rx dates relative to RTT end date for post-WL prescribing
 all_opioid_rx.tmp_post_date = tmp_date + days((all_opioid_rx.date - (rtt_end_date + days(1))).days)
 
-# Standardise Rx dates relative to RTT start date for pre-WL prescribing (note: dates count backwards from start date)
+# Standardise Rx dates relative to RTT start date for pre-WL prescribing
 all_opioid_rx.tmp_pre_date = tmp_date + days((all_opioid_rx.date - (rtt_start_date - days(182))).days)
 
 
-### Grouping/stratification variables (Final list TBD) ###
+### Stratification variables (Final list TBD) ###
 prior_opioid_rx = all_opioid_rx.where(
         all_opioid_rx.date.is_on_or_between(rtt_start_date - days(182), rtt_start_date - days(1))
     ).exists_for_patient()
@@ -121,8 +121,8 @@ cancer = clinical_events.where(
         clinical_events.date.is_on_or_between(rtt_start_date - years(5), rtt_start_date)
     ).exists_for_patient()
 
-## Demographics
 
+## Demographics
 
 age = patients.age_on(rtt_start_date)
 age_group = case(
