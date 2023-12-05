@@ -178,7 +178,7 @@ imd10 = case(
 
 measures = create_measures()
 
-measures.configure_dummy_data(population_size=5000)
+measures.configure_dummy_data(population_size=10000)
 
 # Denominator = everyone on the waiting list with non-missing age/sex, 
 #   and whose end date (i.e. death or deregistration) is after the end of the interval
@@ -289,7 +289,7 @@ measures.define_measure(
     group_by={"imd_decile": imd10}
     )
 
-# Prescribing during WL - stratified by prior opioid Rx
+# Prescribing during WL - stratified by imd
 measures.define_measure(
     name="count_wait_imd",
     numerator=count_opioid_wait,
@@ -298,7 +298,7 @@ measures.define_measure(
     group_by={"imd_decile": imd10}
     )
 
-# Prescribing post WL - stratified by prior opioid Rx
+# Prescribing post WL - stratified by imd
 measures.define_measure(
     name="count_post_imd",
     numerator=count_opioid_post,
@@ -308,7 +308,7 @@ measures.define_measure(
     )
 
     
-# Prescribing pre WL - stratified by ethnicity
+# Prescribing pre WL - stratified by sex
 measures.define_measure(
     name="count_pre_sex",
     numerator=count_opioid_pre,
@@ -317,7 +317,7 @@ measures.define_measure(
     group_by={"sex": sex}
     )
 
-# Prescribing during WL - stratified by prior opioid Rx
+# Prescribing during WL - stratified by sex
 measures.define_measure(
     name="count_wait_sex",
     numerator=count_opioid_wait,
@@ -326,7 +326,7 @@ measures.define_measure(
     group_by={"sex": sex}
     )
 
-# Prescribing post WL - stratified by prior opioid Rx
+# Prescribing post WL - stratified by sex
 measures.define_measure(
     name="count_post_sex",
     numerator=count_opioid_post,
