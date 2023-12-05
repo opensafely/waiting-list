@@ -178,7 +178,7 @@ imd10 = case(
 
 measures = create_measures()
 
-measures.configure_dummy_data(population_size=10000)
+measures.configure_dummy_data(population_size=5000)
 
 # Denominator = everyone on the waiting list with non-missing age/sex, 
 #   and whose end date (i.e. death or deregistration) is after the end of the interval
