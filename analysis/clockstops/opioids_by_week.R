@@ -38,16 +38,14 @@ any_opioid_rx <- read_csv(here::here("output", "measures", "measures_any_opioid.
                           col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
               mutate(opioid_type = "Any opioid",
               
-              category = coalesce(as.character(prior_opioid_rx), imd_decile, age_group,
-                                  ethnicity, sex), 
+              category = coalesce(as.character(prior_opioid_rx), imd_decile, age_group, sex), 
               category = ifelse(is.na(category), "Full cohort", category),
       
               var = ifelse(!is.na(prior_opioid_rx), "Prior opioid Rx",
                            ifelse(!is.na(imd_decile), "IMD decile",
                                   ifelse(!is.na(age_group), "Age group",
-                                         ifelse(!is.na(ethnicity), "Ethnicity",
                                                 ifelse(!is.na(sex), "Sex",
-                                                    "Full cohort")))))
+                                                    "Full cohort"))))
               )  %>%
               dplyr::select(c(numerator, denominator, opioid_type, var, category,
                               interval_start, measure)) 
@@ -59,18 +57,7 @@ opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
     period = ifelse(grepl("pre", measure), "Pre-WL", 
                     ifelse(grepl("post", measure), "Post-WL", "During WL")),
     
-    # Rounding
-    opioid_rx = rounding(numerator),
-    denominator = rounding(denominator),
-    
-    # Rx per 100 people
-    rate = opioid_rx / denominator * 100,
-    rate_lci = rate - (1.96 * sqrt( ( rate * (100 - rate) ) / denominator)),
-    rate_uci = rate + (1.96 * sqrt( ( rate * (100 - rate) ) / denominator)),
-    
-    rate = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate),
-    rate_lci = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate_lci),
-    rate_uci = ifelse((var == "Prior opioid Rx" & category == FALSE & period == "Pre-WL"), 0, rate_uci)
+    opioid_rx = numerator
   )%>% 
   dplyr::select(!c(interval_start, numerator, measure)) %>%
   arrange(opioid_type, var, category, period, week)
