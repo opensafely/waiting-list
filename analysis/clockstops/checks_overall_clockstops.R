@@ -32,7 +32,7 @@ overall <- read_csv(here::here("output", "measures", "measures_checks.csv"),
                        col_types = cols(interval_start = col_date(format="%Y-%m-%d"),
                                         interval_end = col_date(format="%Y-%m-%d"))) %>%
   rename(month = interval_start) %>%
-  mutate(count = rounding(numerator),
+  mutate(count = numerator,
          admit_type = ifelse(grepl("_not_admit_", measure, fixed = TRUE), "Not admitted", 
                              ifelse(grepl("_admit_", measure, fixed = TRUE), "Admitted",
                                     "Total")),
