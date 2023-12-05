@@ -5,7 +5,7 @@
 #   for orthopaedic surgery only
 ###########################################################
 
-from ehrql import INTERVAL, Measures, weeks, days, minimum_of, years, when, case
+from ehrql import INTERVAL, create_measures, weeks, days, minimum_of, years, when, case
 from ehrql.tables.beta.tpp import (
     patients, 
     practice_registrations,
@@ -15,6 +15,7 @@ from ehrql.tables.beta.tpp import (
     wl_clockstops)
 
 import codelists
+
 
 ##########
 
@@ -82,19 +83,19 @@ prior_opioid_rx = all_opioid_rx.where(
 # Num Rx during waiting list (up to 1 year)
 count_opioid_wait = all_opioid_rx.where(
                 all_opioid_rx.dmd_code.is_in(codelist)
-                & all_opioid_rx.tmp_wait_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+                & all_opioid_rx.tmp_wait_date.is_during(INTERVAL)
             ).count_for_patient()
 
 # Num Rx post waiting list (up to 6 months)
 count_opioid_post = all_opioid_rx.where(
                 all_opioid_rx.dmd_code.is_in(codelist)
-                & all_opioid_rx.tmp_post_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+                & all_opioid_rx.tmp_post_date.is_during(INTERVAL)
             ).count_for_patient()
 
 # Num Rx pre waiting list (up to 6 months)
 count_opioid_pre = all_opioid_rx.where(
                 all_opioid_rx.dmd_code.is_in(codelist)
-                & all_opioid_rx.tmp_pre_date.is_on_or_between(INTERVAL.start_date, INTERVAL.end_date)
+                & all_opioid_rx.tmp_pre_date.is_during(INTERVAL)
             ).count_for_patient()
 
 
@@ -153,29 +154,31 @@ imd10 = case(
 )
 
 # Ethnicity 6 categories
-ethnicity6 = clinical_events.where(
-        clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
-    ).where(
-        clinical_events.date.is_on_or_before(rtt_start_date)
-    ).sort_by(
-        clinical_events.date
-    ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_6)
+# ethnicity6 = clinical_events.where(
+#         clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
+#     ).where(
+#         clinical_events.date.is_on_or_before(rtt_start_date)
+#     ).sort_by(
+#         clinical_events.date
+#     ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_6)
 
-ethnicity6 = case(
-    when(ethnicity6 == "1").then("White"),
-    when(ethnicity6 == "2").then("Mixed"),
-    when(ethnicity6 == "3").then("South Asian"),
-    when(ethnicity6 == "4").then("Black"),
-    when(ethnicity6 == "5").then("Other"),
-    when(ethnicity6 == "6").then("Not stated"),
-    default="Unknown"
-)
+# ethnicity6 = case(
+#     when(ethnicity6 == "1").then("White"),
+#     when(ethnicity6 == "2").then("Mixed"),
+#     when(ethnicity6 == "3").then("South Asian"),
+#     when(ethnicity6 == "4").then("Black"),
+#     when(ethnicity6 == "5").then("Other"),
+#     when(ethnicity6 == "6").then("Not stated"),
+#     default="Unknown"
+# )
 
 
 ######
 
 
-measures = Measures()
+measures = create_measures()
+
+measures.configure_dummy_data(population_size=5000)
 
 # Denominator = everyone on the waiting list with non-missing age/sex, 
 #   and whose end date (i.e. death or deregistration) is after the end of the interval
