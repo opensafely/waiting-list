@@ -70,7 +70,6 @@ all_opioid_rx.tmp_post_date = tmp_date + days((all_opioid_rx.date - (rtt_end_dat
 # Standardise Rx dates relative to RTT start date for pre-WL prescribing 
 all_opioid_rx.tmp_pre_date = tmp_date + days((all_opioid_rx.date - (rtt_start_date - days(182))).days)
 
-
 ### Prescribing variables for numerator ####
 
 # Num Rx during waiting list (up to 1 year)
@@ -175,8 +174,6 @@ imd10 = case(
 
 
 measures = create_measures()
-
-#measures.configure_dummy_data(population_size=5000)
 
 # Denominator 
 denominator = (        
