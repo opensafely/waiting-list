@@ -33,7 +33,19 @@ dat <- read_csv(here::here("output", "data", "cohort_ortho_openpathways.csv.gz")
                     dod = col_date(format="%Y-%m-%d"),
                     end_date = col_date(format="%Y-%m-%d"),
                     rtt_start_month =  col_date(format="%Y-%m-%d")))
-                       
+
+exclude <- rbind(
+  cat_dist(cancer, "Cancer"),
+  cat_dist(priority_type, "Priority type")
+) %>% 
+  mutate(source = "clockstops", cohort = "ortho") 
+
+write.csv(exclude, here::here("output", "openpathways", "exclude_ortho.csv"),
+          row.names = FALSE)
+
+dat <- dat %>%
+  subset(cancer == FALSE & priority_type == "routine")
+
 
 ############## Plot start/end dates by month #################
 
