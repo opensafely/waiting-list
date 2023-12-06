@@ -224,10 +224,10 @@ comorb_codes = {
     }
 
 
-# Comorbidities in past 6 mos
+# Comorbidities in past 2 years
 
-clin_events_6mo = clinical_events.where(
-        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - days(183), dataset.rtt_start_date)
+clin_events_2yrs = clinical_events.where(
+        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - years(2), dataset.rtt_start_date)
     )
 
 for comorb in comorbidities:
@@ -235,16 +235,16 @@ for comorb in comorbidities:
     if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis","ra"]:
 
         ctv3_name = comorb
-        ctv3_query = clin_events_6mo.where(
-                clin_events_6mo.ctv3_code.is_in(comorb_codes[comorb])
+        ctv3_query = clin_events_2yrs.where(
+                clin_events_2yrs.ctv3_code.is_in(comorb_codes[comorb])
             ).exists_for_patient()
         setattr(dataset, ctv3_name, ctv3_query)
     
     else:
 
         snomed_name = comorb
-        snomed_query = clin_events_6mo.where(
-                clin_events_6mo.snomedct_code.is_in(comorb_codes[comorb])
+        snomed_query = clin_events_2yrs.where(
+                clin_events_2yrs.snomedct_code.is_in(comorb_codes[comorb])
             ).exists_for_patient()
         setattr(dataset, snomed_name, snomed_query)
 

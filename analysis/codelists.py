@@ -24,6 +24,7 @@ hi_opioid_codes = codelist_from_csv(
     "codelists/opensafely-high-dose-long-acting-opioids-openprescribing-dmd.csv",
     column = "code"
 )
+
 antidepressant_codes = codelist_from_csv(
     "codelists/user-anschaf-antidepressants-dmd.csv",
     column = "code"
@@ -48,7 +49,6 @@ codeine_codes = codelist_from_csv(
     "codelists/user-anschaf-codeine-for-pain-dmd.csv",
     column = "code"
 )
-
 
 tramadol_codes = codelist_from_csv(
     "codelists/user-anschaf-tramadol-dmd.csv",
