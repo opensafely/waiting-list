@@ -44,6 +44,7 @@ actions:
   measures_any_opioid:
     run: ehrql:v0 generate-measures analysis/measures_opioid.py 
       --output output/measures/measures_any_opioid.csv
+      --dummy-data-file dummy/dummy_any_opioid.csv
       --
       --codelist "opioid_codes"
     outputs:
