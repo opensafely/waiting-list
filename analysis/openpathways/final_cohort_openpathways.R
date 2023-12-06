@@ -71,7 +71,7 @@ write.csv(full, file = here::here("output", "data", "cohort_full_openpathways.cs
 
 # Restrict to people with trauma/orthopaedic surgery
 ortho <- full %>%
-  subset(ortho_surgery == TRUE & cancer == FALSE)
+  subset(ortho_surgery == TRUE)
 
 ## Save as final
 write.csv(ortho, file = here::here("output", "data", "cohort_ortho_openpathways.csv.gz"),
