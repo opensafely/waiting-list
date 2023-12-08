@@ -68,7 +68,7 @@ ggsave(here::here("output", "clockstops", "opioid_by_week_group_v1.png"), dpi = 
 
 ggplot(subset(opioid_rx,
               num_weeks %in% c(4,8,12,24,36,48))) +
-  geom_line(aes(x = weeks, y = rate, group = num_weeks, col = num_weeks), size =1) +
+  geom_line(aes(x = week, y = rate, group = num_weeks, col = num_weeks), size =1) +
   #geom_ribbon( aes(ymin = rate_lci, ymax = rate_uci, x = week2, 
   #                fill = period), alpha = 0.15) +
   # scale_color_manual(values = c("dodgerblue3", "maroon", "goldenrod1")) +
