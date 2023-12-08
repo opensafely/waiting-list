@@ -5,13 +5,12 @@
 #   for orthopaedic surgery only
 ###########################################################
 
-from ehrql import INTERVAL, create_measures, weeks, days, minimum_of, years, when, case
+from ehrql import INTERVAL, create_measures, weeks, days, minimum_of, years
 from ehrql.tables.beta.tpp import (
     patients, 
     practice_registrations,
     medications,
     clinical_events,
-    addresses,
     wl_clockstops)
 
 import codelists
@@ -53,6 +52,9 @@ all_opioid_rx = medications.where(
 # Standardise Rx dates relative to RTT start date for prescribing during WL 
 all_opioid_rx.tmp_wait_date = tmp_date + days((all_opioid_rx.date - rtt_start_date).days)
 
+# Standardise Rx dates relative to RTT end date for post-WL prescribing
+all_opioid_rx.tmp_post_date = tmp_date + days((all_opioid_rx.date - (rtt_end_date + days(1))).days)
+
 ### Prescribing variables for numerator ####
 
 # Num Rx during waiting list (up to 1 year)
@@ -61,6 +63,11 @@ count_opioid_wait = all_opioid_rx.where(
                 & all_opioid_rx.tmp_wait_date.is_during(INTERVAL)
             ).count_for_patient()
 
+# Num Rx post waiting list (up to 6 months)
+count_opioid_post = all_opioid_rx.where(
+                all_opioid_rx.dmd_code.is_in(codelists.opioid_codes)
+                & all_opioid_rx.tmp_post_date.is_during(INTERVAL)
+            ).count_for_patient()
 
 ## Censoring date
 registrations = practice_registrations.where(
@@ -73,6 +80,7 @@ end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(
 
 # Standardise end date relative to RTT start and end dates
 tmp_end_date_rtt_start = tmp_date + days((end_date - rtt_start_date).days)
+tmp_end_date_rtt_end = tmp_date + days((end_date - rtt_end_date).days)
 
 # Standardise RTT end date to RTT start date
 tmp_rtt_end = tmp_date + days((rtt_end_date - rtt_start_date).days)
@@ -132,5 +140,3 @@ measures.define_measure(
     intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"num_weeks": num_weeks}
     )
-
-

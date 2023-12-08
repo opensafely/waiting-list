@@ -62,13 +62,21 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_hi_opioid.csv
       
-  measures_opioid_weeks:
-    run: ehrql:v0 generate-measures analysis/measures_opioid_weeks.py 
-      --output output/measures/measures_opioid_weeks.csv
-      --dummy-data-file dummy/dummy_opioid_weeks.csv
+  measures_opioid_weeks_during:
+    run: ehrql:v0 generate-measures analysis/measures_opioid_weeks_during.py 
+      --output output/measures/measures_opioid_weeks_during.csv
+      --dummy-data-file dummy/dummy_opioid_weeks_during.csv
     outputs:
       moderately_sensitive:
-        measure_csv: output/measures/measures_opioid_weeks.csv
+        measure_csv: output/measures/measures_opioid_weeks_during.csv
+
+  measures_opioid_weeks_post:
+    run: ehrql:v0 generate-measures analysis/measures_opioid_weeks_post.py 
+      --output output/measures/measures_opioid_weeks_post.csv
+      --dummy-data-file dummy/dummy_opioid_weeks_post.csv
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_opioid_weeks_post.csv
 
   opioids_by_week:
    run: r:latest analysis/clockstops/opioids_by_week.R
@@ -80,7 +88,7 @@ actions:
   
   opioids_by_week_group:
    run: r:latest analysis/clockstops/opioids_by_week_group.R
-   needs: [measures_opioid_weeks]
+   needs: [measures_opioid_weeks_during, measures_opioid_weeks_post]
    outputs:
       moderately_sensitive:
         data: output/clockstops/opioid_by_week_group.csv
