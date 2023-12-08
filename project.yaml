@@ -62,6 +62,14 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_hi_opioid.csv
       
+  measures_opioid_weeks:
+    run: ehrql:v0 generate-measures analysis/measures_opioid_weeks.py 
+      --output output/measures/measures_opioid_weeks.csv
+      --dummy-data-file dummy/dummy_opioid_weeks.csv
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_opioid_weeks.csv
+
   opioids_by_week:
    run: r:latest analysis/clockstops/opioids_by_week.R
    needs: [measures_any_opioid, measures_hi_opioid]
@@ -69,6 +77,14 @@ actions:
       moderately_sensitive:
         data: output/clockstops/opioid*.csv
       #  plots: output/clockstops/plo*.png
+  
+  opioids_by_week_group:
+   run: r:latest analysis/clockstops/opioids_by_week_group.R
+   needs: [measures_opioid_weeks]
+   outputs:
+      moderately_sensitive:
+        data: output/clockstops/opioid_by_week_group.csv
+        plots: output/clockstops/opioid_by_week_group*.png
         
        
   ##### Analysis - closed pathways #####
@@ -146,7 +162,6 @@ actions:
    needs: [final_cohort_openpathways]
    outputs:
       moderately_sensitive:
-        data0: output/openpathways/exclude_ortho.csv
         data1: output/openpathways/rtt_dates_full.csv
         data2: output/openpathways/cat_var_dist_full.csv
         data3: output/openpathways/wait_time_pcent_full.csv
@@ -160,6 +175,7 @@ actions:
    needs: [final_cohort_openpathways]
    outputs:
       moderately_sensitive:
+        data0: output/openpathways/exclude_ortho.csv
         data1: output/openpathways/rtt_dates_ortho.csv
         data2: output/openpathways/cat_var_dist_ortho.csv
         data3: output/openpathways/wait_time_pcent_ortho.csv
