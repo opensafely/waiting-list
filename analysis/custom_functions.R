@@ -157,7 +157,8 @@ wait_gp <- function(gp, name){
 cat_dist <- function(variable, name) {
   
   dat %>%
-    group_by({{ variable }}) %>%
+    mutate(total = n()) %>%
+    group_by({{ variable }}, total) %>%
     summarise(count = n()) %>%
     mutate(
       var = name,
