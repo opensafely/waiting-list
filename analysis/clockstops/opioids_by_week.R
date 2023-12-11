@@ -28,11 +28,11 @@ dir_create(here::here("output", "measures"), showWarnings = FALSE, recurse = TRU
 
 
 # Load data
-hi_opioid_rx <- read_csv(here::here("output", "measures", "measures_hi_opioid.csv"),
-                         col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
-              mutate(opioid_type = "High dose opioid", var = "Full cohort", category = "Full cohort") %>%
-              dplyr::select(c(numerator, denominator, opioid_type, var, category,
-                              interval_start,measure)) 
+# hi_opioid_rx <- read_csv(here::here("output", "measures", "measures_hi_opioid.csv"),
+#                          col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
+#               mutate(opioid_type = "High dose opioid", var = "Full cohort", category = "Full cohort") %>%
+#               dplyr::select(c(numerator, denominator, opioid_type, var, category,
+#                               interval_start,measure)) 
 
 any_opioid_rx <- read_csv(here::here("output", "measures", "measures_any_opioid.csv"),
                           col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
@@ -50,7 +50,7 @@ any_opioid_rx <- read_csv(here::here("output", "measures", "measures_any_opioid.
               dplyr::select(c(numerator, denominator, opioid_type, var, category,
                               interval_start, measure)) 
 
-opioid_rx <- rbind(any_opioid_rx, hi_opioid_rx) %>%
+opioid_rx <- any_opioid_rx %>%
   mutate(
     # Convert interval start date to number of weeks 
     week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
