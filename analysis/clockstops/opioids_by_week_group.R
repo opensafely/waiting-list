@@ -42,7 +42,7 @@ opioid_rx <- rbind(
     opioid_rx = numerator,
     rate = opioid_rx / denominator * 100
   ) %>% 
-  dplyr::select(!c(interval_start, numerator, ratio, measure, tmp_week)) %>%
+  dplyr::select(!c(interval_start, interval_end, numerator, ratio, measure, tmp_week)) %>%
   arrange(num_weeks, week)
 
 write.csv(opioid_rx, file = here::here("output", "clockstops", "opioid_by_week_group.csv"),
