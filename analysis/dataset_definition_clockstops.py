@@ -156,9 +156,11 @@ ethnicity6 = clinical_events.where(
         clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
     ).where(
         clinical_events.date.is_on_or_before(dataset.rtt_start_date)
+        & clinical_events.snomedct_code.is_not_null()
     ).sort_by(
         clinical_events.date
     ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_6)
+
 
 dataset.ethnicity6 = case(
     when(ethnicity6 == "1").then("White"),
@@ -227,7 +229,7 @@ comorb_codes = {
 # Comorbidities in past 2 years
 
 clin_events_2yrs = clinical_events.where(
-        clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - years(2), dataset.rtt_start_date)
+        clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(2), dataset.rtt_start_date)
     )
 
 for comorb in comorbidities:
@@ -249,10 +251,8 @@ for comorb in comorbidities:
         setattr(dataset, snomed_name, snomed_query)
 
 
-# ### TO ADD MORE? ###
 
-
-# #### DEFINE POPULATION ####
+#### DEFINE POPULATION ####
 
 dataset.define_population(
     (dataset.age >= 18) 
