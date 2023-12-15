@@ -5,7 +5,7 @@
 
 
 from ehrql import create_dataset, case, when, days, years, minimum_of
-from ehrql.tables.beta.tpp import (
+from ehrql.tables.tpp import (
     patients, 
     medications, 
     addresses,

@@ -9,7 +9,7 @@
 # --- IMPORT STATEMENTS ---
 
 ## Import code building blocks from cohort extractor package
-from databuilder.ehrql import codelist_from_csv
+from ehrql import codelist_from_csv
 
  
 # CODELISTS 
@@ -24,6 +24,14 @@ hi_opioid_codes = codelist_from_csv(
     "codelists/opensafely-high-dose-long-acting-opioids-openprescribing-dmd.csv",
     column = "code"
 )
+
+low_long_opioid_codes = codelist_from_csv(
+    "codelists/opensafely-non-high-dose-long-acting-opioids-openprescribing-dmd.csv",
+    column = "code"
+)
+
+long_opioid_codes = (hi_opioid_codes + low_long_opioid_codes)
+short_opioid_codes = set(opioid_codes) - set(long_opioid_codes)
 
 antidepressant_codes = codelist_from_csv(
     "codelists/user-anschaf-antidepressants-dmd.csv",
@@ -54,6 +62,10 @@ tramadol_codes = codelist_from_csv(
     "codelists/user-anschaf-tramadol-dmd.csv",
     column = "code"
 )
+
+weak_opioid_codes = (codeine_codes + tramadol_codes)
+strong_opioid_codes = set(opioid_codes) - set(weak_opioid_codes)
+
 
 # Demographics
 ethnicity_codes_16 = codelist_from_csv(

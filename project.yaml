@@ -9,25 +9,25 @@ actions:
 
   # Closed (completed) RTT pathways
   generate_dataset_clockstops:
-    run: ehrql:v0 generate-dataset analysis/dataset_definition_clockstops.py 
+    run: ehrql:v1 generate-dataset analysis/dataset_definition_clockstops.py 
       --output output/data/dataset_clockstops.csv.gz
     outputs:
       highly_sensitive:
         cohort: output/data/dataset_clockstops.csv.gz  
 
   # Open (incomplete) RTT pathways
-  generate_dataset_openpathways:
-    run: ehrql:v0 generate-dataset analysis/dataset_definition_openpathways.py 
-      --output output/data/dataset_openpathways.csv.gz
-    outputs:
-      highly_sensitive:
-        cohort: output/data/dataset_openpathways.csv.gz  
+  # generate_dataset_openpathways:
+  #   run: ehrql:v1 generate-dataset analysis/dataset_definition_openpathways.py 
+  #     --output output/data/dataset_openpathways.csv.gz
+  #   outputs:
+  #     highly_sensitive:
+  #       cohort: output/data/dataset_openpathways.csv.gz  
 
   
   #### Check number of pathways over time ####
 
   measures_checks:
-    run: ehrql:v0 generate-measures analysis/measures_checks.py 
+    run: ehrql:v1 generate-measures analysis/measures_checks.py 
       --output output/measures/measures_checks.csv
     outputs:
       moderately_sensitive:
@@ -44,26 +44,52 @@ actions:
   ##### Opioid measures - closed pathways #####
 
   measures_any_opioid:
-    run: ehrql:v0 generate-measures analysis/measures_opioid.py 
+    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
       --output output/measures/measures_any_opioid.csv
-      --dummy-data-file dummy/dummy_any_opioid.csv
       --
       --codelist "opioid_codes"
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_any_opioid.csv
 
-  measures_hi_opioid:
-    run: ehrql:v0 generate-measures analysis/measures_opioid.py 
-      --output output/measures/measures_hi_opioid.csv
+  measures_long_opioid:
+    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+      --output output/measures/measures_long_opioid.csv
       --
-      --codelist "hi_opioid_codes"
+      --codelist "long_opioid_codes"
     outputs:
       moderately_sensitive:
-        measure_csv: output/measures/measures_hi_opioid.csv
+        measure_csv: output/measures/measures_long_opioid.csv
+
+  measures_short_opioid:
+    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+      --output output/measures/measures_short_opioid.csv
+      --
+      --codelist "short_opioid_codes"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_short_opioid.csv
+  
+  measures_weak_opioid:
+    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+      --output output/measures/measures_weak_opioid.csv
+      --
+      --codelist "weak_opioid_codes"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_weak_opioid.csv
+
+  measures_strong_opioid:
+    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+      --output output/measures/measures_strong_opioid.csv
+      --
+      --codelist "strong_opioid_codes"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_strong_opioid.csv
       
   measures_opioid_weeks_during:
-    run: ehrql:v0 generate-measures analysis/measures_opioid_weeks_during.py 
+    run: ehrql:v1 generate-measures analysis/measures_opioid_weeks_during.py 
       --output output/measures/measures_opioid_weeks_during.csv
       --dummy-data-file dummy/dummy_opioid_weeks_during.csv
     outputs:
@@ -71,20 +97,20 @@ actions:
         measure_csv: output/measures/measures_opioid_weeks_during.csv
 
   measures_opioid_weeks_post:
-    run: ehrql:v0 generate-measures analysis/measures_opioid_weeks_post.py 
+    run: ehrql:v1 generate-measures analysis/measures_opioid_weeks_post.py 
       --output output/measures/measures_opioid_weeks_post.csv
       --dummy-data-file dummy/dummy_opioid_weeks_post.csv
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_opioid_weeks_post.csv
 
-  opioids_by_week:
-   run: r:latest analysis/clockstops/opioids_by_week.R
-   needs: [measures_any_opioid, measures_hi_opioid]
-   outputs:
-      moderately_sensitive:
-        data: output/clockstops/opioid*.csv
-      #  plots: output/clockstops/plo*.png
+  # opioids_by_week:
+  #  run: r:latest analysis/clockstops/opioids_by_week.R
+  #  needs: [measures_any_opioid, measures_hi_opioid]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data: output/clockstops/opioid*.csv
+  #     #  plots: output/clockstops/plo*.png
   
   opioids_by_week_group:
    run: r:latest analysis/clockstops/opioids_by_week_group.R
@@ -110,23 +136,25 @@ actions:
    outputs:
       highly_sensitive:
         cohort: output/data/cohort*.csv.gz
-
-  full_stats_clockstops:
-   run: r:latest analysis/clockstops/full_stats_clockstops.R
-   needs: [final_cohort_clockstops]
-   outputs:
       moderately_sensitive:
-        data1: output/clockstops/rtt_dates_full.csv
-        data2: output/clockstops/cat_var_dist_full.csv
-        data3: output/clockstops/wait_time_pcent_full.csv
-        data4: output/clockstops/wait_time_full.csv
-        data5: output/clockstops/med_by_period_full.csv
-        data6: output/clockstops/wait_by_group_full.csv
-        plot1: output/clockstops/wait_time_full.png
-        plot2: output/clockstops/rtt_dates_full.png
+        exclusion: output/clockstops/cohort_full_exclusions.csv
+        
+  # full_stats_clockstops:
+  #  run: r:latest analysis/clockstops/full_stats_clockstops.R
+  #  needs: [final_cohort_clockstops]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data1: output/clockstops/rtt_dates_full.csv
+  #       data2: output/clockstops/cat_var_dist_full.csv
+  #       data3: output/clockstops/wait_time_pcent_full.csv
+  #       data4: output/clockstops/wait_time_full.csv
+  #       data5: output/clockstops/med_by_period_full.csv
+  #       data6: output/clockstops/wait_by_group_full.csv
+  #       plot1: output/clockstops/wait_time_full.png
+  #       plot2: output/clockstops/rtt_dates_full.png
 
-  ortho_stats_clockstops:
-   run: r:latest analysis/clockstops/ortho_stats_clockstops.R
+  ortho_stats_clockstops_priority:
+   run: r:latest analysis/clockstops/ortho_stats_clockstops_priority.R
    needs: [final_cohort_clockstops]
    outputs:
       moderately_sensitive:
@@ -137,57 +165,55 @@ actions:
         data4: output/clockstops/wait_time_ortho.csv
         data5: output/clockstops/med_by_period_ortho.csv
         data6: output/clockstops/wait_by_group_ortho.csv
-        plot1: output/clockstops/wait_time_ortho.png
-        plot2: output/clockstops/rtt_dates_ortho.png
 
-  ortho_opioid_clockstops:
-    run: r:latest analysis/clockstops/ortho_opioid_clockstops.R
-    needs: [final_cohort_clockstops]
-    outputs:
-      moderately_sensitive:
-        data1: output/clockstops/cumulative_opi.csv
-        plot1: output/clockstops/cumulative_opi.png
+  # ortho_opioid_clockstops:
+  #   run: r:latest analysis/clockstops/ortho_opioid_clockstops.R
+  #   needs: [final_cohort_clockstops]
+  #   outputs:
+  #     moderately_sensitive:
+  #       data1: output/clockstops/cumulative_opi.csv
+  #       plot1: output/clockstops/cumulative_opi.png
 
 
   ##### Analysis - open pathways #####
 
-  checks_cohort_openpathways:
-   run: r:latest analysis/openpathways/checks_cohort_openpathways.R
-   needs: [generate_dataset_openpathways]
-   outputs:
-      moderately_sensitive:
-        data: output/openpathways/chec*.csv
+  # checks_cohort_openpathways:
+  #  run: r:latest analysis/openpathways/checks_cohort_openpathways.R
+  #  needs: [generate_dataset_openpathways]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data: output/openpathways/chec*.csv
 
-  final_cohort_openpathways:
-   run: r:latest analysis/openpathways/final_cohort_openpathways.R
-   needs: [generate_dataset_openpathways]
-   outputs:
-      highly_sensitive:
-        cohort: output/data/cohor*.csv.gz
+  # final_cohort_openpathways:
+  #  run: r:latest analysis/openpathways/final_cohort_openpathways.R
+  #  needs: [generate_dataset_openpathways]
+  #  outputs:
+  #     highly_sensitive:
+  #       cohort: output/data/cohor*.csv.gz
 
-  full_stats_openpathways:
-   run: r:latest analysis/openpathways/full_stats_openpathways.R
-   needs: [final_cohort_openpathways]
-   outputs:
-      moderately_sensitive:
-        data1: output/openpathways/rtt_dates_full.csv
-        data2: output/openpathways/cat_var_dist_full.csv
-        data3: output/openpathways/wait_time_pcent_full.csv
-        data4: output/openpathways/wait_time_full.csv
-        data5: output/openpathways/wait_by_group_full.csv
-        plot1: output/openpathways/wait_time_full.png
-        plot2: output/openpathways/rtt_dates_full.png
+  # full_stats_openpathways:
+  #  run: r:latest analysis/openpathways/full_stats_openpathways.R
+  #  needs: [final_cohort_openpathways]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data1: output/openpathways/rtt_dates_full.csv
+  #       data2: output/openpathways/cat_var_dist_full.csv
+  #       data3: output/openpathways/wait_time_pcent_full.csv
+  #       data4: output/openpathways/wait_time_full.csv
+  #       data5: output/openpathways/wait_by_group_full.csv
+  #       plot1: output/openpathways/wait_time_full.png
+  #       plot2: output/openpathways/rtt_dates_full.png
 
-  ortho_stats_openpathways:
-   run: r:latest analysis/openpathways/ortho_stats_openpathways.R
-   needs: [final_cohort_openpathways]
-   outputs:
-      moderately_sensitive:
-        data0: output/openpathways/exclude_ortho.csv
-        data1: output/openpathways/rtt_dates_ortho.csv
-        data2: output/openpathways/cat_var_dist_ortho.csv
-        data3: output/openpathways/wait_time_pcent_ortho.csv
-        data4: output/openpathways/wait_time_ortho.csv
-        data5: output/openpathways/wait_by_group_ortho.csv
-        plot1: output/openpathways/wait_time_ortho.png
-        plot2: output/openpathways/rtt_dates_ortho.png
+  # ortho_stats_openpathways:
+  #  run: r:latest analysis/openpathways/ortho_stats_openpathways.R
+  #  needs: [final_cohort_openpathways]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data0: output/openpathways/exclude_ortho.csv
+  #       data1: output/openpathways/rtt_dates_ortho.csv
+  #       data2: output/openpathways/cat_var_dist_ortho.csv
+  #       data3: output/openpathways/wait_time_pcent_ortho.csv
+  #       data4: output/openpathways/wait_time_ortho.csv
+  #       data5: output/openpathways/wait_by_group_ortho.csv
+  #       plot1: output/openpathways/wait_time_ortho.png
+  #       plot2: output/openpathways/rtt_dates_ortho.png

@@ -7,7 +7,7 @@
 ###########################################################
 
 from ehrql import INTERVAL, Measures, months
-from ehrql.tables.beta.tpp import (
+from ehrql.tables.tpp import (
     patients, 
     wl_clockstops)
 
@@ -86,6 +86,7 @@ for code in trt_func:
 ######
 
 measures = Measures()
+measures.configure_dummy_data(population_size=5000)
 
 denominator = (        
         (patients.age_on(INTERVAL.start_date) >= 0) 

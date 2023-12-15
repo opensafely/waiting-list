@@ -21,4 +21,4 @@ opensafely/rheumatoid-arthritis/2020-05-12/
 user/anschaf/codeine-for-pain-dmd/3a4b9a7b/
 user/anschaf/oxycodone-dmd/6c6a80e5/
 user/anschaf/tramadol-dmd/535b0db0/
-
+opensafely/non-high-dose-long-acting-opioids-openprescribing-dmd/06d7c2e1/

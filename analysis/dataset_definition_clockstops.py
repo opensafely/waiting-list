@@ -5,7 +5,7 @@
 
 
 from ehrql import create_dataset, case, when, days, years, minimum_of
-from ehrql.tables.beta.tpp import (
+from ehrql.tables.tpp import (
     patients, 
     medications, 
     addresses,
@@ -75,7 +75,6 @@ dataset.censor_before_study_end = (dataset.end_date < dataset.rtt_end_date + day
 
 #### Medicines data ####
 
-med_classes = ["opioid","hi_opioid","gabapentinoid","antidepressant","nsaid","codeine","oxycodone","tramadol"]
 med_codes = {
     "opioid": codelists.opioid_codes,
     "hi_opioid": codelists.hi_opioid_codes,
@@ -85,40 +84,43 @@ med_codes = {
     "codeine": codelists.codeine_codes,
     "oxycodone": codelists.oxycodone_codes,
     "tramadol": codelists.tramadol_codes,
+    "weak_opioid": codelists.weak_opioid_codes,
+    "strong_opioid": codelists.strong_opioid_codes,
+    "long_opioid": codelists.long_opioid_codes,
+    "short_opioid": codelists.short_opioid_codes,
     }
 
-for med in med_classes:
+for med, med_codelist in med_codes.items():
 
-    med_events = medications.where(medications.dmd_code.is_in(med_codes[med]))
-                                   
+    med_events = medications.where(medications.dmd_code.is_in(med_codelist))
+
     # Number of prescriptions during waiting list (this time period is variable, will account for this later)
-    wait_count = f"{med}_wait_count"
-    wait_query = med_events.where(
+    wait_count_query = med_events.where(
             med_events.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
         ).count_for_patient()
-    setattr(dataset, wait_count, wait_query)
+    dataset.add_column(f"{med}_wait_count", wait_count_query)
 
     # Number of prescriptions before waiting list
-    pre_count = f"{med}_pre_count"
-    pre_query = med_events.where(
+    pre_count_query = med_events.where(
             med_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
         ).count_for_patient()
-    setattr(dataset, pre_count, pre_query)
+    dataset.add_column(f"{med}_pre_count", pre_count_query)
 
-    # Number of prescriptions before waiting list
-    post_count = f"{med}_post_count"
-    post_query = med_events.where(
+    # Number of prescriptions after waiting list
+    post_count_query = med_events.where(
             med_events.date.is_on_or_between(dataset.rtt_end_date + days(1), minimum_of(dataset.rtt_end_date + days(182), dataset.end_date))
             & (dataset.end_date > dataset.rtt_end_date)
         ).count_for_patient()
-    setattr(dataset, post_count, post_query)
+    dataset.add_column(f"{med}_post_count", post_count_query)
 
-    # Date of first prescription
-    first_date = f"{med}_first_date"
-    first_query = med_events.where(
-            med_events.date.is_on_or_between(dataset.rtt_start_date - days(182), minimum_of(dataset.end_date, dataset.rtt_end_date + days(182)))
-        ).sort_by(med_events.date).first_for_patient().date
-    setattr(dataset, first_date, first_query)
+
+# Date of first prescription
+dataset.first_opioid_date = med_events.where(
+            med_events.dmd_code.is_in(codelists.opioid_codes)
+            & med_events.date.is_on_or_between(dataset.rtt_start_date - days(365), minimum_of(dataset.end_date, dataset.rtt_end_date + days(182)))
+        ).sort_by(
+            med_events.date
+        ).first_for_patient().date
 
 
 #### Demographics ####
@@ -131,7 +133,7 @@ dataset.age_group = case(
         when(dataset.age < 70).then("60-69"),
         when(dataset.age < 80).then("70-79"),
         when(dataset.age >= 80).then("80+"),
-        default="Missing",
+        otherwise="Missing",
 )
 dataset.sex = patients.sex
 
@@ -148,7 +150,7 @@ dataset.imd10 = case(
         when(imd < int(32844 * 8 / 10)).then("8"),
         when(imd < int(32844 * 9 / 10)).then("9"),
         when(imd >= int(32844 * 9 / 10)).then("10 (least deprived)"),
-        default="Unknown"
+        otherwise="Unknown"
 )
 
 # Ethnicity 6 categories
@@ -156,11 +158,9 @@ ethnicity6 = clinical_events.where(
         clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
     ).where(
         clinical_events.date.is_on_or_before(dataset.rtt_start_date)
-        & clinical_events.snomedct_code.is_not_null()
     ).sort_by(
         clinical_events.date
     ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_6)
-
 
 dataset.ethnicity6 = case(
     when(ethnicity6 == "1").then("White"),
@@ -169,7 +169,7 @@ dataset.ethnicity6 = case(
     when(ethnicity6 == "4").then("Black"),
     when(ethnicity6 == "5").then("Other"),
     when(ethnicity6 == "6").then("Not stated"),
-    default="Unknown"
+    otherwise="Unknown"
 )
 
 # Ethnicity 16 categories
@@ -198,7 +198,7 @@ dataset.ethnicity16 = case(
     when(ethnicity16 == "14").then("Black - Other"),
     when(ethnicity16 == "15").then("Other - Chinese"),
     when(ethnicity16 == "16").then("Other - Other"),
-    default="Unknown"
+    otherwise="Unknown"
 )
 
 dataset.region = practice_registrations.for_patient_on(dataset.rtt_start_date).practice_nuts1_region_name
@@ -213,7 +213,12 @@ dataset.cancer = clinical_events.where(
         clinical_events.date.is_between_but_not_on(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
     ).exists_for_patient()
 
-comorbidities = ["diabetes","cardiac","copd","liver","ckd","osteoarthritis","depress_or_gad","ra"]
+
+# Comorbidities in past 2 years
+clin_events_2yrs = clinical_events.where(
+        clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(2), dataset.rtt_start_date)
+    )
+
 comorb_codes = {
     "diabetes": codelists.diabetes_codes,
     "cardiac": codelists.cardiac_codes,
@@ -226,39 +231,27 @@ comorb_codes = {
     }
 
 
-# Comorbidities in past 2 years
-
-clin_events_2yrs = clinical_events.where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(2), dataset.rtt_start_date)
-    )
-
-for comorb in comorbidities:
+for comorb, comorb_codelist in comorb_codes.items():
         
     if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis","ra"]:
 
-        ctv3_name = comorb
         ctv3_query = clin_events_2yrs.where(
-                clin_events_2yrs.ctv3_code.is_in(comorb_codes[comorb])
+                clin_events_2yrs.ctv3_code.is_in(comorb_codelist)
             ).exists_for_patient()
-        setattr(dataset, ctv3_name, ctv3_query)
-    
+        dataset.add_column(comorb, ctv3_query)
+
     else:
 
-        snomed_name = comorb
         snomed_query = clin_events_2yrs.where(
-                clin_events_2yrs.snomedct_code.is_in(comorb_codes[comorb])
+                clin_events_2yrs.snomedct_code.is_in(comorb_codelist)
             ).exists_for_patient()
-        setattr(dataset, snomed_name, snomed_query)
-
+        dataset.add_column(comorb, snomed_query)
 
 
 #### DEFINE POPULATION ####
 
 dataset.define_population(
-    (dataset.age >= 18) 
-    & (dataset.age < 110)
-    & dataset.sex.is_in(["male","female"])
-    & dataset.end_date.is_after(dataset.rtt_start_date)
+    dataset.end_date.is_after(dataset.rtt_start_date)
     & registrations.exists_for_patient()
     & last_clockstops.exists_for_patient()
 )
