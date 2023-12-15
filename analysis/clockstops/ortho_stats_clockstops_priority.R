@@ -27,7 +27,7 @@ dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-ortho <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv.gz"),
+ortho <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
   col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
                     rtt_end_date = col_date(format="%Y-%m-%d"),
                     reg_end_date = col_date(format="%Y-%m-%d"),
