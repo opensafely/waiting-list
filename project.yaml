@@ -104,13 +104,12 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_opioid_weeks_post.csv
 
-  # opioids_by_week:
-  #  run: r:latest analysis/clockstops/opioids_by_week.R
-  #  needs: [measures_any_opioid, measures_hi_opioid]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data: output/clockstops/opioid*.csv
-  #     #  plots: output/clockstops/plo*.png
+  opioids_by_week:
+   run: r:latest analysis/clockstops/opioids_by_week.R
+   needs: [measures_any_opioid, measures_weak_opioid, measures_strong_opioid, measures_long_opioid, measures_short_opioid]
+   outputs:
+      moderately_sensitive:
+        data: output/clockstops/opioid*.csv
   
   opioids_by_week_group:
    run: r:latest analysis/clockstops/opioids_by_week_group.R

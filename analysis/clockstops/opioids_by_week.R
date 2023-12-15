@@ -28,39 +28,49 @@ dir_create(here::here("output", "measures"), showWarnings = FALSE, recurse = TRU
 
 
 # Load data
-# hi_opioid_rx <- read_csv(here::here("output", "measures", "measures_hi_opioid.csv"),
-#                          col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
-#               mutate(opioid_type = "High dose opioid", var = "Full cohort", category = "Full cohort") %>%
-#               dplyr::select(c(numerator, denominator, opioid_type, var, category,
-#                               interval_start,measure)) 
+
 
 any_opioid_rx <- read_csv(here::here("output", "measures", "measures_any_opioid.csv"),
                           col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
-              mutate(opioid_type = "Any opioid",
-              
-              category = coalesce(as.character(prior_opioid_rx), imd_decile, age_group, sex), 
-              category = ifelse(is.na(category), "Full cohort", category),
-      
-              var = ifelse(!is.na(prior_opioid_rx), "Prior opioid Rx",
+              mutate(opioid_type = "Any opioid")
+
+long_opioid_rx <- read_csv(here::here("output", "measures", "measures_long_opioid.csv"),
+                          col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
+              mutate(opioid_type = "Long-acting opioid")
+
+short_opioid_rx <- read_csv(here::here("output", "measures", "measures_short_opioid.csv"),
+                          col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
+              mutate(opioid_type = "Short-acting opioid")
+
+weak_opioid_rx <- read_csv(here::here("output", "measures", "measures_weak_opioid.csv"),
+                          col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
+  mutate(opioid_type = "Weak opioid")
+
+strong_opioid_rx <- read_csv(here::here("output", "measures", "measures_strong_opioid.csv"),
+                          col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
+  mutate(opioid_type = "Strong opioid")
+
+
+opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_rx, strong_opioid_rx) %>%
+              mutate(category = coalesce(as.character(prior_opioid_rx), imd_decile, age_group, sex), 
+                category = ifelse(is.na(category), "Full cohort", category),
+                var = ifelse(!is.na(prior_opioid_rx), "Prior opioid Rx",
                            ifelse(!is.na(imd_decile), "IMD decile",
                                   ifelse(!is.na(age_group), "Age group",
                                                 ifelse(!is.na(sex), "Sex",
-                                                    "Full cohort"))))
+                                                    "Full cohort")))),
+                # Convert interval start date to number of weeks 
+                week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
+                period = ifelse(grepl("pre", measure), "Pre-WL", 
+                                ifelse(grepl("post", measure), "Post-WL", "During WL")),
+                
+                opioid_rx = numerator
               )  %>%
-              dplyr::select(c(numerator, denominator, opioid_type, var, category,
-                              interval_start, measure)) 
+              dplyr::select(c(opioid_type, opioid_rx, denominator, opioid_type, 
+                              var, week, category, period, routine)) %>%
+              arrange(opioid_type, routine, var, category, period, week)
 
-opioid_rx <- any_opioid_rx %>%
-  mutate(
-    # Convert interval start date to number of weeks 
-    week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
-    period = ifelse(grepl("pre", measure), "Pre-WL", 
-                    ifelse(grepl("post", measure), "Post-WL", "During WL")),
-    
-    opioid_rx = numerator
-  )%>% 
-  dplyr::select(!c(interval_start, numerator, measure)) %>%
-  arrange(opioid_type, var, category, period, week)
+opioid_rx <- opioid_rx[,c("opioid_type", "routine", "period", "var", "category", "opioid_rx", "denominator")]
 
 write.csv(opioid_rx, file = here::here("output", "clockstops", "opioid_by_week.csv"),
           row.names = FALSE)
