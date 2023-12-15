@@ -72,7 +72,7 @@ rtt_month <- ortho_final %>%
   group_by(month, type) %>%
   summarise(count = n()) %>%
   bind_rows(
-    dat %>%
+    ortho_final %>%
       rename(month = rtt_end_month) %>%
       mutate(type = "RTT end date") %>%
       group_by(month, type) %>%
@@ -120,7 +120,7 @@ write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.
 # Stratified by demographics
 wait_gp <- function(gp, name){
   
-  dat %>%
+  ortho_final %>%
     group_by({{gp}}, routine) %>%
     mutate(total = n(),
            p25 = quantile(wait_time, .25, na.rm=TRUE),
@@ -256,8 +256,7 @@ cat_dist_combined <- function() {
 dat <- ortho_final %>%
   subset(cancer == FALSE)
 
-overall <- cat_dist_combined() %>%
-  rename(count_urgent = count, total_urgent = total)
+overall <- cat_dist_combined() 
 
 # Urgent only
 dat <- ortho_final %>%
@@ -275,7 +274,7 @@ routine <- cat_dist_combined() %>%
 
 
 # Merge 
-cat_dist <- list(total, urgent, routine) %>% 
+cat_dist <- list(overall, urgent, routine) %>% 
   reduce(full_join, by=c("category","var","cohort","source")) %>%
   arrange(var, category) 
 

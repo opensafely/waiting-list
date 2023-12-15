@@ -154,7 +154,7 @@ actions:
   #       plot2: output/clockstops/rtt_dates_full.png
 
   ortho_stats_clockstops_priority:
-   run: r:latest analysis/clockstops/ortho_stats_clockstops.R
+   run: r:latest analysis/clockstops/ortho_stats_clockstops_priority.R
    needs: [final_cohort_clockstops]
    outputs:
       moderately_sensitive:
@@ -165,8 +165,6 @@ actions:
         data4: output/clockstops/wait_time_ortho.csv
         data5: output/clockstops/med_by_period_ortho.csv
         data6: output/clockstops/wait_by_group_ortho.csv
-        plot1: output/clockstops/wait_time_ortho.png
-        plot2: output/clockstops/rtt_dates_ortho.png
 
   # ortho_opioid_clockstops:
   #   run: r:latest analysis/clockstops/ortho_opioid_clockstops.R
