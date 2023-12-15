@@ -6,7 +6,7 @@
 ###########################################################
 
 from ehrql import INTERVAL, create_measures, weeks, days, minimum_of, years
-from ehrql.tables.beta.tpp import (
+from ehrql.tables.tpp import (
     patients, 
     practice_registrations,
     medications,
