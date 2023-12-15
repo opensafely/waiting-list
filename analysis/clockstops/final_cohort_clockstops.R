@@ -34,17 +34,18 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     reg_end_date = col_date(format="%Y-%m-%d"),
                     dod = col_date(format="%Y-%m-%d"),
                     end_date = col_date(format="%Y-%m-%d"))) %>%
-                
-                # Exclude if dod before RTT end date
-                #subset(is.na(dod) | (!is.na(dod) & rtt_end_date > dod)) %>%
-  
+              
                 # Create new variables                
-                mutate(# Month of WL start/end
+                mutate(
+                    # Month of WL start/end
                     rtt_start_month = floor_date(rtt_start_date, "month"),
                     rtt_end_month = floor_date(rtt_end_date, "month"),
                        
                     # Were on multiple WL during study period
-                    rtt_multiple = ifelse(count_rtt_start_date > 1, 1, 0),
+                    rtt_multiple = (count_rtt_start_date > 1),
+                    
+                    routine = ifelse(priority_type %in% c("urgent","two week wait"), "Urgent", 
+                                     ifelse(priority_type == "routine", "Routine", "Missing")),
                     
                     # Admitted
                     admitted = (waiting_list_type %in% c("IRTT","PTLI","RTTI")),
@@ -53,8 +54,8 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     ortho_surgery = (treatment_function %in% c("110", "111")),
                     
                     # Died while on WL
-                    died_during_wl = ifelse(!is.na(dod) & dod <= rtt_end_date, 1, 0),
-                    died_during_post = ifelse(!is.na(dod) & dod <= (rtt_end_date + 182), 1, 0),
+                    died_during_wl = (!is.na(dod) & dod <= rtt_end_date),
+                    died_during_post = (!is.na(dod) & dod <= (rtt_end_date + 182)),
                        
                     # Time on WL, censored at death/deregistration
                     wait_time_adj = as.numeric(
@@ -77,6 +78,22 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     hi_opioid_pre = (hi_opioid_pre_count > 0),
                     hi_opioid_wait = (hi_opioid_wait_count > 0),
                     hi_opioid_post = (hi_opioid_post_count > 0),
+                    
+                    long_opioid_pre = (long_opioid_pre_count > 0),
+                    long_opioid_wait = (long_opioid_wait_count > 0),
+                    long_opioid_post = (long_opioid_post_count > 0),
+                    
+                    short_opioid_pre = (short_opioid_pre_count > 0),
+                    short_opioid_wait = (short_opioid_wait_count > 0),
+                    short_opioid_post = (short_opioid_post_count > 0),
+                    
+                    weak_opioid_pre = (weak_opioid_pre_count > 0),
+                    weak_opioid_wait = (weak_opioid_wait_count > 0),
+                    weak_opioid_post = (weak_opioid_post_count > 0),
+                    
+                    strong_opioid_pre = (strong_opioid_pre_count > 0),
+                    strong_opioid_wait = (strong_opioid_wait_count > 0),
+                    strong_opioid_post = (strong_opioid_post_count > 0),
                     
                     codeine_pre = (codeine_pre_count > 0),
                     codeine_wait = (codeine_wait_count > 0),
@@ -106,18 +123,45 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     week52 =  ifelse(week > 52, 52, week),
                     week_gp = ifelse(week <= 18, "<=18 weeks", 
                                      ifelse(week > 18 & week <= 52, "19-52 weeks", 
-                                            "52+ weeks")))
-                         
+                                            "52+ weeks")),
+                    
+                    age_missing = (is.na(age)),
+                    age_not_18_110 = (!is.na(age) & age<18 & age >=110),
+                    sex_missing = is.na(sex),
+                    sex_not_m_f = (!is.na(sex) & sex == "intersex")
+                )
+                    
+                        
+full_exclusions <- full %>% 
+  mutate(total = n()) %>%
+  group_by(total) %>%
+  summarise(age_missing = sum(age_missing),
+            age_not_18_110 = sum(age_not_18_110),
+            sex_missing = sum(sex_missing),
+            sex_not_m_f = sum(sex_not_m_f)) %>%
+  ungroup() %>%
+  mutate(age_missing = rounding(age_missing),
+         age_not_18_110 = rounding(age_not_18_110),
+         sex_missing = rounding(sex_missing),
+         sex_not_m_f = rounding(sex_not_m_f))
+
+write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_full_exclusions.csv"),
+          row.names = FALSE)
+
+
+full_final <- full %>%
+  subset(!is.na(age) & age >= 18 & age < 110 
+         & !is.na(sex) & (sex != "intersex"))
 
 ## Save as final
-write.csv(full, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
+write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
           row.names = FALSE)
 
 
 ####################################################
 
 # Restrict to people with trauma/orthopaedic surgery
-ortho <- full %>%
+ortho <- full_final %>%
   subset(ortho_surgery == TRUE)
 
 ## Save as final
