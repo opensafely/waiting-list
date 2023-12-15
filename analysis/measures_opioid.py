@@ -6,7 +6,7 @@
 ###########################################################
 
 from ehrql import INTERVAL, create_measures, weeks, days, minimum_of, years, when, case
-from ehrql.tables.beta.tpp import (
+from ehrql.tables.tpp import (
     patients, 
     practice_registrations,
     medications,
@@ -45,6 +45,12 @@ last_clockstops = wl_clockstops.where(
         wl_clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer
     ).last_for_patient()
 
+routine = case(
+    when(last_clockstops.priority_type_code == "routine").then("Routine"),
+    when(last_clockstops.priority_type_code == "urgent").then("Urgent"),
+    when(last_clockstops.priority_type_code == "two week wait").then("Urgent"),
+    otherwise="Missing",
+    )
 
 # RTT waiting list start date and end date
 rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
@@ -58,7 +64,7 @@ tmp_date = "2000-01-01"
 # All opioid prescriptions during study period
 all_opioid_rx = medications.where(
                 medications.dmd_code.is_in(codelists.opioid_codes)
-                & medications.date.is_on_or_between(rtt_start_date - days(182), rtt_end_date + days(182))
+                & medications.date.is_on_or_between(rtt_start_date - days(365), rtt_end_date + days(182))
             )
 
 # Standardise Rx dates relative to RTT start date for prescribing during WL 
@@ -69,7 +75,6 @@ all_opioid_rx.tmp_post_date = tmp_date + days((all_opioid_rx.date - (rtt_end_dat
 
 # Standardise Rx dates relative to RTT start date for pre-WL prescribing 
 all_opioid_rx.tmp_pre_date = tmp_date + days((all_opioid_rx.date - (rtt_start_date - days(182))).days)
-
 
 ### Prescribing variables for numerator ####
 
@@ -101,9 +106,11 @@ registrations = practice_registrations.where(
 reg_end_date = registrations.sort_by(registrations.end_date).last_for_patient().end_date
 end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(182))
 
-# Standardise end date relative to start dates
+# Standardise end date relative to RTT start and end dates
 tmp_end_date_rtt_start = tmp_date + days((end_date - rtt_start_date).days)
 tmp_end_date_rtt_end = tmp_date + days((end_date - rtt_end_date).days)
+
+# Standardise RTT end date to RTT start date
 tmp_rtt_end = tmp_date + days((rtt_end_date - rtt_start_date).days)
 
 
@@ -116,9 +123,11 @@ cancer = clinical_events.where(
 
 
 ### Grouping/stratification variables (Final list TBD) ###
-prior_opioid_rx = all_opioid_rx.where(
-        all_opioid_rx.date.is_on_or_between(rtt_start_date - days(182), rtt_start_date - days(1))
-    ).exists_for_patient()
+prior_opioid_count = all_opioid_rx.where(
+        all_opioid_rx.date.is_on_or_between(rtt_start_date - days(182), rtt_start_date - days(7))
+    ).count_for_patient()
+
+prior_opioid_rx = (prior_opioid_count >= 3)
 
 
 ## Demographics
@@ -130,7 +139,7 @@ age_group = case(
         when(age < 70).then("60-69"),
         when(age < 80).then("70-79"),
         when(age >= 80).then("80+"),
-        default="Missing",
+        otherwise="Missing",
 )
 
 sex = patients.sex
@@ -148,27 +157,8 @@ imd10 = case(
         when(imd < int(32844 * 8 / 10)).then("8"),
         when(imd < int(32844 * 9 / 10)).then("9"),
         when(imd >= int(32844 * 9 / 10)).then("10 (least deprived)"),
-        default="Unknown"
+        otherwise="Unknown"
 )
-
-# Ethnicity 6 categories
-# ethnicity6 = clinical_events.where(
-#         clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
-#     ).where(
-#         clinical_events.date.is_on_or_before(rtt_start_date)
-#     ).sort_by(
-#         clinical_events.date
-#     ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_6)
-
-# ethnicity6 = case(
-#     when(ethnicity6 == "1").then("White"),
-#     when(ethnicity6 == "2").then("Mixed"),
-#     when(ethnicity6 == "3").then("South Asian"),
-#     when(ethnicity6 == "4").then("Black"),
-#     when(ethnicity6 == "5").then("Other"),
-#     when(ethnicity6 == "6").then("Not stated"),
-#     default="Unknown"
-# )
 
 
 ######
@@ -176,40 +166,31 @@ imd10 = case(
 
 measures = create_measures()
 
-#measures.configure_dummy_data(population_size=5000)
+measures.configure_dummy_data(population_size=500)
 
 # Denominator 
 denominator = (        
         # Adults with non-missing age/sex
-        (patients.age_on(rtt_start_date) >= 18) 
-        & (patients.age_on(rtt_start_date) < 110)
-        & (patients.sex.is_in(["male","female"]))
+        (age >= 18) 
+        & (age < 110)
+        & (sex.is_in(["male","female"]))
 
-        # On waiting list and registered for >6 months
-        & last_clockstops.exists_for_patient()
+        # Registered for >6 months
         & registrations.exists_for_patient()
 
         # Orthopaedic surgery codes
-        & last_clockstops.activity_treatment_function_code.is_in(["110","111","108","115"]) 
-
-        # Routine procedures only
-        & last_clockstops.priority_type_code.is_in(["routine"])
+        & last_clockstops.activity_treatment_function_code.is_in(["110","111"]) 
 
         # No cancer
         & ~cancer
 
         # Censoring date (death/deregistration) after start of waiting list
         & (end_date >= rtt_start_date)
+
+        & routine.is_not_in(["Missing"])
     )
 
 
-# Prescribing pre WL
-measures.define_measure(
-    name="count_pre",
-    numerator=count_opioid_pre,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01")
-    )
 
 # Prescribing during WL
 measures.define_measure(
@@ -218,8 +199,10 @@ measures.define_measure(
     # Denominator = only include people whose RTT end date and study end date are after interval end date
     #   IOW, exclude people who are no longer on waiting list or have been censored
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(52).starting_on("2000-01-01")
+    intervals=weeks(52).starting_on("2000-01-01"),
+    group_by={"routine": routine}
     )
+
 # Prescribing post WL
 measures.define_measure(
     name="count_post",
@@ -227,7 +210,8 @@ measures.define_measure(
     # Denominator = only include people whose RTT end date is after interval end date
     #   IOW, exclude people who have been censored
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-    intervals=weeks(26).starting_on("2000-01-01")
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"routine": routine}
     )
 
 
@@ -237,7 +221,8 @@ measures.define_measure(
     numerator=count_opioid_pre,
     denominator=denominator,
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
+    group_by={"prior_opioid_rx": prior_opioid_rx,
+              "routine": routine}
     )
 
 # Prescribing during WL - stratified by prior opioid Rx
@@ -246,7 +231,8 @@ measures.define_measure(
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
+    group_by={"prior_opioid_rx": prior_opioid_rx,
+              "routine": routine}
     )
 
 # Prescribing post WL - stratified by prior opioid Rx
@@ -255,7 +241,8 @@ measures.define_measure(
     numerator=count_opioid_post,
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
+    group_by={"prior_opioid_rx": prior_opioid_rx,
+              "routine": routine}
     )
 
 
@@ -265,7 +252,8 @@ measures.define_measure(
     numerator=count_opioid_pre,
     denominator=denominator,
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"age_group": age_group}
+    group_by={"age_group": age_group,
+              "routine": routine}
     )
 
 # Prescribing during WL - stratified by age
@@ -274,7 +262,8 @@ measures.define_measure(
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"age_group": age_group}
+    group_by={"age_group": age_group,
+              "routine": routine}
     )
 
 # Prescribing post WL - stratified by age
@@ -283,7 +272,8 @@ measures.define_measure(
     numerator=count_opioid_post,
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"age_group": age_group}
+    group_by={"age_group": age_group,
+              "routine": routine}
     )
 
 
@@ -293,7 +283,8 @@ measures.define_measure(
     numerator=count_opioid_pre,
     denominator=denominator,
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"imd_decile": imd10}
+    group_by={"imd_decile": imd10,
+              "routine": routine}
     )
 
 # Prescribing during WL - stratified by imd
@@ -302,7 +293,8 @@ measures.define_measure(
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"imd_decile": imd10}
+    group_by={"imd_decile": imd10,
+              "routine": routine}
     )
 
 # Prescribing post WL - stratified by imd
@@ -311,7 +303,8 @@ measures.define_measure(
     numerator=count_opioid_post,
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"imd_decile": imd10}
+    group_by={"imd_decile": imd10,
+              "routine": routine}
     )
 
     
@@ -321,7 +314,8 @@ measures.define_measure(
     numerator=count_opioid_pre,
     denominator=denominator,
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"sex": sex}
+    group_by={"sex": sex,
+              "routine": routine}
     )
 
 # Prescribing during WL - stratified by sex
@@ -330,7 +324,8 @@ measures.define_measure(
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"sex": sex}
+    group_by={"sex": sex,
+              "routine": routine}
     )
 
 # Prescribing post WL - stratified by sex
@@ -339,5 +334,6 @@ measures.define_measure(
     numerator=count_opioid_post,
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"sex": sex}
+    group_by={"sex": sex,
+              "routine": routine}
     )
