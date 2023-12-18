@@ -44,11 +44,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     # Were on multiple WL during study period
                     rtt_multiple = (count_rtt_start_date > 1),
                     
-                    routine = case_when(
-                      priority_type %in% c("urgent", "two week wait") ~ "Urgent",
-                      priority_type == "routine" ~ "Routine",
-                      .default = "Missing"
-                    ),
+                    routine = if_else(priority_type %in% c("urgent", "two week wait"), "Urgent", "Routine", "Missing"),
                     
                     # Admitted
                     admitted = (waiting_list_type %in% c("IRTT","PTLI","RTTI")),
