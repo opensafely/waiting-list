@@ -35,7 +35,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     dod = col_date(format="%Y-%m-%d"),
                     end_date = col_date(format="%Y-%m-%d"))) %>%
               
-                # Create new variables                
+                # Create new variables
                 mutate(
                     # Month of WL start/end
                     rtt_start_month = floor_date(rtt_start_date, "month"),
@@ -44,8 +44,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     # Were on multiple WL during study period
                     rtt_multiple = (count_rtt_start_date > 1),
                     
-                    routine = ifelse(priority_type %in% c("urgent","two week wait"), "Urgent", 
-                                     ifelse(priority_type == "routine", "Routine", "Missing")),
+                    routine = if_else(priority_type %in% c("urgent", "two week wait"), "Urgent", "Routine", "Missing"),
                     
                     # Admitted
                     admitted = (waiting_list_type %in% c("IRTT","PTLI","RTTI")),

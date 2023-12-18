@@ -99,7 +99,8 @@ wait_time_pcent <- ortho_final %>%
             p90 = quantile(wait_time, .9, na.rm=TRUE),
             p95 = quantile(wait_time, .95, na.rm=TRUE),
             p99 = quantile(wait_time, .99, na.rm=TRUE)) %>%
-  mutate(source = "clockstops", cohort = "ortho")
+  mutate(source = "clockstops", cohort = "ortho") %>%
+  subset(routine != "Missing" & !is.na(routine))
 
 write.csv(wait_time_pcent, here::here("output", "clockstops", "wait_time_pcent_ortho.csv"),
           row.names = FALSE)
@@ -112,7 +113,7 @@ wait_time <- ortho_final %>%
   mutate(count = rounding(count),
          total = rounding(total),
          source = "clockstops", cohort = "ortho") %>%
-  subset(routine != "Missing")
+  subset(routine != "Missing" & !is.na(routine))
 
 write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.csv"),
           row.names = FALSE)
@@ -134,7 +135,8 @@ wait_gp <- function(gp, name){
            cohort = "ortho", 
            source = "clockstops") %>%
     rename(category = {{gp}}) %>%
-    ungroup()
+    ungroup() %>%
+    subset(routine != "Missing" & !is.na(routine))
   
 }
 
@@ -253,21 +255,20 @@ cat_dist_combined <- function() {
 }
 
 # Overall
-dat <- ortho_final %>%
-  subset(cancer == FALSE)
+dat <- ortho_final
 
 overall <- cat_dist_combined() 
 
 # Urgent only
 dat <- ortho_final %>%
-  subset(cancer == FALSE & priority_type %in% c("urgent","two week wait"))
+  subset(routine == "Urgent")
 
 urgent <- cat_dist_combined() %>%
   rename(count_urgent = count, total_urgent = total)
 
 # Routine only
-dat <- ortho %>%
-  subset(cancer == FALSE & priority_type %in% c("routine"))
+dat <- ortho_final %>%
+  subset(priority_type %in% c("routine"))
 
 routine <- cat_dist_combined() %>%
   rename(count_routine = count, total_routine = total)
@@ -291,8 +292,10 @@ write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_ortho.csv"
 #   for each period and each medicine group
 summ <- function(wait_time, var, med, time) {
     ortho_final %>%
+      group_by(routine) %>%
       mutate(person_days = sum({{wait_time}}),
              total_rx = sum({{var}})) %>%
+      ungroup() %>%
       group_by(person_days, total_rx, routine) %>%
       summarise(
         p25 = quantile({{var}}, 0.25, na.rm = TRUE),
@@ -356,6 +359,7 @@ med_prescribing <- rbind(
     summ(post_time_adj, antidepressant_post_count, "Antidepressant", "Post-WL")
   ) %>%
   mutate(source = "clockstops", cohort = "ortho") 
+
 
 
 write.csv(med_prescribing, here::here("output", "clockstops", "med_by_period_ortho.csv"),
