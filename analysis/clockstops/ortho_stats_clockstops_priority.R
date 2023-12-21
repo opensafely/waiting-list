@@ -311,7 +311,7 @@ summ_combined <- function(gp, var){
   }
   
   rbind(
-    summ_gp({{gp}}, "opioid"),
+    summ_gp({{gp}}, "any_opioid"),
     summ_gp({{gp}}, "strong_opioid"),
     summ_gp({{gp}}, "high_opioid"),
     summ_gp({{gp}}, "weak_opioid"),
