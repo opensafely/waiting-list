@@ -39,19 +39,19 @@ count_missing = wl_clockstops.where(
 count_ortho = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
         #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI","ORTT","PTLO","RTTO"])
-        & wl_clockstops.activity_treatment_function_code.is_in(["110","111"])
+        & wl_clockstops.activity_treatment_function_code.is_in(["110","111","108","115"])
     ).pseudo_referral_identifier.count_distinct_for_patient()
 
 count_admitted_ortho = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
         & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI"])
-        & wl_clockstops.activity_treatment_function_code.is_in(["110","111"])
+        & wl_clockstops.activity_treatment_function_code.is_in(["110","111","108","115"])
     ).pseudo_referral_identifier.count_distinct_for_patient()
 
 count_not_admitted_ortho = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
         & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO"])
-        & wl_clockstops.activity_treatment_function_code.is_in(["110","111"])
+        & wl_clockstops.activity_treatment_function_code.is_in(["110","111","108","115"])
     ).pseudo_referral_identifier.count_distinct_for_patient()
 
 
