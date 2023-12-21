@@ -14,26 +14,26 @@ from ehrql.tables.tpp import (
 
 ##########
 
-# Monthly counts - overall, admitted, and not admitted
-count_overall = wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
-        #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI","ORTT","PTLO","RTTO"])
-    ).pseudo_referral_identifier.count_distinct_for_patient()
+# # Monthly counts - overall, admitted, and not admitted
+# count_overall = wl_clockstops.where(
+#         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
+#         #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI","ORTT","PTLO","RTTO"])
+#     ).pseudo_referral_identifier.count_distinct_for_patient()
 
-count_admitted = wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
-        & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI"])
-    ).pseudo_referral_identifier.count_distinct_for_patient()
+# count_admitted = wl_clockstops.where(
+#         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
+#         & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI"])
+#     ).pseudo_referral_identifier.count_distinct_for_patient()
 
-count_not_admitted = wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
-        & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO"])
-    ).pseudo_referral_identifier.count_distinct_for_patient()
+# count_not_admitted = wl_clockstops.where(
+#         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
+#         & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO"])
+#     ).pseudo_referral_identifier.count_distinct_for_patient()
 
-count_missing = wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
-        & wl_clockstops.activity_treatment_function_code.is_null()
-    ).pseudo_referral_identifier.count_distinct_for_patient()
+# count_missing = wl_clockstops.where(
+#         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
+#         & wl_clockstops.activity_treatment_function_code.is_null()
+#     ).pseudo_referral_identifier.count_distinct_for_patient()
 
 # Monthly counts - orthopaedic only
 count_ortho = wl_clockstops.where(
@@ -57,29 +57,29 @@ count_not_admitted_ortho = wl_clockstops.where(
 
 # By treatment specialty (only include most common groups reported in public statistics)
 
-trt_func = ["100","110","120","130","140","150","160","170","300","301","320","330","340","400","410","430","502",]
+# trt_func = ["100","110","120","130","140","150","160","170","300","301","320","330","340","400","410","430","502",]
 
-count_var = {}
+# count_var = {}
 
-for code in trt_func:
+# for code in trt_func:
 
-    count_var["count_" + code] =  wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
-        #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI","ORTT","PTLO","RTTO"])
-        & wl_clockstops.activity_treatment_function_code.is_in([code])
-    ).pseudo_referral_identifier.count_distinct_for_patient()
+#     count_var["count_" + code] =  wl_clockstops.where(
+#         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
+#         #& wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI","ORTT","PTLO","RTTO"])
+#         & wl_clockstops.activity_treatment_function_code.is_in([code])
+#     ).pseudo_referral_identifier.count_distinct_for_patient()
     
-    count_var["count_admitted_" + code] =  wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
-        & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI"])
-        & wl_clockstops.activity_treatment_function_code.is_in([code])
-    ).pseudo_referral_identifier.count_distinct_for_patient()
+#     count_var["count_admitted_" + code] =  wl_clockstops.where(
+#         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
+#         & wl_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI"])
+#         & wl_clockstops.activity_treatment_function_code.is_in([code])
+#     ).pseudo_referral_identifier.count_distinct_for_patient()
     
-    count_var["count_not_admitted_" + code] =  wl_clockstops.where(
-        wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
-        & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO"])
-        & wl_clockstops.activity_treatment_function_code.is_in([code])
-    ).pseudo_referral_identifier.count_distinct_for_patient()
+#     count_var["count_not_admitted_" + code] =  wl_clockstops.where(
+#         wl_clockstops.referral_to_treatment_period_end_date.is_during(INTERVAL)
+#         & wl_clockstops.waiting_list_type.is_in(["ORTT","PTLO","RTTO"])
+#         & wl_clockstops.activity_treatment_function_code.is_in([code])
+#     ).pseudo_referral_identifier.count_distinct_for_patient()
 
     
 
@@ -100,51 +100,51 @@ measures.define_defaults(
     intervals=months(13).starting_on("2021-05-01")
     )
 
-measures.define_measure(
-    name="closed_total",
-    numerator=count_overall
-    )
+# measures.define_measure(
+#     name="closed_total",
+#     numerator=count_overall
+#     )
 
-measures.define_measure(
-    name="closed_missing",
-    numerator=count_missing
-    )
+# measures.define_measure(
+#     name="closed_missing",
+#     numerator=count_missing
+#     )
 
 measures.define_measure(
     name="closed_ortho",
     numerator=count_ortho
     )
 
-measures.define_measure(
-    name="closed_admit_total",
-    numerator=count_admitted
-    )
+# measures.define_measure(
+#     name="closed_admit_total",
+#     numerator=count_admitted
+#     )
 
 measures.define_measure(
     name="closed_admit_ortho",
     numerator=count_admitted_ortho
     )
 
-measures.define_measure(
-    name="closed_not_admit_total",
-    numerator=count_not_admitted
-    )
+# measures.define_measure(
+#     name="closed_not_admit_total",
+#     numerator=count_not_admitted
+#     )
 
 measures.define_measure(
     name="closed_not_admit_ortho",
     numerator=count_not_admitted_ortho
     )
 
-for code in trt_func:
-    measures.define_measure(
-        name=f"count_{code}",
-        numerator=count_var["count_" + code]
-    )
-    measures.define_measure(
-        name=f"count_admit_{code}",
-        numerator=count_var["count_admitted_" + code]
-    )
-    measures.define_measure(
-        name=f"count_not_admit_{code}",
-        numerator=count_var["count_not_admitted_" + code]
-    )
+# for code in trt_func:
+#     measures.define_measure(
+#         name=f"count_{code}",
+#         numerator=count_var["count_" + code]
+#     )
+#     measures.define_measure(
+#         name=f"count_admit_{code}",
+#         numerator=count_var["count_admitted_" + code]
+#     )
+#     measures.define_measure(
+#         name=f"count_not_admit_{code}",
+#         numerator=count_var["count_not_admitted_" + code]
+#     )
