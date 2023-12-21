@@ -23,7 +23,7 @@ not_null_dates = wl_clockstops.where(
     )
 
 dataset.count_null_ref_id = null_dates.pseudo_referral_identifier.count_distinct_for_patient()
-dataset.count_not_null_ref_id = null_dates.pseudo_referral_identifier.count_distinct_for_patient()
+dataset.count_not_null_ref_id = not_null_dates.pseudo_referral_identifier.count_distinct_for_patient()
 
 dataset.define_population(patients.age_on("2021-05-01").is_not_null())
 
