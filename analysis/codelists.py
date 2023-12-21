@@ -109,7 +109,7 @@ cancer_codes = (
   haem_ca_codes
 )
 
-oa_codes = codelist_from_csv(
+osteoarthritis_codes = codelist_from_csv(
     "codelists/opensafely-osteoarthritis.csv",
     column = "CTV3ID"
 )

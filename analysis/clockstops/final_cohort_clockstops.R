@@ -33,7 +33,8 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     rtt_end_date = col_date(format="%Y-%m-%d"),
                     reg_end_date = col_date(format="%Y-%m-%d"),
                     dod = col_date(format="%Y-%m-%d"),
-                    end_date = col_date(format="%Y-%m-%d"))) %>%
+                    end_date = col_date(format="%Y-%m-%d"),
+                    first_opioid_date = col_date(format="%Y-%m-%d"))) %>%
               
                 # Create new variables
                 mutate(
