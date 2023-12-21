@@ -6,15 +6,13 @@
 ####################################################################
 
 
-# --- IMPORT STATEMENTS ---
 
 ## Import code building blocks from cohort extractor package
 from ehrql import codelist_from_csv
 
  
-# CODELISTS 
+### Opioids
 
-### Medications
 opioid_codes = codelist_from_csv(
     "codelists/user-anschaf-opioids-for-analgesia-dmd.csv",
     column = "code"
@@ -25,26 +23,8 @@ hi_opioid_codes = codelist_from_csv(
     column = "code"
 )
 
-low_long_opioid_codes = codelist_from_csv(
-    "codelists/opensafely-non-high-dose-long-acting-opioids-openprescribing-dmd.csv",
-    column = "code"
-)
-
-long_opioid_codes = (hi_opioid_codes + low_long_opioid_codes)
-short_opioid_codes = set(opioid_codes) - set(long_opioid_codes)
-
-antidepressant_codes = codelist_from_csv(
-    "codelists/user-anschaf-antidepressants-dmd.csv",
-    column = "code"
-)
-
-gabapentinoid_codes = codelist_from_csv(
-    "codelists/user-anschaf-gabapentinoids-dmd.csv",
-    column = "code"
-)
-
-nsaid_codes = codelist_from_csv(
-    "codelists/opensafely-nsaids-oral.csv",
+long_opioid_codes = codelist_from_csv(
+    "codelists/user-anschaf-long-acting-opioids-dmd.csv",
     column = "code"
 )
 
@@ -63,9 +43,35 @@ tramadol_codes = codelist_from_csv(
     column = "code"
 )
 
-weak_opioid_codes = (codeine_codes + tramadol_codes)
-strong_opioid_codes = set(opioid_codes) - set(weak_opioid_codes)
+strong_opioid_codes = codelist_from_csv(
+    "codelists/user-anschaf-strong-opioids-dmd.csv",
+    column = "code"
+)
 
+weak_opioid_codes = codelist_from_csv(
+    "codelists/user-anschaf-weak-opioids-dmd.csv",
+    column = "code"
+)
+
+short_opioid_codes = set(opioid_codes) - set(long_opioid_codes)
+
+
+### Other medications
+
+antidepressant_codes = codelist_from_csv(
+    "codelists/user-anschaf-antidepressants-dmd.csv",
+    column = "code"
+)
+
+gabapentinoid_codes = codelist_from_csv(
+    "codelists/user-anschaf-gabapentinoids-dmd.csv",
+    column = "code"
+)
+
+nsaid_codes = codelist_from_csv(
+    "codelists/opensafely-nsaids-oral.csv",
+    column = "code"
+)
 
 # Demographics
 ethnicity_codes_16 = codelist_from_csv(
@@ -80,7 +86,7 @@ ethnicity_codes_6 = codelist_from_csv(
     category_column="Grouping_6",
 )
 
-# Comorbidities
+### Comorbidities
 
 oth_ca_codes = codelist_from_csv(
   "codelists/opensafely-cancer-excluding-lung-and-haematological-snomed.csv",
@@ -103,13 +109,23 @@ cancer_codes = (
   haem_ca_codes
 )
 
-osteoarthritis_codes = codelist_from_csv(
+oa_codes = codelist_from_csv(
     "codelists/opensafely-osteoarthritis.csv",
     column = "CTV3ID"
 )
 
-depress_or_gad_codes = codelist_from_csv(
-    "codelists/ons-depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms.csv",
+depression_codes = codelist_from_csv(
+    "codelists/opensafely-symptoms-depression.csv",
+    column = "code"
+)
+
+anxiety_codes = codelist_from_csv(
+    "codelists/opensafely-symptoms-anxiety.csv",
+    column = "code"
+)
+
+smi_codes = codelist_from_csv(
+    "codelists/primis-covid19-vacc-uptake-old-sev_mental_cod.csv",
     column = "code"
 )
 
@@ -141,4 +157,14 @@ copd_codes = codelist_from_csv(
 ra_codes = codelist_from_csv(
   "codelists/opensafely-rheumatoid-arthritis.csv",
   column = "CTV3ID"
+)
+
+oud_codes = codelist_from_csv(
+  "codelists/user-hjforbes-opioid-dependency-clinical-diagnosis.csv",
+  column = "code"
+)
+
+pain_codes = codelist_from_csv(
+  "codelists/opensafely-symptoms-pain.csv",
+  column = "code"
 )
