@@ -11,9 +11,6 @@ from ehrql.tables.tpp import (
 
 dataset = create_dataset()
 
-#### Waiting list variables ####
-
-# WL data - exclude rows with missing dates/dates outside study period/end date before start date
 null_dates = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_null()
     )

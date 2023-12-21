@@ -138,11 +138,53 @@
       "downloaded_at": "2023-12-14 13:15:49.672944Z",
       "sha": "d89dbea434802d6687b84833d9cb71f4ec4a8d94"
     },
-    "opensafely-non-high-dose-long-acting-opioids-openprescribing-dmd.csv": {
-      "id": "opensafely/non-high-dose-long-acting-opioids-openprescribing-dmd/06d7c2e1",
-      "url": "https://www.opencodelists.org/codelist/opensafely/non-high-dose-long-acting-opioids-openprescribing-dmd/06d7c2e1/",
-      "downloaded_at": "2023-12-14 13:15:50.264532Z",
-      "sha": "16d3a6eb5503a093a3cb55e901cb90960c94ad05"
+    "user-anschaf-long-acting-opioids-dmd.csv": {
+      "id": "user/anschaf/long-acting-opioids-dmd/7b0d998b",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/long-acting-opioids-dmd/7b0d998b/",
+      "downloaded_at": "2023-12-21 11:38:09.307732Z",
+      "sha": "dbacb203eaea4151559fa62e21455023942d9f90"
+    },
+    "user-anschaf-strong-opioids-dmd.csv": {
+      "id": "user/anschaf/strong-opioids-dmd/38be335d",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/strong-opioids-dmd/38be335d/",
+      "downloaded_at": "2023-12-21 11:38:09.998122Z",
+      "sha": "8fe588c93675efcc88264bde8c76967d4b1298ff"
+    },
+    "user-anschaf-weak-opioids-dmd.csv": {
+      "id": "user/anschaf/weak-opioids-dmd/51cda692",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/weak-opioids-dmd/51cda692/",
+      "downloaded_at": "2023-12-21 13:19:36.031196Z",
+      "sha": "c6a3a687773cc641fc697ac438c039232672d3ef"
+    },
+    "user-hjforbes-opioid-dependency-clinical-diagnosis.csv": {
+      "id": "user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5",
+      "url": "https://www.opencodelists.org/codelist/user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5/",
+      "downloaded_at": "2023-12-21 13:03:55.721451Z",
+      "sha": "67304f24e3cbffa04852eb4d86c456df75987590"
+    },
+    "opensafely-symptoms-depression.csv": {
+      "id": "opensafely/symptoms-depression/0e294f34",
+      "url": "https://www.opencodelists.org/codelist/opensafely/symptoms-depression/0e294f34/",
+      "downloaded_at": "2023-12-21 13:26:45.714014Z",
+      "sha": "d0a4fe9f4ad57bd68c78cbb1ac05e5ae267e4245"
+    },
+    "opensafely-symptoms-anxiety.csv": {
+      "id": "opensafely/symptoms-anxiety/7519dbfe",
+      "url": "https://www.opencodelists.org/codelist/opensafely/symptoms-anxiety/7519dbfe/",
+      "downloaded_at": "2023-12-21 13:26:46.342848Z",
+      "sha": "64932eddd4aca319dd9614fb73a841ec24b998b0"
+    },
+    "primis-covid19-vacc-uptake-old-sev_mental_cod.csv": {
+      "id": "primis-covid19-vacc-uptake-old/sev_mental_cod/v1",
+      "url": "https://www.opencodelists.org/codelist/primis-covid19-vacc-uptake-old/sev_mental_cod/v1/",
+      "downloaded_at": "2023-12-21 13:26:47.006724Z",
+      "sha": "a538dc701eee7987ba9b0ca745f84baef5771ff1"
+    },
+    "opensafely-symptoms-pain.csv": {
+      "id": "opensafely/symptoms-pain/71385a33",
+      "url": "https://www.opencodelists.org/codelist/opensafely/symptoms-pain/71385a33/",
+      "downloaded_at": "2023-12-21 13:39:49.292219Z",
+      "sha": "f10644780459fc727569c6217778f122f7d4a0dc"
     }
   }
 }

@@ -153,6 +153,16 @@ dataset.imd10 = case(
         otherwise="Unknown"
 )
 
+# IMD quintile
+dataset.imd5 = case(
+        when((imd >= 0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
+        when(imd < int(32844 * 2 / 5)).then("2"),
+        when(imd < int(32844 * 3 / 5)).then("3"),
+        when(imd < int(32844 * 4 / 5)).then("4"),
+        when(imd >= int(32844 * 4 / 5)).then("5 (least deprived)"),
+        otherwise="Unknown"
+)
+
 # Ethnicity 6 categories
 ethnicity6 = clinical_events.where(
         clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
@@ -225,15 +235,18 @@ comorb_codes = {
     "copd": codelists.copd_codes,
     "liver": codelists.liver_codes,
     "ckd": codelists.ckd_codes,
-    "osteoarthritis": codelists.osteoarthritis_codes,
-    "depress_or_gad": codelists.depress_or_gad_codes,
+    "oa": codelists.osteoarthritis_codes,
     "ra": codelists.ra_codes,
+    "depression": codelists.depression_codes,
+    "anxiety": codelists.anxiety_codes,
+    "smi": codelists.smi_codes,
+    "oud": codelists.oud_codes
     }
 
 
 for comorb, comorb_codelist in comorb_codes.items():
         
-    if comorb in ["diabetes","cardiac","copd","liver","osteoarthritis","ra"]:
+    if comorb in ["diabetes","cardiac","copd","liver","oa","ra"]:
 
         ctv3_query = clin_events_2yrs.where(
                 clin_events_2yrs.ctv3_code.is_in(comorb_codelist)

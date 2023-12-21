@@ -196,10 +196,13 @@ cat_dist_combined <- function() {
     cat_dist(copd, "COPD"),
     cat_dist(liver, "Liver"),
     cat_dist(ckd, "CKD"),
-    cat_dist(osteoarthritis, "Osteoarthritis"),
-    cat_dist(depress_or_gad, "Depression/GAD"),   
+    cat_dist(oa, "Osteoarthritis"),
+    cat_dist(depression, "Depression"),   
+    cat_dist(anxiety, "Anxiety"),
+    cat_dist(smi, "Severe mental illness"),
+    cat_dist(oud, "Opioid use disorder"),
     cat_dist(ra, "Rheumatoid arthritis"),
-    
+
     cat_dist(died_during_wl, "Died while on WL"),
     cat_dist(died_during_post, "Died during post-WL follow-up"),
     
@@ -286,86 +289,57 @@ write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_ortho.csv"
           row.names = FALSE) 
 
 
-################## Medicine Rx count variables ####################
+################## Medicine Rx count variables - overall and stratified ####################
 
-# Count total number of Rx, total person-days, and p25/median/75
+# Count total number of Rx, total person-days
 #   for each period and each medicine group
-summ <- function(wait_time, var, med, time) {
+summ_combined <- function(gp, var){
+  
+  summ_gp <- function(gp, med) {
     ortho_final %>%
-      group_by(routine) %>%
-      mutate(person_days = sum({{wait_time}}),
-             total_rx = sum({{var}})) %>%
+      mutate(tmp = "Full cohort") %>%
+      group_by(routine, {{gp}}) %>%
+      summarise(pre_person_days = rounding(sum(pre_time)),
+                wait_person_days = rounding(sum(wait_time_adj)),
+                post_person_days = rounding(sum(post_time_adj)),
+                
+                pre_total_rx = rounding(sum(across(intersect(starts_with(med), ends_with("_pre_count"))))),
+                wait_total_rx = rounding(sum(across(intersect(starts_with(med), ends_with("_wait_count"))))),
+                post_total_rx = rounding(sum(across(intersect(starts_with(med), ends_with("_post_count")))))) %>%
       ungroup() %>%
-      group_by(person_days, total_rx, routine) %>%
-      summarise(
-        p25 = quantile({{var}}, 0.25, na.rm = TRUE),
-        p50 = quantile({{var}}, 0.50, na.rm = TRUE),
-        p75 = quantile({{var}}, 0.75, na.rm = TRUE)
-      ) %>%
-      mutate(med_gp = med, time = time,
-             total_rx = rounding(total_rx),
-             pdays = rounding(person_days), 
-             rate_pmonth = total_rx / pdays * 100 * 30) %>%
-      ungroup() 
+      mutate(med_group = med) 
   }
   
-med_prescribing <- rbind(
-    summ(pre_time, opioid_pre_count, "Any opioid", "Pre-WL"),
-    summ(wait_time_adj, opioid_wait_count, "Any opioid", "During WL"),
-    summ(post_time_adj, opioid_post_count, "Any opioid", "Post-WL"),
-    
-    summ(pre_time, hi_opioid_pre_count, "High dose opioid", "Pre-WL"),
-    summ(wait_time_adj, hi_opioid_wait_count, "High dose opioid", "During WL"),
-    summ(post_time_adj, hi_opioid_post_count, "High dose opioid", "Post-WL"),
-    
-    summ(pre_time, strong_opioid_pre_count, "Strong opioid", "Pre-WL"),
-    summ(wait_time_adj, strong_opioid_wait_count, "Strong opioid", "During WL"),
-    summ(post_time_adj, strong_opioid_post_count, "Strong opioid", "Post-WL"),
-    
-    summ(pre_time, weak_opioid_pre_count, "Weak opioid", "Pre-WL"),
-    summ(wait_time_adj, weak_opioid_wait_count, "Weak opioid", "During WL"),
-    summ(post_time_adj, weak_opioid_post_count, "Weak opioid", "Post-WL"),
-    
-    summ(pre_time, long_opioid_pre_count, "Long-acting opioid", "Pre-WL"),
-    summ(wait_time_adj, long_opioid_wait_count, "Long-acting opioid", "During WL"),
-    summ(post_time_adj, long_opioid_post_count, "Long-acting opioid", "Post-WL"),
-    
-    summ(pre_time, short_opioid_pre_count, "Short-acting opioid", "Pre-WL"),
-    summ(wait_time_adj, short_opioid_wait_count, "Short-acting opioid", "During WL"),
-    summ(post_time_adj, short_opioid_post_count, "Short-acting opioid", "Post-WL"),
-    
-    summ(pre_time, codeine_pre_count, "Codeine", "Pre-WL"),
-    summ(wait_time_adj, codeine_wait_count, "Codeine", "During WL"),
-    summ(post_time_adj, codeine_post_count, "Codeine", "Post-WL"),
-    
-    summ(pre_time, tramadol_pre_count, "Tramadol", "Pre-WL"),
-    summ(wait_time_adj, tramadol_wait_count, "Tramadol", "During WL"),
-    summ(post_time_adj, tramadol_post_count, "Tramadol", "Post-WL"),
-    
-    summ(pre_time, oxycodone_pre_count, "Oxycodone", "Pre-WL"),
-    summ(wait_time_adj, oxycodone_wait_count, "Oxycodone", "During WL"),
-    summ(post_time_adj, oxycodone_post_count, "Oxycodone", "Post-WL"),
-    
-    summ(pre_time, gabapentinoid_pre_count, "Gabapentinoid", "Pre-WL"),
-    summ(wait_time_adj, gabapentinoid_wait_count, "Gabapentinoid", "During WL"),
-    summ(post_time_adj, gabapentinoid_post_count, "Gabapentinoid", "Post-WL"),
-    
-    summ(pre_time, nsaid_pre_count, "NSAID", "Pre-WL"),
-    summ(wait_time_adj, nsaid_wait_count, "NSAID", "During WL"),
-    summ(post_time_adj, nsaid_post_count, "NSAID", "Post-WL"),
-    
-    summ(pre_time, antidepressant_pre_count, "Antidepressant", "Pre-WL"),
-    summ(wait_time_adj, antidepressant_wait_count, "Antidepressant", "During WL"),
-    summ(post_time_adj, antidepressant_post_count, "Antidepressant", "Post-WL")
+  rbind(
+    summ_gp({{gp}}, "opioid"),
+    summ_gp({{gp}}, "strong_opioid"),
+    summ_gp({{gp}}, "high_opioid"),
+    summ_gp({{gp}}, "weak_opioid"),
+    summ_gp({{gp}}, "long_opioid"),
+    summ_gp({{gp}}, "short_opioid"),
+    summ_gp({{gp}}, "gabapentinoid"),
+    summ_gp({{gp}}, "nsaid"),
+    summ_gp({{gp}}, "antidepressant")
   ) %>%
-  mutate(source = "clockstops", cohort = "ortho") 
+    mutate(source = "clockstops", cohort = "ortho", variable = var) %>%
+    rename(category = {{gp}})
+  
+}
 
+prescribing_group <- rbind(
+    summ_combined(tmp, "Full cohort"),
+    summ_combined(age_group, "Age"),
+    summ_combined(imd10, "IMD decile"),
+    summ_combined(sex, "Sex"),
+    summ_combined(ethnicity6, "Ethnicity"),
+    summ_combined(admitted, "Admitted")) %>%
+  arrange(source, cohort, routine, variable, category, med_group)
 
+prescribing_group <- prescribing_group[,c("source", "cohort", "routine","variable", 
+                            "category", "med_group", "pre_total_rx", "pre_person_days", 
+                            "wait_total_rx", "wait_person_days", 
+                            "post_total_rx", "post_person_days")]
 
-write.csv(med_prescribing, here::here("output", "clockstops", "med_by_period_ortho.csv"),
+write.csv(prescribing_group, here::here("output", "clockstops", "med_by_period_ortho.csv"),
           row.names = FALSE)
-
-
-############################################################################
-
 
