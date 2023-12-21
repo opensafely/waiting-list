@@ -29,7 +29,7 @@ dir_create(here::here("output", "clockstops"), showWarnings = FALSE, recurse = T
 # Check number missing end dates 
 missing <- read_csv(here::here("output", "data", "dataset_clockstops_missing.csv.gz")) %>%
   summarise(count_null = sum(count_null_ref_id),
-            count_not_null = sum(count_null_ref_id))
+            count_not_null = sum(count_not_null_ref_id))
 
 write.csv(missing, here::here("output", "clockstops", "check_missing_dates.csv"), row.names = FALSE)
 
