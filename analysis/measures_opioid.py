@@ -144,7 +144,7 @@ age_group = case(
         otherwise="Missing",
 )
 
-# sex = patients.sex
+sex = patients.sex
 
 # # IMD decile
 # imd = addresses.for_patient_on(rtt_start_date).imd_rounded
