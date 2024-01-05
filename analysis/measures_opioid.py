@@ -132,17 +132,17 @@ prior_opioid_count = all_opioid_rx.where(
 prior_opioid_rx = (prior_opioid_count >= 3)
 
 
-## Demographics
-# age = patients.age_on(rtt_start_date)
-# age_group = case(
-#         when(age < 40).then("18-39"),
-#         when(age < 50).then("40-49"),
-#         when(age < 60).then("50-59"),
-#         when(age < 70).then("60-69"),
-#         when(age < 80).then("70-79"),
-#         when(age >= 80).then("80+"),
-#         otherwise="Missing",
-# )
+# Demographics
+age = patients.age_on(rtt_start_date)
+age_group = case(
+        when(age < 40).then("18-39"),
+        when(age < 50).then("40-49"),
+        when(age < 60).then("50-59"),
+        when(age < 70).then("60-69"),
+        when(age < 80).then("70-79"),
+        when(age >= 80).then("80+"),
+        otherwise="Missing",
+)
 
 # sex = patients.sex
 
