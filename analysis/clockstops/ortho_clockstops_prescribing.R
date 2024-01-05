@@ -51,7 +51,7 @@ summ_combined <- function(gp, var){
     
     tmp <- ortho_final %>%
       mutate(full = "Full cohort") %>%
-      group_by(routine, admitted, {{gp}}) %>%
+      group_by(routine, {{gp}}) %>%
       summarise(pre_person_days = rounding(sum(pre_time)),
                 wait_person_days = rounding(sum(wait_time_adj)),
                 post_person_days = rounding(sum(post_time_adj)),
@@ -89,11 +89,13 @@ prescribing_group <- rbind(
   summ_combined(age_group, "Age"),
   summ_combined(imd10, "IMD decile"),
   summ_combined(sex, "Sex"),
-  summ_combined(ethnicity6, "Ethnicity")) %>%
-  arrange(source, cohort, routine, variable, category, med_group)
+  summ_combined(ethnicity6, "Ethnicity"),
+  summ_combined(admitted, "Admitted")) %>%
+  arrange(source, cohort, routine, variable, category, med_group) 
 
-prescribing_group <- prescribing_group[,c("source", "cohort", "routine", "admitted", "variable", 
-                                          "category", "med_group", "pre_total_rx", "pre_person_days", 
+prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
+                                          "category", "routine", "med_group", 
+                                          "pre_total_rx", "pre_person_days", 
                                           "wait_total_rx", "wait_person_days", 
                                           "post_total_rx", "post_person_days")]
 

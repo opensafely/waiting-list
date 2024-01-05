@@ -151,23 +151,9 @@ dat <- ortho_final %>%
 routine <- cat_dist_combined() %>%
   rename(count_routine = count, total_routine = total)
 
-# Admitted only
-dat <- ortho_final %>%
-  subset(admitted == TRUE)
-
-admit <- cat_dist_combined() %>%
-  rename(count_admit = count, total_admit = total)
-
-# Non admitted only
-dat <- ortho_final %>%
-  subset(admitted == FALSE)
-
-notadmit <- cat_dist_combined() %>%
-  rename(count_notadmit = count, total_notadmit = total)
-
 
 # Merge 
-cat_dist <- list(overall, urgent, routine, admit, notadmit) %>% 
+cat_dist <- list(overall, urgent, routine) %>% 
   reduce(full_join, by=c("category","var","cohort","source")) %>%
   arrange(var, category) 
 
