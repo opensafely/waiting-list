@@ -57,7 +57,8 @@ cat_dist_combined <- function() {
         source = "clockstops", 
         cohort = "ortho"
       ) %>%
-      rename(category = {{variable}}) 
+      rename(category = {{variable}}) %>%
+      mutate(category = as.character(category))
   }
   
   rbind(
@@ -159,7 +160,7 @@ admit <- cat_dist_combined() %>%
 
 # Non admitted only
 dat <- ortho_final %>%
-  subset(admitted = FALSE)
+  subset(admitted == FALSE)
 
 notadmit <- cat_dist_combined() %>%
   rename(count_notadmit = count, total_notadmit = total)
