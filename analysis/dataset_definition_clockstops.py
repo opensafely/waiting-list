@@ -16,6 +16,7 @@ from ehrql.tables.tpp import (
 import codelists
 
 dataset = create_dataset()
+dataset.configure_dummy_data(population_size=10000)
 
 #### Waiting list variables ####
 
@@ -77,13 +78,12 @@ dataset.censor_before_study_end = (dataset.end_date < dataset.rtt_end_date + day
 
 med_codes = {
     "opioid": codelists.opioid_codes,
+    "lo_opioid": codelists.lo_opioid_codes,
+    "med_opioid": codelists.med_opioid_codes,
     "hi_opioid": codelists.hi_opioid_codes,
     "gabapentinoid": codelists.gabapentinoid_codes,
     "antidepressant": codelists.antidepressant_codes,
     "nsaid": codelists.nsaid_codes,
-    "codeine": codelists.codeine_codes,
-    "oxycodone": codelists.oxycodone_codes,
-    "tramadol": codelists.tramadol_codes,
     "weak_opioid": codelists.weak_opioid_codes,
     "strong_opioid": codelists.strong_opioid_codes,
     "long_opioid": codelists.long_opioid_codes,
@@ -100,11 +100,23 @@ for med, med_codelist in med_codes.items():
         ).count_for_patient()
     dataset.add_column(f"{med}_wait_count", wait_count_query)
 
+    # Any prescription during waiting list (this time period is variable, will account for this later)
+    wait_any_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_start_date, minimum_of(dataset.end_date, dataset.rtt_end_date))
+        ).exists_for_patient()
+    dataset.add_column(f"{med}_wait_any", wait_any_query)
+
     # Number of prescriptions before waiting list
     pre_count_query = med_events.where(
             med_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
         ).count_for_patient()
     dataset.add_column(f"{med}_pre_count", pre_count_query)
+    
+    # Any prescription before waiting list
+    pre_any_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
+        ).exists_for_patient()
+    dataset.add_column(f"{med}_pre_any", pre_any_query)
 
     # Number of prescriptions after waiting list
     post_count_query = med_events.where(
@@ -112,6 +124,13 @@ for med, med_codelist in med_codes.items():
             & (dataset.end_date > dataset.rtt_end_date)
         ).count_for_patient()
     dataset.add_column(f"{med}_post_count", post_count_query)
+    
+    # Any prescription after waiting list
+    post_any_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_end_date + days(1), minimum_of(dataset.rtt_end_date + days(182), dataset.end_date))
+            & (dataset.end_date > dataset.rtt_end_date)
+        ).exists_for_patient()
+    dataset.add_column(f"{med}_post_any", post_any_query)
 
 
 # Date of first prescription
