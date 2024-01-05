@@ -71,56 +71,13 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     # Time pre-WL (182 days for everyone)
                     pre_time = 182,
                     
-                    any_opioid_pre = (opioid_pre_count > 0),
-                    any_opioid_wait = (opioid_wait_count > 0),
-                    any_opioid_post = (opioid_post_count > 0),
-                    
-                    hi_opioid_pre = (hi_opioid_pre_count > 0),
-                    hi_opioid_wait = (hi_opioid_wait_count > 0),
-                    hi_opioid_post = (hi_opioid_post_count > 0),
-                    
-                    long_opioid_pre = (long_opioid_pre_count > 0),
-                    long_opioid_wait = (long_opioid_wait_count > 0),
-                    long_opioid_post = (long_opioid_post_count > 0),
-                    
-                    short_opioid_pre = (short_opioid_pre_count > 0),
-                    short_opioid_wait = (short_opioid_wait_count > 0),
-                    short_opioid_post = (short_opioid_post_count > 0),
-                    
-                    weak_opioid_pre = (weak_opioid_pre_count > 0),
-                    weak_opioid_wait = (weak_opioid_wait_count > 0),
-                    weak_opioid_post = (weak_opioid_post_count > 0),
-                    
-                    strong_opioid_pre = (strong_opioid_pre_count > 0),
-                    strong_opioid_wait = (strong_opioid_wait_count > 0),
-                    strong_opioid_post = (strong_opioid_post_count > 0),
-                    
-                    codeine_pre = (codeine_pre_count > 0),
-                    codeine_wait = (codeine_wait_count > 0),
-                    codeine_post = (codeine_post_count > 0),
-                    
-                    tramadol_pre = (tramadol_pre_count > 0),
-                    tramadol_wait = (tramadol_wait_count > 0),
-                    tramadol_post = (tramadol_post_count > 0),
-                    
-                    oxycodone_pre = (oxycodone_pre_count > 0),
-                    oxycodone_wait = (oxycodone_wait_count > 0),
-                    oxycodone_post = (oxycodone_post_count > 0),
-                    
-                    gabapentinoid_pre = (gabapentinoid_pre_count > 0),
-                    gabapentinoid_wait = (gabapentinoid_wait_count > 0),
-                    gabapentinoid_post = (gabapentinoid_post_count > 0),
-                    
-                    nsaid_pre = (nsaid_pre_count > 0),
-                    nsaid_wait = (nsaid_wait_count > 0),
-                    nsaid_post = (nsaid_post_count > 0),
-                    
-                    antidepressant_pre = (antidepressant_pre_count > 0),
-                    antidepressant_wait = (antidepressant_wait_count > 0),
-                    antidepressant_post = (antidepressant_post_count > 0),
-                    
+                    # Week of study period
                     week = ceiling(wait_time / 7),
+                    
+                    # Week variable capped at one year (for some analyses)
                     week52 =  ifelse(week > 52, 52, week),
+                    
+                    # Week category
                     week_gp = ifelse(week <= 18, "<=18 weeks", 
                                      ifelse(week > 18 & week <= 52, "19-52 weeks", 
                                             "52+ weeks")),
@@ -162,8 +119,36 @@ write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstop
 
 # Restrict to people with trauma/orthopaedic surgery
 ortho <- full_final %>%
-  subset(ortho_surgery == TRUE)
+  subset(ortho_surgery == TRUE) %>%
+  dplyr::select(!c(age_missing, age_not_18_110, sex_missing, sex_not_m_f))
+
+
+# Number of people excluded due to cancer 
+exclude <- ortho %>%
+  mutate(total = n()) %>%
+  group_by(cancer, total) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  mutate(var = "Cancer",
+         count = rounding(count),
+         total = rounding(total),
+         source = "clockstops", 
+         cohort = "ortho"
+  ) %>%
+  rename(category = cancer)
+
+exclude <- exclude[,c("source", "cohort", "var","category","count","total")]
+
+write.csv(exclude, here::here("output", "clockstops", "exclude_ortho.csv"),
+          row.names = FALSE)
+
+
+######## FINAL ORTHOPAEDIC COHORT #########
+
+ortho_final <- ortho %>%
+  subset(cancer == FALSE)
+
 
 ## Save as final
-write.csv(ortho, file = here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
+write.csv(ortho_final, file = here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
           row.names = FALSE)

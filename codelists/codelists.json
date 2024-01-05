@@ -185,6 +185,24 @@
       "url": "https://www.opencodelists.org/codelist/opensafely/symptoms-pain/71385a33/",
       "downloaded_at": "2023-12-21 13:39:49.292219Z",
       "sha": "f10644780459fc727569c6217778f122f7d4a0dc"
+    },
+    "opensafely-long-acting-opioids-less-than-50mg-per-day-ome-dmd.csv": {
+      "id": "opensafely/long-acting-opioids-less-than-50mg-per-day-ome-dmd/78b97ede",
+      "url": "https://www.opencodelists.org/codelist/opensafely/long-acting-opioids-less-than-50mg-per-day-ome-dmd/78b97ede/",
+      "downloaded_at": "2024-01-04 12:28:44.777534Z",
+      "sha": "cc04f30a080eff372a50d99b894eb0d8f5c57beb"
+    },
+    "opensafely-long-acting-opioids-50mg-to-119mg-per-day-ome-dmd.csv": {
+      "id": "opensafely/long-acting-opioids-50mg-to-119mg-per-day-ome-dmd/11c8f214",
+      "url": "https://www.opencodelists.org/codelist/opensafely/long-acting-opioids-50mg-to-119mg-per-day-ome-dmd/11c8f214/",
+      "downloaded_at": "2024-01-04 12:28:45.394555Z",
+      "sha": "5c10219fb852e6f1584337833682fa7b197be475"
+    },
+    "opensafely-long-acting-opioids-greater-than-or-equal-to-120mg-per-day-ome-dmd.csv": {
+      "id": "opensafely/long-acting-opioids-greater-than-or-equal-to-120mg-per-day-ome-dmd/2ad86549",
+      "url": "https://www.opencodelists.org/codelist/opensafely/long-acting-opioids-greater-than-or-equal-to-120mg-per-day-ome-dmd/2ad86549/",
+      "downloaded_at": "2024-01-04 13:16:18.387799Z",
+      "sha": "abc29fc00853f83c69bcdf3bffe424f24b8d9069"
     }
   }
 }

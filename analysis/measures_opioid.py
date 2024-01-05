@@ -132,7 +132,7 @@ prior_opioid_count = all_opioid_rx.where(
 prior_opioid_rx = (prior_opioid_count >= 3)
 
 
-## Demographics
+# Demographics
 age = patients.age_on(rtt_start_date)
 age_group = case(
         when(age < 40).then("18-39"),
@@ -146,31 +146,31 @@ age_group = case(
 
 sex = patients.sex
 
-# IMD decile
-imd = addresses.for_patient_on(rtt_start_date).imd_rounded
-imd10 = case(
-        when((imd >= 0) & (imd < int(32844 * 1 / 10))).then("1 (most deprived)"),
-        when(imd < int(32844 * 2 / 10)).then("2"),
-        when(imd < int(32844 * 3 / 10)).then("3"),
-        when(imd < int(32844 * 4 / 10)).then("4"),
-        when(imd < int(32844 * 5 / 10)).then("5"),
-        when(imd < int(32844 * 6 / 10)).then("6"),
-        when(imd < int(32844 * 7 / 10)).then("7"),
-        when(imd < int(32844 * 8 / 10)).then("8"),
-        when(imd < int(32844 * 9 / 10)).then("9"),
-        when(imd >= int(32844 * 9 / 10)).then("10 (least deprived)"),
-        otherwise="Unknown"
-)
+# # IMD decile
+# imd = addresses.for_patient_on(rtt_start_date).imd_rounded
+# imd10 = case(
+#         when((imd >= 0) & (imd < int(32844 * 1 / 10))).then("1 (most deprived)"),
+#         when(imd < int(32844 * 2 / 10)).then("2"),
+#         when(imd < int(32844 * 3 / 10)).then("3"),
+#         when(imd < int(32844 * 4 / 10)).then("4"),
+#         when(imd < int(32844 * 5 / 10)).then("5"),
+#         when(imd < int(32844 * 6 / 10)).then("6"),
+#         when(imd < int(32844 * 7 / 10)).then("7"),
+#         when(imd < int(32844 * 8 / 10)).then("8"),
+#         when(imd < int(32844 * 9 / 10)).then("9"),
+#         when(imd >= int(32844 * 9 / 10)).then("10 (least deprived)"),
+#         otherwise="Unknown"
+# )
 
-# IMD quintile
-imd5 = case(
-        when((imd >= 0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
-        when(imd < int(32844 * 2 / 5)).then("2"),
-        when(imd < int(32844 * 3 / 5)).then("3"),
-        when(imd < int(32844 * 4 / 5)).then("4"),
-        when(imd >= int(32844 * 4 / 5)).then("5 (least deprived)"),
-        otherwise="Unknown"
-)
+# # IMD quintile
+# imd5 = case(
+#         when((imd >= 0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
+#         when(imd < int(32844 * 2 / 5)).then("2"),
+#         when(imd < int(32844 * 3 / 5)).then("3"),
+#         when(imd < int(32844 * 4 / 5)).then("4"),
+#         when(imd >= int(32844 * 4 / 5)).then("5 (least deprived)"),
+#         otherwise="Unknown"
+# )
 
 
 ######

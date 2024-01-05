@@ -1,25 +1,33 @@
 ##################################################################
 # Some covariates used in the study are created from codelists
-# of clinical conditions or numerical values available on a
-# patient's records. This script fetches all of the codelists 
-# identified in codelists.txt from OpenCodelists.
+# of clinical conditions or prescribed medications. 
+# This script fetches the codelists identified in codelists.txt 
+# from OpenCodelists
 ####################################################################
 
 
-
-## Import code building blocks from cohort extractor package
 from ehrql import codelist_from_csv
 
  
-### Opioids
+### Opioid codelists
 
 opioid_codes = codelist_from_csv(
     "codelists/user-anschaf-opioids-for-analgesia-dmd.csv",
     column = "code"
 )
 
+lo_opioid_codes = codelist_from_csv(
+    "codelists/opensafely-long-acting-opioids-less-than-50mg-per-day-ome-dmd.csv",
+    column = "code"
+)
+
+med_opioid_codes = codelist_from_csv(
+    "codelists/opensafely-long-acting-opioids-50mg-to-119mg-per-day-ome-dmd.csv",
+    column = "code"
+)
+
 hi_opioid_codes = codelist_from_csv(
-    "codelists/opensafely-high-dose-long-acting-opioids-openprescribing-dmd.csv",
+    "codelists/opensafely-long-acting-opioids-greater-than-or-equal-to-120mg-per-day-ome-dmd.csv",
     column = "code"
 )
 
@@ -73,7 +81,8 @@ nsaid_codes = codelist_from_csv(
     column = "code"
 )
 
-# Demographics
+### Ethnicity
+
 ethnicity_codes_16 = codelist_from_csv(
     "codelists/opensafely-ethnicity-snomed-0removed.csv",
     column="snomedcode",
