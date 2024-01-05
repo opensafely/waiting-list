@@ -83,7 +83,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                                             "52+ weeks")),
                     
                     age_missing = (is.na(age)),
-                    age_not_18_110 = (!is.na(age) & age<18 & age >=110),
+                    age_not_18_110 = (!is.na(age) & (age<18 | age >=110)),
                     sex_missing = is.na(sex),
                     sex_not_m_f = (!is.na(sex) & sex == "intersex")
                 )
@@ -95,19 +95,21 @@ full_exclusions <- full %>%
   summarise(age_missing = sum(age_missing),
             age_not_18_110 = sum(age_not_18_110),
             sex_missing = sum(sex_missing),
-            sex_not_m_f = sum(sex_not_m_f)) %>%
+            sex_not_m_f = sum(sex_not_m_f),
+            not_ortho = sum(ortho_surgery == FALSE)) %>%
   ungroup() %>%
   mutate(age_missing = rounding(age_missing),
          age_not_18_110 = rounding(age_not_18_110),
          sex_missing = rounding(sex_missing),
-         sex_not_m_f = rounding(sex_not_m_f))
+         sex_not_m_f = rounding(sex_not_m_f),
+         not_ortho = rounding(not_ortho))
 
 write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_full_exclusions.csv"),
           row.names = FALSE)
 
 
 full_final <- full %>%
-  subset(!is.na(age) & age >= 18 & age < 110 
+  subset(!is.na(age) & (age >= 18 | age < 110)
          & !is.na(sex) & (sex != "intersex"))
 
 ## Save as final

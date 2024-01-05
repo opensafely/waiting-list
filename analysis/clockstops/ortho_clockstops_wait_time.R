@@ -85,18 +85,26 @@ wait_pcent_stratified <- ortho_final %>%
 
 wait_pcent <- rbind(wait_pcent_overall, wait_pcent_stratified)
 
+wait_pcent <- wait_pcent[,c("source", "cohort", "routine", "admit_gp", 
+                            "p10", "p25", "p50", "p75", "p90")]
+
 write.csv(wait_pcent, here::here("output", "clockstops", "wait_time_pcent_ortho.csv"),
           row.names = FALSE)
 
 # By week
 wait_time <- ortho_final %>%
+  group_by(week52) %>%
   mutate(total = n()) %>%
-  group_by(week52, total, admitted, routine) %>%
+  group_by(week52, admitted, routine, total) %>%
   summarise(count = n()) %>%
   mutate(count = rounding(count),
          total = rounding(total),
          source = "clockstops", cohort = "ortho") %>%
-  subset(routine != "Missing" & !is.na(routine))
+  subset(routine != "Missing" & !is.na(routine)) %>%
+  arrange(source, cohort, routine, admitted, week52, total)
+
+wait_time <- wait_time[,c("source", "cohort", "routine", "admitted", 
+                          "week52", "count",  "total")]
 
 write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.csv"),
           row.names = FALSE)
@@ -105,7 +113,7 @@ write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.
 wait_gp <- function(gp, name){
   
   ortho_final %>%
-    group_by({{gp}}, routine, admitted) %>%
+    group_by({{gp}}, routine) %>%
     mutate(total = n(),
            p25 = quantile(wait_time, .25, na.rm=TRUE),
            p50 = quantile(wait_time, .5, na.rm=TRUE),
@@ -128,8 +136,14 @@ wait_by_group <- rbind(
   wait_gp(sex, "Sex"),
   wait_gp(ethnicity6, "Ethnicity"),
   wait_gp(imd10, "IMD decile"),
-  wait_gp(region, "Region")
-) 
+  wait_gp(region, "Region"),
+  wait_gp(admitted, "Admitted")
+  ) %>% 
+  arrange(var, category, routine, week_gp)
+
+wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
+                                  "routine", "week_gp", "count", "total",
+                                  "p25", "p50", "p75")]
 
 write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group_ortho.csv"),
   row.names = FALSE) 
