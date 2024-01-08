@@ -97,10 +97,6 @@ cat_dist_combined <- function() {
     cat_dist(opioid_wait_any, "Any opioid (during WL)"),
     cat_dist(opioid_post_any, "Any opioid (post-WL)"),
     
-    cat_dist(hi_opioid_pre_any, "High dose opioid (pre-WL)"),
-    cat_dist(hi_opioid_wait_any, "High dose opioid (during WL)"),
-    cat_dist(hi_opioid_post_any, "High dose opioid (post-WL)"),
-    
     cat_dist(long_opioid_pre_any, "Long acting opioid (pre-WL)"),
     cat_dist(long_opioid_wait_any, "Long acting opioid (during WL)"),
     cat_dist(long_opioid_post_any, "Long acting opioid (post-WL)"),

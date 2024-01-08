@@ -17,6 +17,7 @@ library('ggplot2')
 library('zoo')
 library('reshape2')
 library('fs')
+library('rlang')
 
 ## Rounding function
 source(here("analysis", "custom_functions.R"))
