@@ -85,7 +85,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     age_missing = (is.na(age)),
                     age_not_18_110 = (!is.na(age) & (age<18 | age >=110)),
                     sex_missing = is.na(sex),
-                    sex_not_m_f = (!is.na(sex) & sex == "intersex")
+                    sex_not_m_f = (!is.na(sex) & !(sex %in% c("male","female")))
                 )
                     
                         
