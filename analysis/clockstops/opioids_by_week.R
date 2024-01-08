@@ -71,6 +71,9 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
 opioid_rx <- opioid_rx[,c("opioid_type", "routine", "admitted", "period", "var", 
                           "prior_opioid_rx", "week", "opioid_rx", "denominator")]
 
+opioid_rx <- opioid_rx %>%
+  subset(prior_opioid_rx == "Full cohort" | opioid_type == "Any opioid")
+
 write.csv(opioid_rx, file = here::here("output", "clockstops", "opioid_by_week.csv"),
           row.names = FALSE)
 
