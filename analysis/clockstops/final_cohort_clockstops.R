@@ -110,7 +110,7 @@ write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_ful
 
 full_final <- full %>%
   subset(!is.na(age) & (age >= 18 | age < 110)
-         & !is.na(sex) & (sex != "intersex"))
+         & !is.na(sex) & (sex %in% c("male", "female")))
 
 ## Save as final
 write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
