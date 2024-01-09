@@ -54,11 +54,12 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
                 prior_opioid_rx = ifelse(is.na(prior_opioid_rx), "Full cohort",
                                          ifelse(prior_opioid_rx == "TRUE", "Prior Rx",
                                                  "No prior Rx")),
-                var = ifelse(!is.na(prior_opioid_rx), "Prior opioid Rx", "Full cohort"),
+
                 # Convert interval start date to number of weeks 
                 week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
                 period = ifelse(grepl("pre", measure), "Pre-WL", 
                                 ifelse(grepl("post", measure), "Post-WL", "During WL")),
+                
                 admitted = as.character(admitted),
                 admitted = ifelse(admitted == "TRUE", "Admitted", "Not admitted"),
                 
@@ -68,7 +69,7 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
                               var, week, prior_opioid_rx, period, routine)) %>%
               arrange(opioid_type, routine, var, prior_opioid_rx, period, week)
 
-opioid_rx <- opioid_rx[,c("opioid_type", "routine", "admitted", "period", "var", 
+opioid_rx <- opioid_rx[,c("opioid_type", "routine", "admitted", "period", 
                           "prior_opioid_rx", "week", "opioid_rx", "denominator")]
 
 opioid_rx <- opioid_rx %>%
