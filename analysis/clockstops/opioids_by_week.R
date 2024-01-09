@@ -66,8 +66,8 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
                 opioid_rx = numerator
               )  %>%
               dplyr::select(c(opioid_type, opioid_rx, denominator, opioid_type, admitted,
-                              var, week, prior_opioid_rx, period, routine)) %>%
-              arrange(opioid_type, routine, var, prior_opioid_rx, period, week)
+                              week, prior_opioid_rx, period, routine)) %>%
+              arrange(opioid_type, routine, prior_opioid_rx, period, week)
 
 opioid_rx <- opioid_rx[,c("opioid_type", "routine", "admitted", "period", 
                           "prior_opioid_rx", "week", "opioid_rx", "denominator")]
