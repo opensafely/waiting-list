@@ -10,3 +10,4 @@ venv/
 .Rhistory
 .Rproj.user/
 dummy/measures_dummy.R
+analysis/published_data/*

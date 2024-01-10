@@ -71,6 +71,12 @@ antidepressant_codes = codelist_from_csv(
     column = "code"
 )
 
+# antidepressants_pain_codes = codelist_from_csv(
+#     "codelists/user-speed-vm-antidepressants-dmd.csv",
+#     column = "code"
+# )
+
+
 gabapentinoid_codes = codelist_from_csv(
     "codelists/user-anschaf-gabapentinoids-dmd.csv",
     column = "code"
