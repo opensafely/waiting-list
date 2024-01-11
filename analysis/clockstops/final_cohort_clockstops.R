@@ -83,8 +83,10 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                                             "52+ weeks")),
                     
                     covid_timing = ifelse(rtt_start_date < as.Date("2020-03-01"), "Pre-COVID",
-                                          ifelse(rtt_start_date >= as.Date("2020-03-01") & rtt_start_date < as.Date("2021-04-01")), "Restriction period",
-                                            "Recovery period"),
+                                          ifelse(rtt_start_date >= as.Date("2020-03-01") & 
+                                                   rtt_start_date < as.Date("2021-04-01"), 
+                                            "Restriction period",
+                                            "Recovery period")),
                                           
                     age_missing = (is.na(age)),
                     age_not_18_110 = (!is.na(age) & (age<18 | age >=110)),

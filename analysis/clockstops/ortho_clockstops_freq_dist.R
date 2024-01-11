@@ -69,7 +69,7 @@ cat_dist_combined <- function() {
     cat_dist(admitted, "Admitted"),   
     cat_dist(routine, "Urgency"),
     cat_dist(rtt_multiple, "Multiple RTT pathways"),
-    cat_dist(precovid, "Start date before COVID"),
+    cat_dist(covid_timing, "Start date timing"),
     
     cat_dist(age_group, "Age group"),
     cat_dist(sex, "Sex"),
