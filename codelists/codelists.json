@@ -139,10 +139,10 @@
       "sha": "d89dbea434802d6687b84833d9cb71f4ec4a8d94"
     },
     "user-anschaf-long-acting-opioids-dmd.csv": {
-      "id": "user/anschaf/long-acting-opioids-dmd/7b0d998b",
-      "url": "https://www.opencodelists.org/codelist/user/anschaf/long-acting-opioids-dmd/7b0d998b/",
-      "downloaded_at": "2023-12-21 11:38:09.307732Z",
-      "sha": "dbacb203eaea4151559fa62e21455023942d9f90"
+      "id": "user/anschaf/long-acting-opioids-dmd/66fb97fc",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/long-acting-opioids-dmd/66fb97fc/",
+      "downloaded_at": "2024-01-11 13:04:47.447503Z",
+      "sha": "29db448bfc3f915908905c0ed33d05cdcda12525"
     },
     "user-anschaf-strong-opioids-dmd.csv": {
       "id": "user/anschaf/strong-opioids-dmd/38be335d",
