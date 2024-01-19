@@ -51,15 +51,17 @@ tramadol_codes = codelist_from_csv(
     column = "code"
 )
 
-strong_opioid_codes = codelist_from_csv(
-    "codelists/user-anschaf-strong-opioids-dmd.csv",
-    column = "code"
-)
+# strong_opioid_codes = codelist_from_csv(
+#     "codelists/user-anschaf-strong-opioids-dmd.csv",
+#     column = "code"
+# )
 
 weak_opioid_codes = codelist_from_csv(
     "codelists/user-anschaf-weak-opioids-dmd.csv",
     column = "code"
 )
+
+strong_opioid_codes = set(opioid_codes)  - set(weak_opioid_codes)
 
 short_opioid_codes = set(opioid_codes) - set(long_opioid_codes)
 
@@ -71,11 +73,10 @@ antidepressant_codes = codelist_from_csv(
     column = "code"
 )
 
-# antidepressants_pain_codes = codelist_from_csv(
-#     "codelists/user-speed-vm-antidepressants-dmd.csv",
-#     column = "code"
-# )
-
+antidepressant_pain_codes = codelist_from_csv(
+    "codelists/user-speed-vm-antidepressants-for-pain-dmd.csv",
+    column = "code"
+)
 
 gabapentinoid_codes = codelist_from_csv(
     "codelists/user-anschaf-gabapentinoids-dmd.csv",

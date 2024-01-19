@@ -88,6 +88,7 @@ med_codes = {
     "strong_opioid": codelists.strong_opioid_codes,
     "long_opioid": codelists.long_opioid_codes,
     "short_opioid": codelists.short_opioid_codes,
+    "tca": codelists.antidepressant_pain_codes,
     }
 
 for med, med_codelist in med_codes.items():
