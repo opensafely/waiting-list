@@ -108,6 +108,12 @@
       "downloaded_at": "2023-12-14 13:15:45.610220Z",
       "sha": "b4859626c1fef42b8b539c8137426e527571f1cc"
     },
+    "user-speed-vm-antidepressants-for-pain-dmd.csv": {
+      "id": "user/speed-vm/antidepressants-for-pain-dmd/60cf6481",
+      "url": "https://www.opencodelists.org/codelist/user/speed-vm/antidepressants-for-pain-dmd/60cf6481/",
+      "downloaded_at": "2024-01-19 12:04:40.999623Z",
+      "sha": "dc441f75ebc1dd6cd57f1918f49526d8ba09084b"
+    },
     "ons-depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms.csv": {
       "id": "ons/depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms/1b8a48a4",
       "url": "https://www.opencodelists.org/codelist/ons/depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms/1b8a48a4/",
@@ -139,16 +145,16 @@
       "sha": "d89dbea434802d6687b84833d9cb71f4ec4a8d94"
     },
     "user-anschaf-long-acting-opioids-dmd.csv": {
-      "id": "user/anschaf/long-acting-opioids-dmd/66fb97fc",
-      "url": "https://www.opencodelists.org/codelist/user/anschaf/long-acting-opioids-dmd/66fb97fc/",
-      "downloaded_at": "2024-01-11 13:04:47.447503Z",
-      "sha": "29db448bfc3f915908905c0ed33d05cdcda12525"
+      "id": "user/anschaf/long-acting-opioids-dmd/397b7def",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/long-acting-opioids-dmd/397b7def/",
+      "downloaded_at": "2024-01-19 12:04:49.479796Z",
+      "sha": "1d8893bb8bf19a4f34bed91936e6fe403f252a73"
     },
-    "user-anschaf-strong-opioids-dmd.csv": {
-      "id": "user/anschaf/strong-opioids-dmd/38be335d",
-      "url": "https://www.opencodelists.org/codelist/user/anschaf/strong-opioids-dmd/38be335d/",
-      "downloaded_at": "2023-12-21 11:38:09.998122Z",
-      "sha": "8fe588c93675efcc88264bde8c76967d4b1298ff"
+    "user-chriswood-strongopioidsCW.csv": {
+      "id": "user/chriswood/strongopioidsCW/5e1ca48b",
+      "url": "https://www.opencodelists.org/codelist/user/chriswood/strongopioidsCW/5e1ca48b/",
+      "downloaded_at": "2024-01-19 12:04:50.808302Z",
+      "sha": "2865e181651706a5b6df67fb38a40a351ce479b1"
     },
     "user-anschaf-weak-opioids-dmd.csv": {
       "id": "user/anschaf/weak-opioids-dmd/51cda692",
