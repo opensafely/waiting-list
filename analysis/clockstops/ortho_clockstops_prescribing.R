@@ -78,7 +78,8 @@ summ_combined <- function(gp, var){
     summ_gp({{gp}}, "short_opioid"),
     summ_gp({{gp}}, "gabapentinoid"),
     summ_gp({{gp}}, "nsaid"),
-    summ_gp({{gp}}, "antidepressant")
+    summ_gp({{gp}}, "antidepressant"),
+    summ_gp({{gp}}, "tca")
   ) %>%
     mutate(source = "clockstops", cohort = "ortho", variable = var,
            category = as.character({{gp}}))

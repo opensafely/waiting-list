@@ -16,13 +16,14 @@ opensafely/osteoarthritis/2020-06-04/
 opensafely/depression/2020-07-09/
 opensafely/anxiety-disorders/6aef605a/
 user/anschaf/antidepressants-dmd/1b780211/
+user/speed-vm/antidepressants-for-pain-dmd/60cf6481/
 ons/depression-and-generalised-anxiety-disorder-diagnoses-and-symptoms/1b8a48a4
 opensafely/rheumatoid-arthritis/2020-05-12/
 user/anschaf/codeine-for-pain-dmd/3a4b9a7b/
 user/anschaf/oxycodone-dmd/6c6a80e5/
 user/anschaf/tramadol-dmd/535b0db0/
-user/anschaf/long-acting-opioids-dmd/7b0d998b/
-user/anschaf/strong-opioids-dmd/38be335d/
+user/anschaf/long-acting-opioids-dmd/397b7def/
+user/chriswood/strongopioidsCW/5e1ca48b/
 user/anschaf/weak-opioids-dmd/51cda692/
 user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5/
 opensafely/symptoms-depression/0e294f34/

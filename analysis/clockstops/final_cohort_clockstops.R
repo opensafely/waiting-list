@@ -82,6 +82,12 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                                      ifelse(week > 18 & week <= 52, "19-52 weeks", 
                                             "52+ weeks")),
                     
+                    covid_timing = ifelse(rtt_start_date < as.Date("2020-03-01"), "Pre-COVID",
+                                          ifelse(rtt_start_date >= as.Date("2020-03-01") & 
+                                                   rtt_start_date < as.Date("2021-04-01"), 
+                                            "Restriction period",
+                                            "Recovery period")),
+                                          
                     age_missing = (is.na(age)),
                     age_not_18_110 = (!is.na(age) & (age<18 | age >=110)),
                     sex_missing = is.na(sex),
@@ -109,7 +115,7 @@ write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_ful
 
 
 full_final <- full %>%
-  subset(!is.na(age) & (age >= 18 | age < 110)
+  subset(!is.na(age) & age >= 18 & age < 110
          & !is.na(sex) & (sex %in% c("male", "female")))
 
 ## Save as final

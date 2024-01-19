@@ -69,6 +69,7 @@ cat_dist_combined <- function() {
     cat_dist(admitted, "Admitted"),   
     cat_dist(routine, "Urgency"),
     cat_dist(rtt_multiple, "Multiple RTT pathways"),
+    cat_dist(covid_timing, "Start date timing"),
     
     cat_dist(age_group, "Age group"),
     cat_dist(sex, "Sex"),
@@ -123,7 +124,11 @@ cat_dist_combined <- function() {
     
     cat_dist(antidepressant_pre_any, "Antidepressant (pre-WL)"),
     cat_dist(antidepressant_wait_any, "Antidepressant (during WL)"),
-    cat_dist(antidepressant_post_any, "Antidepressant (post-WL)")
+    cat_dist(antidepressant_post_any, "Antidepressant (post-WL)"),
+    
+    cat_dist(tca_pre_any, "Antidepressant for pain (pre-WL)"),
+    cat_dist(tca_wait_any, "Antidepressant for pain (during WL)"),
+    cat_dist(tca_post_any, "Antidepressant for pain (post-WL)")
   ) 
   
 }
