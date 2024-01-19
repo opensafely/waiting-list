@@ -73,11 +73,6 @@ antidepressant_codes = codelist_from_csv(
     column = "code"
 )
 
-antidepressant_pain_codes = codelist_from_csv(
-    "codelists/user-speed-vm-antidepressants-for-pain-dmd.csv",
-    column = "code"
-)
-
 gabapentinoid_codes = codelist_from_csv(
     "codelists/user-anschaf-gabapentinoids-dmd.csv",
     column = "code"
@@ -85,6 +80,11 @@ gabapentinoid_codes = codelist_from_csv(
 
 nsaid_codes = codelist_from_csv(
     "codelists/opensafely-nsaids-oral.csv",
+    column = "code"
+)
+
+tca_codes = codelist_from_csv(
+    "codelists/user-speed-vm-antidepressants-for-pain-dmd.csv",
     column = "code"
 )
 

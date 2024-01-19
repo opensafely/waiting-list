@@ -83,12 +83,12 @@ med_codes = {
     "hi_opioid": codelists.hi_opioid_codes,
     "gabapentinoid": codelists.gabapentinoid_codes,
     "antidepressant": codelists.antidepressant_codes,
+    "tca": codelists.tca_codes,
     "nsaid": codelists.nsaid_codes,
     "weak_opioid": codelists.weak_opioid_codes,
     "strong_opioid": codelists.strong_opioid_codes,
     "long_opioid": codelists.long_opioid_codes,
     "short_opioid": codelists.short_opioid_codes,
-    "tca": codelists.antidepressant_pain_codes,
     }
 
 for med, med_codelist in med_codes.items():
