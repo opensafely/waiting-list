@@ -138,28 +138,46 @@ dat <- ortho_final
 
 overall <- cat_dist_combined() 
 
-# Urgent only
+# Urgent / admitted only
 dat <- ortho_final %>%
-  subset(routine == "Urgent")
+  subset(routine == "Urgent" & admitted == TRUE)
 
-urgent <- cat_dist_combined() %>%
-  rename(count_urgent = count, total_urgent = total)
+urgent_admit <- cat_dist_combined() %>%
+  rename(count_urgent_admitted = count, total_urgent_admitted = total)
 
-# Routine only
+# Routine / not admitted only
 dat <- ortho_final %>%
-  subset(priority_type %in% c("routine"))
+  subset(priority_type %in% c("routine") & admitted == TRUE)
 
-routine <- cat_dist_combined() %>%
-  rename(count_routine = count, total_routine = total)
+routine_admit <- cat_dist_combined() %>%
+  rename(count_routine_admitted = count, total_routine_admitted = total)
+
+
+# Urgent / not admitted only
+dat <- ortho_final %>%
+  subset(routine == "Urgent" & admitted == FALSE)
+
+urgent_notadmit <- cat_dist_combined() %>%
+  rename(count_urgent_notadmitted = count, total_urgent_notadmitted = total)
+
+# Routine / not admitted only
+dat <- ortho_final %>%
+  subset(priority_type %in% c("routine") & admitted == FALSE)
+
+routine_notadmit <- cat_dist_combined() %>%
+  rename(count_routine_notadmitted = count, total_routine_notadmitted = total)
 
 
 # Merge 
-cat_dist <- list(overall, urgent, routine) %>% 
+cat_dist <- list(overall, urgent_admit, routine_admit, urgent_notadmit, routine_notadmit) %>% 
   reduce(full_join, by=c("category","var","cohort","source")) %>%
   arrange(var, category) 
 
 cat_dist <- cat_dist[,c("source", "cohort", "var", "category", "count", "total",
-       "count_routine", "total_routine", "count_urgent", "total_urgent")]
+       "count_routine_admitted", "total_routine_admitted",
+       "count_routine_notadmitted", "total_routine_notadmitted",
+       "count_urgent_admitted", "total_urgent_admitted",
+       "count_urgent_notadmitted", "total_urgent_notadmitted")]
 
 write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_ortho.csv"),
           row.names = FALSE) 

@@ -113,12 +113,12 @@ write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.
 wait_gp <- function(gp, name){
   
   ortho_final %>%
-    group_by({{gp}}, routine) %>%
+    group_by({{gp}}, admitted, routine) %>%
     mutate(total = n(),
            p25 = quantile(wait_time, .25, na.rm=TRUE),
            p50 = quantile(wait_time, .5, na.rm=TRUE),
            p75 = quantile(wait_time, .75, na.rm=TRUE)) %>%
-    group_by({{gp}}, routine, week_gp, total, p25, p50, p75) %>%
+    group_by({{gp}}, routine, admitted, week_gp, total, p25, p50, p75) %>%
     summarise(count = n()) %>%
     mutate(count = rounding(count),
            total = rounding(total),
@@ -134,15 +134,14 @@ wait_gp <- function(gp, name){
 wait_by_group <- rbind(
   wait_gp(age_group, "Age group"),
   wait_gp(sex, "Sex"),
-  wait_gp(ethnicity6, "Ethnicity"),
   wait_gp(imd10, "IMD decile"),
-  wait_gp(region, "Region"),
-  wait_gp(admitted, "Admitted")
+  wait_gp(region, "Region")
   ) %>% 
   arrange(var, category, routine, week_gp) %>%
   subset(!(is.na(category)  | (var == "IMD decile" & category == "Unknown")))
 
 wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
+                                  "admitted",
                                   "routine", "week_gp", "count", "total",
                                   "p25", "p50", "p75")]
 
