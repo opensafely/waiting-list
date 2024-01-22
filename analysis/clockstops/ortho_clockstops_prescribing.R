@@ -52,7 +52,7 @@ summ_combined <- function(gp, var){
     
     tmp <- ortho_final %>%
       mutate(full = "Full cohort") %>%
-      subset(routin != "Missing")%>%
+      subset(routine != "Missing")%>%
       group_by(routine, admitted, {{gp}}) %>%
       summarise(pre_person_days = rounding(sum(pre_time)),
                 wait_person_days = rounding(sum(wait_time_adj)),
