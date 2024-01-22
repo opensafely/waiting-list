@@ -90,8 +90,10 @@ prescribing_group <- rbind(
   summ_combined(full, "Full cohort"),
   summ_combined(age_group, "Age"),
   summ_combined(imd10, "IMD decile"),
-  summ_combined(sex, "Sex")) %>%
-  arrange(source, cohort, routine, variable, category, med_group) 
+  summ_combined(sex, "Sex"),
+  summ_combined(region, "Region")) %>%
+  arrange(source, cohort, routine, variable, category, med_group) %>%
+  subset(!is.na(region) & !(imd10 == "Unknown"))
 
 prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
                                           "category", "routine", "admitted","med_group", 
