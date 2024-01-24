@@ -138,7 +138,9 @@ wait_by_group <- rbind(
   wait_gp(region, "Region")
   ) %>% 
   arrange(var, category, routine, week_gp) %>%
-  subset(!(is.na(category)  | (var == "IMD decile" & category == "Unknown")))
+  subset(!(is.na(category)  | (var == "IMD decile" & category == "Unknown"))) %>%
+  mutate(admitted = ifelse(admitted == TRUE, "Admitted", "Not admitted"))
+
 
 wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
                                   "admitted",

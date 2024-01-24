@@ -167,6 +167,7 @@ routine_notadmit <- cat_dist_combined() %>%
 # Merge 
 cat_dist <- list(overall, urgent_admit, routine_admit, urgent_notadmit, routine_notadmit) %>% 
   reduce(full_join, by=c("category","var","cohort","source")) %>%
+  filter(category != FALSE) %>%
   arrange(var, category) 
 
 cat_dist <- cat_dist[,c("source", "cohort", "var", "category", "count", "total",
