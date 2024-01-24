@@ -87,14 +87,14 @@ prescribing_group <- rbind(
   summ_combined(full, "Full cohort"),
   summ_combined(age_group, "Age"),
   summ_combined(imd10, "IMD decile"),
-  summ_combined(sex, "Sex"),
-  summ_combined(region, "Region")) %>%
+  summ_combined(sex, "Sex")) %>%
   arrange(source, cohort, routine, variable, category, med_group) %>%
   subset(!is.na(category) & !(variable == "IMD decile" & category == "Unknown")) %>%
   mutate(admitted = ifelse(admitted == TRUE, "Admitted", "Not admitted"))
 
 prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
-                                          "category", "routine", "admitted","med_group", 
+                                          "category", "routine", "admitted",
+                                          "med_group", 
                                           "pre_total_rx", "pre_person_days", 
                                           "wait_total_rx", "wait_person_days", 
                                           "post_total_rx", "post_person_days")]

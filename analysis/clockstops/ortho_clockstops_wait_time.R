@@ -134,8 +134,7 @@ wait_gp <- function(gp, name){
 wait_by_group <- rbind(
   wait_gp(age_group, "Age group"),
   wait_gp(sex, "Sex"),
-  wait_gp(imd10, "IMD decile"),
-  wait_gp(region, "Region")
+  wait_gp(imd10, "IMD decile")
   ) %>% 
   arrange(var, category, routine, week_gp) %>%
   subset(!(is.na(category)  | (var == "IMD decile" & category == "Unknown"))) %>%

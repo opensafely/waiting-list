@@ -49,6 +49,8 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                                      ifelse(priority_type %in% c("routine"), "Routine", 
                                             "Missing")),
                     
+                    priority_type = ifelse(is.na(priority_type), "Missing", priority_type),
+                    
                     # Admitted
                     admitted = (waiting_list_type %in% c("IRTT","PTLI","RTTI")),
 
