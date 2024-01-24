@@ -66,7 +66,6 @@ cat_dist_combined <- function() {
     cat_dist(priority_type, "Priority type"),
     cat_dist(censor_before_rtt_end, "Censor before WL end"),
     cat_dist(censor_before_study_end, "Censor before study end"),
-    cat_dist(admitted, "Admitted"),   
     cat_dist(rtt_multiple, "Multiple RTT pathways"),
     cat_dist(covid_timing, "Start date timing"),
     
@@ -166,23 +165,27 @@ routine_notadmit <- cat_dist_combined() %>%
 cat_dist <- list(overall, urgent_admit, routine_admit, urgent_notadmit, routine_notadmit) %>% 
   reduce(full_join, by=c("category","var","cohort","source")) %>%
   filter(category != FALSE) %>%
-  mutate(count_routine_notadmitted = 
-           ifelse(var == "Admitted" & category == TRUE, 0, count_routine_notadmitted),
-         count_urgent_notadmitted = 
-           ifelse(var == "Admitted" & category == TRUE, 0, count_urgent_notadmitted),
-         
-         count_routine_admitted =
-           ifelse(var == "Priority type" & (category %in% c("two week wait", "urgent")),
+  mutate(count_routine_admitted =
+           ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
                                             0, count_routine_admitted),
          count_routine_notadmitted = 
-           ifelse(var == "Priority type" & (category %in% c("two week wait", "urgent")),
+           ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
                                             0, count_routine_notadmitted),
+         total_routine_admitted = 
+           ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
+                  0, total_routine_admitted),
+         total_routine_notadmitted = 
+           ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
+                  0, total_routine_notadmitted),
          
          count_urgent_admitted =
-           ifelse(var == "Priority type" & category == "routine", 0, count_urgent_admitted),
-         
+           ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, count_urgent_admitted),
          count_urgent_notadmitted = 
-           ifelse(var == "Priority type" & category == "routine", 0, count_urgent_notadmitted)
+           ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, count_urgent_notadmitted),
+         total_urgent_admitted = 
+           ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, total_urgent_admitted),
+         total_urgent_notadmitted = 
+           ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, total_urgent_notadmitted)
          ) %>%
   arrange(var, category) 
 
