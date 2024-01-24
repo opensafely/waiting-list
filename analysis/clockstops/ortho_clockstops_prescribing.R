@@ -76,10 +76,7 @@ summ_combined <- function(gp, var){
     summ_gp({{gp}}, "hi_opioid"),
     summ_gp({{gp}}, "weak_opioid"),
     summ_gp({{gp}}, "long_opioid"),
-    summ_gp({{gp}}, "short_opioid"),
-    summ_gp({{gp}}, "gabapentinoid"),
-    summ_gp({{gp}}, "nsaid"),
-    summ_gp({{gp}}, "antidepressant")
+    summ_gp({{gp}}, "short_opioid")
   ) %>%
     mutate(source = "clockstops", cohort = "ortho", variable = var,
            category = as.character({{gp}}))
@@ -90,13 +87,13 @@ prescribing_group <- rbind(
   summ_combined(full, "Full cohort"),
   summ_combined(age_group, "Age"),
   summ_combined(imd10, "IMD decile"),
-  summ_combined(sex, "Sex"),
-  summ_combined(region, "Region")) %>%
+  summ_combined(sex, "Sex")) %>%
   arrange(source, cohort, routine, variable, category, med_group) %>%
-  subset(!is.na(region) & !(imd10 == "Unknown"))
+  subset(!(imd10 == "Unknown"))
 
 prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
-                                          "category", "routine", "admitted","med_group", 
+                                          "category", "routine", "admitted",
+                                          "med_group", 
                                           "pre_total_rx", "pre_person_days", 
                                           "wait_total_rx", "wait_person_days", 
                                           "post_total_rx", "post_person_days")]
