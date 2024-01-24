@@ -52,7 +52,7 @@ summ_combined <- function(gp, var){
     
     tmp <- ortho_final %>%
       mutate(full = "Full cohort") %>%
-      subset(routine != "Missing")%>%
+      subset(routine != "Missing") %>%
       group_by(routine, admitted, {{gp}}) %>%
       summarise(pre_person_days = rounding(sum(pre_time)),
                 wait_person_days = rounding(sum(wait_time_adj)),
@@ -89,7 +89,8 @@ prescribing_group <- rbind(
   summ_combined(imd10, "IMD decile"),
   summ_combined(sex, "Sex")) %>%
   arrange(source, cohort, routine, variable, category, med_group) %>%
-  subset(!(imd10 == "Unknown"))
+  subset(!is.na(category) & !(variable == "IMD decile" & category == "Unknown")) %>%
+  mutate(admitted = ifelse(admitted == TRUE, "Admitted", "Not admitted"))
 
 prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
                                           "category", "routine", "admitted",
