@@ -146,31 +146,31 @@ age_group = case(
 
 sex = patients.sex
 
-# # IMD decile
-# imd = addresses.for_patient_on(rtt_start_date).imd_rounded
-# imd10 = case(
-#         when((imd >= 0) & (imd < int(32844 * 1 / 10))).then("1 (most deprived)"),
-#         when(imd < int(32844 * 2 / 10)).then("2"),
-#         when(imd < int(32844 * 3 / 10)).then("3"),
-#         when(imd < int(32844 * 4 / 10)).then("4"),
-#         when(imd < int(32844 * 5 / 10)).then("5"),
-#         when(imd < int(32844 * 6 / 10)).then("6"),
-#         when(imd < int(32844 * 7 / 10)).then("7"),
-#         when(imd < int(32844 * 8 / 10)).then("8"),
-#         when(imd < int(32844 * 9 / 10)).then("9"),
-#         when(imd >= int(32844 * 9 / 10)).then("10 (least deprived)"),
-#         otherwise="Unknown"
-# )
+# IMD decile
+imd = addresses.for_patient_on(rtt_start_date).imd_rounded
+imd10 = case(
+        when((imd >= 0) & (imd < int(32844 * 1 / 10))).then("1 (most deprived)"),
+        when(imd < int(32844 * 2 / 10)).then("2"),
+        when(imd < int(32844 * 3 / 10)).then("3"),
+        when(imd < int(32844 * 4 / 10)).then("4"),
+        when(imd < int(32844 * 5 / 10)).then("5"),
+        when(imd < int(32844 * 6 / 10)).then("6"),
+        when(imd < int(32844 * 7 / 10)).then("7"),
+        when(imd < int(32844 * 8 / 10)).then("8"),
+        when(imd < int(32844 * 9 / 10)).then("9"),
+        when(imd >= int(32844 * 9 / 10)).then("10 (least deprived)"),
+        otherwise="Unknown"
+)
 
-# # IMD quintile
-# imd5 = case(
-#         when((imd >= 0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
-#         when(imd < int(32844 * 2 / 5)).then("2"),
-#         when(imd < int(32844 * 3 / 5)).then("3"),
-#         when(imd < int(32844 * 4 / 5)).then("4"),
-#         when(imd >= int(32844 * 4 / 5)).then("5 (least deprived)"),
-#         otherwise="Unknown"
-# )
+# IMD quintile
+imd5 = case(
+        when((imd >= 0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
+        when(imd < int(32844 * 2 / 5)).then("2"),
+        when(imd < int(32844 * 3 / 5)).then("3"),
+        when(imd < int(32844 * 4 / 5)).then("4"),
+        when(imd >= int(32844 * 4 / 5)).then("5 (least deprived)"),
+        otherwise="Unknown"
+)
 
 
 ######
@@ -240,6 +240,115 @@ measures.define_measure(
               "admitted": admitted}
     )
 
+
+
+##### By age #####
+
+# Prescribing pre WL - stratified by age
+measures.define_measure(
+    name="count_pre_age",
+    numerator=count_opioid_pre,
+    denominator=denominator,
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"age_group": age_group,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing during WL - stratified by age
+measures.define_measure(
+    name="count_wait_age",
+    numerator=count_opioid_wait,
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+    intervals=weeks(52).starting_on("2000-01-01"),
+    group_by={"age_group": age_group,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing post WL - stratified by age
+measures.define_measure(
+    name="count_post_age",
+    numerator=count_opioid_post,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"age_group": age_group,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+#### By IMD #####
+
+# Prescribing pre WL - stratified by imd
+measures.define_measure(
+    name="count_pre_imd",
+    numerator=count_opioid_pre,
+    denominator=denominator,
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"imd_decile": imd10,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing during WL - stratified by imd
+measures.define_measure(
+    name="count_wait_imd",
+    numerator=count_opioid_wait,
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+    intervals=weeks(52).starting_on("2000-01-01"),
+    group_by={"imd_decile": imd10,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing post WL - stratified by imd
+measures.define_measure(
+    name="count_post_imd",
+    numerator=count_opioid_post,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"imd_decile": imd10,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+
+##### By sex #####
+
+# Prescribing pre WL - stratified by sex
+measures.define_measure(
+    name="count_pre_sex",
+    numerator=count_opioid_pre,
+    denominator=denominator,
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"sex": sex,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing during WL - stratified by sex
+measures.define_measure(
+    name="count_wait_sex",
+    numerator=count_opioid_wait,
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+    intervals=weeks(52).starting_on("2000-01-01"),
+    group_by={"sex": sex,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing post WL - stratified by sex
+measures.define_measure(
+    name="count_post_sex",
+    numerator=count_opioid_post,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"sex": sex,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+
 ##### By prior opioid prescribing #####
 
 # Prescribing pre WL - stratified by prior opioid Rx
@@ -274,108 +383,3 @@ measures.define_measure(
               "routine": routine,
               "admitted": admitted}
     )
-
-##### By age #####
-
-# # Prescribing pre WL - stratified by age
-# measures.define_measure(
-#     name="count_pre_age",
-#     numerator=count_opioid_pre,
-#     denominator=denominator,
-#     intervals=weeks(26).starting_on("2000-01-01"),
-#     group_by={"age_group": age_group,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
-
-# # Prescribing during WL - stratified by age
-# measures.define_measure(
-#     name="count_wait_age",
-#     numerator=count_opioid_wait,
-#     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-#     intervals=weeks(52).starting_on("2000-01-01"),
-#     group_by={"age_group": age_group,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
-
-# # Prescribing post WL - stratified by age
-# measures.define_measure(
-#     name="count_post_age",
-#     numerator=count_opioid_post,
-#     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-#     intervals=weeks(26).starting_on("2000-01-01"),
-#     group_by={"age_group": age_group,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
-
-##### By IMD #####
-
-# # Prescribing pre WL - stratified by imd
-# measures.define_measure(
-#     name="count_pre_imd",
-#     numerator=count_opioid_pre,
-#     denominator=denominator,
-#     intervals=weeks(26).starting_on("2000-01-01"),
-#     group_by={"imd_decile": imd10,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
-
-# # Prescribing during WL - stratified by imd
-# measures.define_measure(
-#     name="count_wait_imd",
-#     numerator=count_opioid_wait,
-#     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-#     intervals=weeks(52).starting_on("2000-01-01"),
-#     group_by={"imd_decile": imd10,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
-
-# # Prescribing post WL - stratified by imd
-# measures.define_measure(
-#     name="count_post_imd",
-#     numerator=count_opioid_post,
-#     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-#     intervals=weeks(26).starting_on("2000-01-01"),
-#     group_by={"imd_decile": imd10,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
-
-##### By sex #####
-
-# # Prescribing pre WL - stratified by sex
-# measures.define_measure(
-#     name="count_pre_sex",
-#     numerator=count_opioid_pre,
-#     denominator=denominator,
-#     intervals=weeks(26).starting_on("2000-01-01"),
-#     group_by={"sex": sex,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
-
-# # Prescribing during WL - stratified by sex
-# measures.define_measure(
-#     name="count_wait_sex",
-#     numerator=count_opioid_wait,
-#     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-#     intervals=weeks(52).starting_on("2000-01-01"),
-#     group_by={"sex": sex,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
-
-# # Prescribing post WL - stratified by sex
-# measures.define_measure(
-#     name="count_post_sex",
-#     numerator=count_opioid_post,
-#     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-#     intervals=weeks(26).starting_on("2000-01-01"),
-#     group_by={"sex": sex,
-#               "routine": routine,
-#               "admitted": admitted}
-#     )
