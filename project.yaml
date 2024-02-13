@@ -104,10 +104,19 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_strong_opioid.csv
 
+  measures_opioid_stratified:
+    run: ehrql:v1 generate-measures analysis/measures_opioid_stratified.py 
+      --output output/measures/measures_opioid_stratified.csv
+      --
+      --codelist "opioid_codes"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_opioid_stratified.csv
+
   # Combine measures
   opioids_by_week:
     run: r:latest analysis/clockstops/opioids_by_week.R
-    needs: [measures_any_opioid, measures_weak_opioid, measures_strong_opioid, measures_long_opioid, measures_short_opioid]
+    needs: [measures_any_opioid, measures_weak_opioid, measures_strong_opioid, measures_long_opioid, measures_short_opioid, measures_opioid_stratified]
     outputs:
       moderately_sensitive:
         data: output/clockstops/opioid*.csv
