@@ -59,7 +59,15 @@ summ_combined <- function(gp, var){
                 post_person_days = rounding(sum(post_time_adj)),
                 pre_total_rx = rounding(sum(!!pre_count)),
                 wait_total_rx = rounding(sum(!!wait_count)),
-                post_total_rx = rounding(sum(!!post_count))
+                post_total_rx = rounding(sum(!!post_count)),
+                                         
+                pre_any_rx = rounding(sum(!!pre_count >=1)),
+                wait_any_rx = rounding(sum(!!wait_count >=1)),
+                post_any_rx = rounding(sum(!!post_count >=1)),
+                
+                pre_3plus_rx = rounding(sum(!!pre_count >=3)),
+                wait_3plus_rx = rounding(sum(!!wait_count >=3)),
+                post_3plus_rx = rounding(sum(!!post_count >=3)),
                 
       ) %>%
       mutate(med_group = med) 
@@ -94,7 +102,11 @@ prescribing_group <- prescribing_group[,c("source", "cohort", "variable",
                                           "med_group", 
                                           "pre_total_rx", "pre_person_days", 
                                           "wait_total_rx", "wait_person_days", 
-                                          "post_total_rx", "post_person_days")]
+                                          "post_total_rx", "post_person_days",
+                                          
+                                          "pre_any_rx", "pre_3plus_rx",
+                                          "wait_any_rx", "wait_3plus_rx", 
+                                          "post_any_rx", "post_3plus_days")]
 
 write.csv(prescribing_group, here::here("output", "clockstops", "med_by_period_ortho.csv"),
           row.names = FALSE)

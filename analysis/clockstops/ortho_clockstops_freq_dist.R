@@ -168,22 +168,28 @@ cat_dist <- list(overall, urgent_admit, routine_admit, urgent_notadmit, routine_
   mutate(count_routine_admitted =
            ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
                                             0, count_routine_admitted),
+         
          count_routine_notadmitted = 
            ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
                                             0, count_routine_notadmitted),
+         
          total_routine_admitted = 
            ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
                   0, total_routine_admitted),
+         
          total_routine_notadmitted = 
            ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
                   0, total_routine_notadmitted),
          
          count_urgent_admitted =
            ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, count_urgent_admitted),
+         
          count_urgent_notadmitted = 
            ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, count_urgent_notadmitted),
+         
          total_urgent_admitted = 
            ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, total_urgent_admitted),
+         
          total_urgent_notadmitted = 
            ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, total_urgent_notadmitted)
          ) %>%

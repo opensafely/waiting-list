@@ -23,13 +23,10 @@ user/anschaf/codeine-for-pain-dmd/3a4b9a7b/
 user/anschaf/oxycodone-dmd/6c6a80e5/
 user/anschaf/tramadol-dmd/535b0db0/
 user/anschaf/long-acting-opioids-dmd/397b7def/
-user/chriswood/strongopioidsCW/5e1ca48b/
+opensafely/strongopioidsCW-dmd/28e2efe5/
 user/anschaf/weak-opioids-dmd/51cda692/
 user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5/
 opensafely/symptoms-depression/0e294f34/
 opensafely/symptoms-anxiety/7519dbfe/
 primis-covid19-vacc-uptake-old/sev_mental_cod/v1/
 opensafely/symptoms-pain/71385a33
-opensafely/long-acting-opioids-less-than-50mg-per-day-ome-dmd/78b97ede/
-opensafely/long-acting-opioids-50mg-to-119mg-per-day-ome-dmd/11c8f214/
-opensafely/long-acting-opioids-greater-than-or-equal-to-120mg-per-day-ome-dmd/2ad86549/

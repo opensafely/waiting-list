@@ -48,13 +48,10 @@ strong_opioid_rx <- read_csv(here::here("output", "measures", "measures_strong_o
                           col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
   mutate(opioid_type = "Strong opioid")
 
+####
 
 opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_rx, strong_opioid_rx) %>%
-              mutate(prior_opioid_rx = as.character(prior_opioid_rx), 
-                prior_opioid_rx = ifelse(is.na(prior_opioid_rx), "Full cohort",
-                                         ifelse(prior_opioid_rx == "TRUE", "Prior Rx",
-                                                 "No prior Rx")),
-
+              mutate(
                 # Convert interval start date to number of weeks 
                 week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
                 period = ifelse(grepl("pre", measure), "Pre-WL", 
@@ -66,15 +63,47 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
                 opioid_rx = numerator
               )  %>%
               dplyr::select(c(opioid_type, opioid_rx, denominator, opioid_type, admitted,
-                              week, prior_opioid_rx, period, routine)) %>%
-              arrange(opioid_type, routine, prior_opioid_rx, period, week)
+                              week, period, routine)) %>%
+              arrange(opioid_type, routine, period, week)
 
 opioid_rx <- opioid_rx[,c("opioid_type", "routine", "admitted", "period", 
-                          "prior_opioid_rx", "week", "opioid_rx", "denominator")]
-
-opioid_rx <- opioid_rx %>%
-  subset(prior_opioid_rx == "Full cohort" | opioid_type == "Any opioid")
+                           "week", "opioid_rx", "denominator")]
 
 write.csv(opioid_rx, file = here::here("output", "clockstops", "opioid_by_week.csv"),
+          row.names = FALSE)
+
+
+#####
+
+
+strat_opioid_rx <- read_csv(here::here("output", "measures", "measures_opioid_stratified.csv"),
+                                 col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
+  mutate(opioid_type = "Any opioid",
+         prior_opioid_rx = as.character(prior_opioid_rx),
+         category = coalesce(prior_opioid_rx, age_group, imd_decile, sex, wait_group),
+         
+         variable = ifelse(!is.na(prior_opioid_rx), "Prior opioid Rx",
+                           ifelse(!is.na(age_group), "Age",
+                                  ifelse(!is.na(imd_decile), "IMD decile", 
+                                         ifelse(!is.na(sex), "Sex", "Wait time")))),
+         
+         # Convert interval start date to number of weeks 
+         week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
+         period = ifelse(grepl("pre", measure), "Pre-WL", 
+                         ifelse(grepl("post", measure), "Post-WL", "During WL")),
+         
+         admitted = as.character(admitted),
+         admitted = ifelse(admitted == "TRUE", "Admitted", "Not admitted"),
+         
+         opioid_rx = numerator
+  )  %>%
+  dplyr::select(c(opioid_type, opioid_rx, denominator, opioid_type, admitted,
+                  week, variable, category, period, routine)) %>%
+  arrange(opioid_type, routine, variable, category, period, week)
+
+strat_opioid_rx <- strat_opioid_rx[,c("opioid_type", "routine", "admitted", "period", 
+                          "variable", "category", "week", "opioid_rx", "denominator")]
+
+write.csv(strat_opioid_rx, file = here::here("output", "clockstops", "opioid_by_week_stratified.csv"),
           row.names = FALSE)
 
