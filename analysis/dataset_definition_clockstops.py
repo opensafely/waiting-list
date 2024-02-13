@@ -78,9 +78,9 @@ dataset.censor_before_study_end = (dataset.end_date < dataset.rtt_end_date + day
 
 med_codes = {
     "opioid": codelists.opioid_codes,
-    "lo_opioid": codelists.lo_opioid_codes,
-    "med_opioid": codelists.med_opioid_codes,
-    "hi_opioid": codelists.hi_opioid_codes,
+    # "lo_opioid": codelists.lo_opioid_codes,
+    # "med_opioid": codelists.med_opioid_codes,
+    # "hi_opioid": codelists.hi_opioid_codes,
     "gabapentinoid": codelists.gabapentinoid_codes,
     "antidepressant": codelists.antidepressant_codes,
     "tca": codelists.tca_codes,

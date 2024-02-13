@@ -37,6 +37,24 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) 
 
 
+############ Mean/median age ###############
+
+quantile <- scales::percent(c(.25,.5,.75))
+
+age_stats <- full_final %>%
+      summarise_at(vars(age), list(p25 = ~quantile(., .25, na.rm=TRUE),
+                             p50 = ~quantile(., .5, na.rm=TRUE),
+                             p75 = ~quantile(., .75, na.rm=TRUE),
+                             mean = ~mean(.))) %>%
+      mutate(variable = "Age summary statistics")
+    
+
+write.csv(age_stats, here::here("output", "clockstops", "age_stats.csv"),
+          row.names = FALSE) 
+
+
+
+
 ############ Categorical variable relative frequency distributions #############
 
 # Frequency distribution of categorical variables
