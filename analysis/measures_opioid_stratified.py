@@ -215,20 +215,6 @@ denominator = (
 
 
 
-##### By wait duration #####
-
-# Prescribing post WL - stratified by wait time
-measures.define_measure(
-    name="count_post_wait",
-    numerator=count_opioid_post,
-    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"wait_group": wait_group,
-              "routine": routine,
-              "admitted": admitted}
-    )
-
-
 ##### By age #####
 
 # Prescribing pre WL - stratified by age

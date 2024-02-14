@@ -25,16 +25,11 @@ source(here("analysis", "custom_functions.R"))
 ## Create directories if needed
 dir_create(here::here("output", "clockstops"), showWarnings = FALSE, recurse = TRUE)
 dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
+dir_create(here::here("dummy"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
-  col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
-                    rtt_end_date = col_date(format="%Y-%m-%d"),
-                    reg_end_date = col_date(format="%Y-%m-%d"),
-                    dod = col_date(format="%Y-%m-%d"),
-                    end_date = col_date(format="%Y-%m-%d"),
-                    first_opioid_date = col_date(format="%Y-%m-%d"))) %>%
+full <- arrow::read_feather(here::here("output", "data", "dataset_clockstops.arrow"))%>%
               
                 # Create new variables
                 mutate(
