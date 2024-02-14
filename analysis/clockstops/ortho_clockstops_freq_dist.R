@@ -41,17 +41,26 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
 
 quantile <- scales::percent(c(.25,.5,.75))
 
-age_stats <- full_final %>%
+age_stats <- ortho_final %>%
       summarise_at(vars(age), list(p25 = ~quantile(., .25, na.rm=TRUE),
                              p50 = ~quantile(., .5, na.rm=TRUE),
                              p75 = ~quantile(., .75, na.rm=TRUE),
                              mean = ~mean(.))) %>%
-      mutate(variable = "Age summary statistics")
+      mutate(variable = "Age summary statistics", routine = "Full cohort", admitted = NA)
+
+age_stats_group <- ortho_final %>%
+  group_by(routine, admitted) %>%
+  summarise_at(vars(age), list(p25 = ~quantile(., .25, na.rm=TRUE),
+                               p50 = ~quantile(., .5, na.rm=TRUE),
+                               p75 = ~quantile(., .75, na.rm=TRUE),
+                               mean = ~mean(.))) %>%
+  mutate(variable = "Age summary statistics")
+
+age_stats_combined <- rbind(age_stats, age_stats_group)
     
 
-write.csv(age_stats, here::here("output", "clockstops", "age_stats.csv"),
+write.csv(age_stats_combined, here::here("output", "clockstops", "age_stats.csv"),
           row.names = FALSE) 
-
 
 
 
@@ -61,7 +70,23 @@ write.csv(age_stats, here::here("output", "clockstops", "age_stats.csv"),
 cat_dist_combined <- function() {
   cat_dist <- function(variable, name) {
     
-    dat %>%
+    dat1 <- dat %>%
+      mutate(total = n()) %>%
+      group_by(total) %>%
+      summarise(count = n()) %>%
+      mutate(
+        var = "Full cohort",
+        count = rounding(count)
+      ) %>%
+      ungroup() %>%
+      mutate(
+        total = rounding(total),
+        source = "clockstops", 
+        cohort = "ortho"
+      ) %>%
+      mutate(category = "Full cohort")
+    
+    dat2 <- dat %>%
       mutate(total = n()) %>%
       group_by({{variable}}, total) %>%
       summarise(count = n()) %>%
@@ -77,23 +102,26 @@ cat_dist_combined <- function() {
       ) %>%
       rename(category = {{variable}}) %>%
       mutate(category = as.character(category))
+    
+    dat3 <- rbind(dat1, dat2)
+    
+    return(dat3)
   }
   
   rbind(
-    cat_dist(treatment_function, "Treatment function"),
     cat_dist(priority_type, "Priority type"),
     cat_dist(censor_before_rtt_end, "Censor before WL end"),
     cat_dist(censor_before_study_end, "Censor before study end"),
     cat_dist(rtt_multiple, "Multiple RTT pathways"),
     cat_dist(covid_timing, "Start date timing"),
-    
+
     cat_dist(age_group, "Age group"),
     cat_dist(sex, "Sex"),
     cat_dist(imd10, "IMD decile"),
     cat_dist(ethnicity6, "Ethnicity (6 groups)"),
     cat_dist(ethnicity16, "Ethnicity (16 groups)"),
     cat_dist(region, "Region"),
-    
+
     cat_dist(cancer, "Cancer"),
     cat_dist(diabetes, "Diabetes"),
     cat_dist(cardiac, "Cardiac"),
@@ -101,46 +129,14 @@ cat_dist_combined <- function() {
     cat_dist(liver, "Liver"),
     cat_dist(ckd, "CKD"),
     cat_dist(oa, "Osteoarthritis"),
-    cat_dist(depression, "Depression"),   
+    cat_dist(depression, "Depression"),
     cat_dist(anxiety, "Anxiety"),
     cat_dist(smi, "Severe mental illness"),
     cat_dist(oud, "Opioid use disorder"),
     cat_dist(ra, "Rheumatoid arthritis"),
 
     cat_dist(died_during_wl, "Died while on WL"),
-    cat_dist(died_during_post, "Died during post-WL follow-up"),
-    
-    cat_dist(opioid_pre_any, "Any opioid (pre-WL)"),
-    cat_dist(opioid_wait_any, "Any opioid (during WL)"),
-    cat_dist(opioid_post_any, "Any opioid (post-WL)"),
-    
-    cat_dist(long_opioid_pre_any, "Long acting opioid (pre-WL)"),
-    cat_dist(long_opioid_wait_any, "Long acting opioid (during WL)"),
-    cat_dist(long_opioid_post_any, "Long acting opioid (post-WL)"),
-    
-    cat_dist(short_opioid_pre_any, "Short acting opioid (pre-WL)"),
-    cat_dist(short_opioid_wait_any, "Short acting opioid (during WL)"),
-    cat_dist(short_opioid_post_any, "Short acting opioid (post-WL)"),
-    
-    cat_dist(weak_opioid_pre_any, "Weak opioid (pre-WL)"),
-    cat_dist(weak_opioid_wait_any, "Weak dose opioid (during WL)"),
-    cat_dist(weak_opioid_post_any, "Weak dose opioid (post-WL)"),
-    
-    cat_dist(strong_opioid_pre_any, "Strong dose opioid (pre-WL)"),
-    cat_dist(strong_opioid_wait_any, "Strong dose opioid (during WL)"),
-    cat_dist(strong_opioid_post_any, "Strong dose opioid (post-WL)"),
-    
-    cat_dist(gabapentinoid_pre_any, "Gabapentinoid (pre-WL)"),
-    cat_dist(gabapentinoid_wait_any, "Gabapentinoid (during WL)"),
-    cat_dist(gabapentinoid_post_any, "Gabapentinoid (post-WL)"),
-    
-    cat_dist(nsaid_pre_any, "NSAID (pre-WL)"),
-    cat_dist(nsaid_wait_any, "NSAID (during WL)"),
-    cat_dist(nsaid_post_any, "NSAID (post-WL)"),
-    
-    cat_dist(antidepressant_pre_any, "Antidepressant (pre-WL)"),
-    cat_dist(antidepressant_wait_any, "Antidepressant (during WL)"),
-    cat_dist(antidepressant_post_any, "Antidepressant (post-WL)")
+    cat_dist(died_during_post, "Died during post-WL follow-up")
   ) 
   
 }

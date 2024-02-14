@@ -28,84 +28,87 @@ dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
+ortho_final <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv.gz"),
                         col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
                                          rtt_end_date = col_date(format="%Y-%m-%d"),
                                          reg_end_date = col_date(format="%Y-%m-%d"),
                                          dod = col_date(format="%Y-%m-%d"),
                                          end_date = col_date(format="%Y-%m-%d"),
                                          rtt_start_month =  col_date(format="%Y-%m-%d"),
-                                         rtt_end_month =  col_date(format="%Y-%m-%d"))) 
+                                         rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
+  dplyr::select(c(patient_id, ends_with(c("_count")), post_time_adj, wait_time_adj, pre_time,
+                                        routine, admitted, age_group, sex, imd10, ethnicity6, region)) %>%
+  reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6","region",
+                        "routine", "admitted")) %>%
+  mutate(period = case_when(
+          grepl("pre_", variable) ~ "Pre-WL",
+          grepl("wait_", variable) ~ "During WL",
+          grepl("post_", variable) ~ "Post-WL",
+          .default = "Missing"
+          ),
+        measure = case_when(
+          grepl("time", variable) ~ "Person time",
+          grepl("short_opioid", variable) ~ "Short-acting opioid",
+          grepl("long_opioid", variable) ~ "Long-acting opioid",
+          grepl("weak_opioid", variable) ~ "Weak opioid",
+          grepl("strong_opioid", variable) ~ "Strong opioid",
+          grepl("gabapentinoid", variable) ~ "Gabapentinoid",
+          grepl("antidepressant", variable) ~ "Antidepressant",
+          grepl("nsaid", variable) ~ "NSAID",
+          grepl("tca", variable) ~ "NSAID",
+          .default = "Any opioid"
+        ))
+        
+person_time <- ortho_final %>%
+    subset(measure == "Person time") %>%
+    dplyr::select(c(patient_id, period, value)) %>%
+    rename(person_time = value)
+
+ortho_final <- merge(subset(ortho_final, measure != "Person time"), person_time, 
+                     by = c("patient_id", "period")) 
 
 
 ################## Medicine Rx count variables - overall and stratified ####################
 
 # Count total number of Rx, total person-days
 #   for each period and each medicine group
-summ_combined <- function(gp, var){
-  
-  summ_gp <- function(gp, med) {
-    
-    pre_count <- rlang::sym(paste0(med, "_pre_count"))
-    wait_count <- rlang::sym(paste0(med, "_wait_count"))
-    post_count <- rlang::sym(paste0(med, "_post_count"))
-    
+summ <- function(gp, var){
+
     tmp <- ortho_final %>%
       mutate(full = "Full cohort") %>%
-      subset(routine != "Missing")%>%
-      group_by(routine, admitted, {{gp}}) %>%
-      summarise(pre_person_days = rounding(sum(pre_time)),
-                wait_person_days = rounding(sum(wait_time_adj)),
-                post_person_days = rounding(sum(post_time_adj)),
-                pre_total_rx = rounding(sum(!!pre_count)),
-                wait_total_rx = rounding(sum(!!wait_count)),
-                post_total_rx = rounding(sum(!!post_count)),
-                                         
-                pre_any_rx = rounding(sum(!!pre_count >=1)),
-                wait_any_rx = rounding(sum(!!wait_count >=1)),
-                post_any_rx = rounding(sum(!!post_count >=1)),
-                
-                pre_3plus_rx = rounding(sum(!!pre_count >=3)),
-                wait_3plus_rx = rounding(sum(!!wait_count >=3)),
-                post_3plus_rx = rounding(sum(!!post_count >=3)),
-                
+      subset(routine != "Missing" & value >= 1) %>%
+      group_by(routine, admitted, period, measure, {{gp}}) %>%
+      summarise(person_days = rounding(sum(person_time)),
+                n_any = rounding(n())
       ) %>%
-      mutate(med_group = med) 
+      rename(category = {{gp}}) %>%
+      mutate(variable = var)
     
-    return(tmp)
+    tmp2 <- ortho_final %>%
+      mutate(full = "Full cohort") %>%
+      subset(routine != "Missing" & value >= 3) %>%
+      group_by(routine, admitted, period, measure, {{gp}}) %>%
+      summarise(n_3plus = rounding(n())) %>%
+      rename(category = {{gp}}) %>%
+    mutate(variable = var)
     
-  }
-  
-  rbind(
-    summ_gp({{gp}}, "opioid"),
-    summ_gp({{gp}}, "strong_opioid"),
-    summ_gp({{gp}}, "weak_opioid"),
-    summ_gp({{gp}}, "long_opioid"),
-    summ_gp({{gp}}, "short_opioid")
-  ) %>%
-    mutate(source = "clockstops", cohort = "ortho", variable = var,
-           category = as.character({{gp}}))
+    tmp3 <- merge(tmp, tmp2, by = c("routine", "admitted", "variable", "category", "period", "measure")) %>%
+        mutate(source = "clockstops", cohort = "ortho") 
+    
+    return(tmp3)
   
 }
 
 prescribing_group <- rbind(
-  summ_combined(full, "Full cohort"),
-  summ_combined(age_group, "Age"),
-  summ_combined(imd10, "IMD decile"),
-  summ_combined(sex, "Sex")) %>%
-  arrange(source, cohort, routine, variable, category, med_group) %>%
-  subset(!(imd10 == "Unknown"))
+    summ(full, "Full cohort"),
+    summ(age_group, "Age"),
+    summ(imd10, "IMD decile"),
+    summ(sex, "Sex")) %>%
+  arrange(source, cohort, routine, variable, category, period, measure) 
 
-prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
-                                          "category", "routine", "admitted",
-                                          "med_group", 
-                                          "pre_total_rx", "pre_person_days", 
-                                          "wait_total_rx", "wait_person_days", 
-                                          "post_total_rx", "post_person_days",
-                                          
-                                          "pre_any_rx", "pre_3plus_rx",
-                                          "wait_any_rx", "wait_3plus_rx", 
-                                          "post_any_rx", "post_3plus_days")]
+prescribing_group <- prescribing_group[,c("source", "cohort", "routine", "admitted", "variable", 
+                                          "category","person_days", "measure",  
+                                          "period", "n_any", "n_3plus")]
 
 write.csv(prescribing_group, here::here("output", "clockstops", "med_by_period_ortho.csv"),
           row.names = FALSE)
