@@ -1,7 +1,7 @@
 version: '3.0'
 
 expectations:
-  population_size: 1000
+  population_size: 100000
 
 actions:
 
@@ -10,10 +10,11 @@ actions:
   # Closed (completed) RTT pathways
   generate_dataset_clockstops:
     run: ehrql:v1 generate-dataset analysis/dataset_definition_clockstops.py 
-      --output output/data/dataset_clockstops.csv.gz
+      --output output/data/dataset_clockstops.arrow
+      --dummy-data-file dummy/dummy_ortho_clockstops.arrow
     outputs:
       highly_sensitive:
-        cohort: output/data/dataset_clockstops.csv.gz  
+        cohort: output/data/dataset_clockstops.arrow
 
   # Open (incomplete) RTT pathways
   # generate_dataset_openpathways:
