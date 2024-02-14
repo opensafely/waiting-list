@@ -70,23 +70,7 @@ write.csv(age_stats_combined, here::here("output", "clockstops", "age_stats.csv"
 cat_dist_combined <- function() {
   cat_dist <- function(variable, name) {
     
-    dat1 <- dat %>%
-      mutate(total = n()) %>%
-      group_by(total) %>%
-      summarise(count = n()) %>%
-      mutate(
-        var = "Full cohort",
-        count = rounding(count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        total = rounding(total),
-        source = "clockstops", 
-        cohort = "ortho"
-      ) %>%
-      mutate(category = "Full cohort")
-    
-    dat2 <- dat %>%
+    dat %>%
       mutate(total = n()) %>%
       group_by({{variable}}, total) %>%
       summarise(count = n()) %>%
@@ -103,9 +87,6 @@ cat_dist_combined <- function() {
       rename(category = {{variable}}) %>%
       mutate(category = as.character(category))
     
-    dat3 <- rbind(dat1, dat2)
-    
-    return(dat3)
   }
   
   rbind(

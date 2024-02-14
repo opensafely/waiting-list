@@ -149,12 +149,12 @@ actions:
        
   ##### Analysis - closed pathways #####
   
-  checks_cohort_clockstops:
-   run: r:latest analysis/clockstops/checks_cohort_clockstops.R
-   needs: [generate_dataset_clockstops]
-   outputs:
-      moderately_sensitive:
-        data: output/clockstops/check*.csv
+  # checks_cohort_clockstops:
+  #  run: r:latest analysis/clockstops/checks_cohort_clockstops.R
+  #  needs: [generate_dataset_clockstops]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data: output/clockstops/check*.csv
 
   final_cohort_clockstops:
    run: r:latest analysis/clockstops/final_cohort_clockstops.R

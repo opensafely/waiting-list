@@ -40,25 +40,21 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv
                                         routine, admitted, age_group, sex, imd10, ethnicity6, region)) %>%
   reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6","region",
                         "routine", "admitted")) %>%
-  mutate(period = case_when(
-          grepl("pre_", variable) == TRUE ~ "Pre-WL",
-          grepl("wait_", variable) == TRUE ~ "During WL",
-          grepl("post_", variable) == TRUE ~ "Post-WL",
-          .default = "Missing"
-          ),
-        measure = case_when(
-          grepl("time", variable) == TRUE ~ "Person time",
-          grepl("short_opioid", variable) == TRUE ~ "Short-acting opioid",
-          grepl("long_opioid", variable) == TRUE ~ "Long-acting opioid",
-          grepl("weak_opioid", variable) == TRUE ~ "Weak opioid",
-          grepl("strong_opioid", variable) == TRUE ~ "Strong opioid",
-          grepl("gabapentinoid", variable) == TRUE ~ "Gabapentinoid",
-          grepl("antidepressant", variable) == TRUE ~ "Antidepressant",
-          grepl("nsaid", variable) == TRUE ~ "NSAID",
-          grepl("tca", variable) == TRUE ~ "NSAID",
-          .default = "Any opioid"
-        ))
-        
+  mutate(period = ifelse(grepl("pre_", variable), "Pre-WL",
+                         ifelse(grepl("wait_", variable), "During WL", 
+                                ifelse(grepl("post_", variable), "Post WL",
+                                       "Missing"))),
+         measure = ifelse(grepl("time", variable), "Person time",
+                          ifelse(grepl("short_opioid", variable), "Short-acting opioid",
+                            ifelse(grepl("long_opioid", variable), "Long-acting opioid",
+                              ifelse(grepl("weak_opioid", variable), "Weak opioid",
+                                ifelse(grepl("strong_opioid", variable), "Strong opioid",
+                                    ifelse(grepl("babapentinoid", variable), "Gabapentinoid",
+                                       ifelse(grepl("antidepressant", variable), "Antidepressant",
+                                          ifelse(grepl("nsaid", variable), "NSAID",
+                                             ifelse(grepl("tca", variable), "TCA",
+                                                "Any opioid"))))))))))
+
 person_time <- ortho_final %>%
     subset(measure == "Person time") %>%
     dplyr::select(c(patient_id, period, value)) %>%
