@@ -41,21 +41,21 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv
   reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6","region",
                         "routine", "admitted")) %>%
   mutate(period = case_when(
-          grepl("pre_", variable) ~ "Pre-WL",
-          grepl("wait_", variable) ~ "During WL",
-          grepl("post_", variable) ~ "Post-WL",
+          grepl("pre_", variable) == TRUE ~ "Pre-WL",
+          grepl("wait_", variable) == TRUE ~ "During WL",
+          grepl("post_", variable) == TRUE ~ "Post-WL",
           .default = "Missing"
           ),
         measure = case_when(
-          grepl("time", variable) ~ "Person time",
-          grepl("short_opioid", variable) ~ "Short-acting opioid",
-          grepl("long_opioid", variable) ~ "Long-acting opioid",
-          grepl("weak_opioid", variable) ~ "Weak opioid",
-          grepl("strong_opioid", variable) ~ "Strong opioid",
-          grepl("gabapentinoid", variable) ~ "Gabapentinoid",
-          grepl("antidepressant", variable) ~ "Antidepressant",
-          grepl("nsaid", variable) ~ "NSAID",
-          grepl("tca", variable) ~ "NSAID",
+          grepl("time", variable) == TRUE ~ "Person time",
+          grepl("short_opioid", variable) == TRUE ~ "Short-acting opioid",
+          grepl("long_opioid", variable) == TRUE ~ "Long-acting opioid",
+          grepl("weak_opioid", variable) == TRUE ~ "Weak opioid",
+          grepl("strong_opioid", variable) == TRUE ~ "Strong opioid",
+          grepl("gabapentinoid", variable) == TRUE ~ "Gabapentinoid",
+          grepl("antidepressant", variable) == TRUE ~ "Antidepressant",
+          grepl("nsaid", variable) == TRUE ~ "NSAID",
+          grepl("tca", variable) == TRUE ~ "NSAID",
           .default = "Any opioid"
         ))
         
