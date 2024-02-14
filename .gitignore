@@ -11,3 +11,5 @@ venv/
 .Rproj.user/
 dummy/measures_dummy.R
 analysis/published_data/*
+analysis/old/*
+analysis/visualisation/*
