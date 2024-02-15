@@ -34,8 +34,7 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                     dod = col_date(format="%Y-%m-%d"),
                     end_date = col_date(format="%Y-%m-%d"),
                     rtt_start_month =  col_date(format="%Y-%m-%d"),
-                    rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
-  mutate(admit_gp = ifelse(admitted == TRUE, "Admitted", "Not admitted")) 
+                    rtt_end_month =  col_date(format="%Y-%m-%d"))) 
   
 
 
@@ -71,21 +70,22 @@ wait_pcent_overall <- ortho_final %>%
             p50 = quantile(wait_time, .5, na.rm=TRUE),
             p75 = quantile(wait_time, .75, na.rm=TRUE),
             p90 = quantile(wait_time, .9, na.rm=TRUE)) %>%
-  mutate(source = "clockstops", cohort = "ortho", routine = "All", admit_gp = "All") 
+  mutate(source = "clockstops", cohort = "ortho", routine = "All", admitted = "All") 
 
 wait_pcent_stratified <- ortho_final %>% 
-  group_by(routine, admit_gp) %>%
+  group_by(routine, admitted) %>%
   summarise(p10 = quantile(wait_time, .1, na.rm=TRUE),
             p25 = quantile(wait_time, .25, na.rm=TRUE),
             p50 = quantile(wait_time, .5, na.rm=TRUE),
             p75 = quantile(wait_time, .75, na.rm=TRUE),
             p90 = quantile(wait_time, .9, na.rm=TRUE)) %>%
-  mutate(source = "clockstops", cohort = "ortho") %>%
+  mutate(source = "clockstops", cohort = "ortho",
+         admitted = ifelse(admitted == TRUE, "Admitted", "Not admitted")) %>%
   subset(routine != "Missing" & !is.na(routine))
 
 wait_pcent <- rbind(wait_pcent_overall, wait_pcent_stratified)
 
-wait_pcent <- wait_pcent[,c("source", "cohort", "routine", "admit_gp", 
+wait_pcent <- wait_pcent[,c("source", "cohort", "routine", "admitted", 
                             "p10", "p25", "p50", "p75", "p90")]
 
 write.csv(wait_pcent, here::here("output", "clockstops", "wait_time_pcent_ortho.csv"),
@@ -127,23 +127,26 @@ wait_gp <- function(gp, name){
            source = "clockstops") %>%
     rename(category = {{gp}}) %>%
     ungroup() %>%
-    subset(routine != "Missing" & !is.na(routine))
+    subset(routine!= "Missing" & !is.na(routine))
   
 }
 
 wait_by_group <- rbind(
   wait_gp(age_group, "Age group"),
   wait_gp(sex, "Sex"),
-  wait_gp(imd10, "IMD decile")
+  wait_gp(imd10, "IMD decile"),
+  wait_gp(ethnicity6, "Ethnicity"),
+  wait_gp(region, "Region")
   ) %>% 
   arrange(var, category, routine, week_gp) %>%
-  subset(!(is.na(category)  | (var == "IMD decile" & category == "Unknown"))) %>%
-  mutate(admitted = ifelse(admitted == TRUE, "Admitted", "Not admitted"))
+  subset(!(is.na(category)  | 
+            (var == "IMD decile" & category == "Unknown") |
+            (var == "Region" & category == "Missing"))
+         )
 
 
 wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
-                                  "admitted",
-                                  "routine", "week_gp", "count", "total",
+                                  "admitted", "routine", "week_gp", "count", "total",
                                   "p25", "p50", "p75")]
 
 write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group_ortho.csv"),
