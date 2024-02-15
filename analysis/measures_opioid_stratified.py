@@ -183,6 +183,30 @@ imd5 = case(
 )
 
 
+# Ethnicity 6 categories
+eth6 = clinical_events.where(
+        clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
+    ).where(
+        clinical_events.date.is_on_or_before(rtt_start_date)
+    ).sort_by(
+        clinical_events.date
+    ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_6)
+
+ethnicity6 = case(
+    when(eth6 == "1").then("White"),
+    when(eth6 == "2").then("Mixed"),
+    when(eth6 == "3").then("South Asian"),
+    when(eth6 == "4").then("Black"),
+    when(eth6 == "5").then("Other"),
+    when(eth6 == "6").then("Not stated"),
+    otherwise="Unknown"
+)
+
+
+# Region
+region = practice_registrations.for_patient_on(rtt_start_date).practice_nuts1_region_name
+
+
 ######
 
 
@@ -317,6 +341,77 @@ measures.define_measure(
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(26).starting_on("2000-01-01"),
     group_by={"sex": sex,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+##### By ethnicity #####
+
+# Prescribing pre WL - stratified by ethnicity
+measures.define_measure(
+    name="count_pre_eth",
+    numerator=count_opioid_pre,
+    denominator=denominator,
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"ethnicity": ethnicity6,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing during WL - stratified by ethnicity
+measures.define_measure(
+    name="count_wait_eth",
+    numerator=count_opioid_wait,
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+    intervals=weeks(52).starting_on("2000-01-01"),
+    group_by={"ethnicity": ethnicity6,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing post WL - stratified by ethnicity
+measures.define_measure(
+    name="count_post_eth",
+    numerator=count_opioid_post,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"ethnicity": ethnicity6,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+
+##### By region #####
+
+# Prescribing pre WL - stratified by region
+measures.define_measure(
+    name="count_pre_region",
+    numerator=count_opioid_pre,
+    denominator=denominator,
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"region": region,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing during WL - stratified by region
+measures.define_measure(
+    name="count_wait_region",
+    numerator=count_opioid_wait,
+    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+    intervals=weeks(52).starting_on("2000-01-01"),
+    group_by={"region": region,
+              "routine": routine,
+              "admitted": admitted}
+    )
+
+# Prescribing post WL - stratified by region
+measures.define_measure(
+    name="count_post_region",
+    numerator=count_opioid_post,
+    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+    intervals=weeks(26).starting_on("2000-01-01"),
+    group_by={"region": region,
               "routine": routine,
               "admitted": admitted}
     )

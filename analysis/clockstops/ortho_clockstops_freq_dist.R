@@ -100,7 +100,6 @@ cat_dist_combined <- function() {
     cat_dist(sex, "Sex"),
     cat_dist(imd10, "IMD decile"),
     cat_dist(ethnicity6, "Ethnicity (6 groups)"),
-    cat_dist(ethnicity16, "Ethnicity (16 groups)"),
     cat_dist(region, "Region"),
 
     cat_dist(cancer, "Cancer"),
@@ -160,8 +159,9 @@ routine_notadmit <- cat_dist_combined() %>%
 cat_dist <- list(overall, urgent_admit, routine_admit, urgent_notadmit, routine_notadmit) %>% 
   reduce(full_join, by=c("category","var","cohort","source")) %>%
   filter(category != FALSE) %>%
-  mutate(count_routine_admitted =
-           ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
+  mutate(# Un-redact true zeroes
+          count_routine_admitted =
+           ifelse(var == "Priority type" &(category %in% c("Missing", "two week wait", "urgent")),
                                             0, count_routine_admitted),
          
          count_routine_notadmitted = 

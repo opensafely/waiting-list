@@ -80,11 +80,14 @@ strat_opioid_rx <- read_csv(here::here("output", "measures", "measures_opioid_st
                                  col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
   mutate(opioid_type = "Any opioid",
          prior_opioid_rx = as.character(prior_opioid_rx),
-         category = coalesce(prior_opioid_rx, age_group, imd_decile, sex),
+         category = coalesce(prior_opioid_rx, age_group, imd_decile, sex, region, ethnicity),
          
          variable = ifelse(!is.na(prior_opioid_rx), "Prior opioid Rx",
                            ifelse(!is.na(age_group), "Age",
-                                  ifelse(!is.na(imd_decile), "IMD decile", "Sex"))),
+                                  ifelse(!is.na(imd_decile), "IMD decile", 
+                                      ifelse(!is.na(region), "Region",
+                                            ifelse(!is.na(ethnicity), "Ethnicity", 
+                                                   "Sex"))))),
          
          # Convert interval start date to number of weeks 
          week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,

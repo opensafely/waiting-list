@@ -99,7 +99,10 @@ prescribing_group <- rbind(
     summ(full, "Full cohort"),
     summ(age_group, "Age"),
     summ(imd10, "IMD decile"),
+    summ(ethnicity6, "Ethnicity"),
+    summ(region, "Region"),
     summ(sex, "Sex")) %>%
+  subset(variable == "Full cohort" | !(measure %in% c("TCA","Gabapentinoid"))) %>%
   arrange(source, cohort, routine, variable, category, period, measure) 
 
 prescribing_group <- prescribing_group[,c("source", "cohort", "routine", "admitted", "variable", 
