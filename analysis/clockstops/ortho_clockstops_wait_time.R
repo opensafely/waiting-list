@@ -70,7 +70,7 @@ wait_pcent_overall <- ortho_final %>%
             p50 = quantile(wait_time, .5, na.rm=TRUE),
             p75 = quantile(wait_time, .75, na.rm=TRUE),
             p90 = quantile(wait_time, .9, na.rm=TRUE)) %>%
-  mutate(source = "clockstops", cohort = "ortho", routine = "All", admit_gp = "All") 
+  mutate(source = "clockstops", cohort = "ortho", routine = "All", admitted = "All") 
 
 wait_pcent_stratified <- ortho_final %>% 
   group_by(routine, admitted) %>%
@@ -79,7 +79,8 @@ wait_pcent_stratified <- ortho_final %>%
             p50 = quantile(wait_time, .5, na.rm=TRUE),
             p75 = quantile(wait_time, .75, na.rm=TRUE),
             p90 = quantile(wait_time, .9, na.rm=TRUE)) %>%
-  mutate(source = "clockstops", cohort = "ortho") %>%
+  mutate(source = "clockstops", cohort = "ortho",
+         admitted = ifelse(admitted == TRUE, "Admitted", "Not admitted")) %>%
   subset(routine != "Missing" & !is.na(routine))
 
 wait_pcent <- rbind(wait_pcent_overall, wait_pcent_stratified)
