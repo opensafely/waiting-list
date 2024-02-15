@@ -144,6 +144,7 @@ wait_by_group <- rbind(
             (var == "Region" & category == "Missing"))
          )
 
+
 wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
                                   "admitted", "routine", "week_gp", "count", "total",
                                   "p25", "p50", "p75")]
