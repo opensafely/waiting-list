@@ -36,21 +36,6 @@ long_opioid_codes = codelist_from_csv(
     column = "code"
 )
 
-oxycodone_codes = codelist_from_csv(
-    "codelists/user-anschaf-oxycodone-dmd.csv",
-    column = "code"
-)
-
-codeine_codes = codelist_from_csv(
-    "codelists/user-anschaf-codeine-for-pain-dmd.csv",
-    column = "code"
-)
-
-tramadol_codes = codelist_from_csv(
-    "codelists/user-anschaf-tramadol-dmd.csv",
-    column = "code"
-)
-
 strong_opioid_codes = codelist_from_csv(
     "codelists/opensafely-strongopioidsCW-dmd.csv",
     column = "code"
