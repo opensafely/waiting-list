@@ -107,6 +107,7 @@ for med, med_codelist in med_codes.items():
         ).exists_for_patient()
     dataset.add_column(f"{med}_wait_any", wait_any_query)
 
+
     # Number of prescriptions before waiting list
     pre_count_query = med_events.where(
             med_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
@@ -118,6 +119,7 @@ for med, med_codelist in med_codes.items():
             med_events.date.is_on_or_between(dataset.rtt_start_date - days(182), dataset.rtt_start_date - days(1))
         ).exists_for_patient()
     dataset.add_column(f"{med}_pre_any", pre_any_query)
+
 
     # Number of prescriptions after waiting list
     post_count_query = med_events.where(
@@ -132,6 +134,20 @@ for med, med_codelist in med_codes.items():
             & (dataset.end_date > dataset.rtt_end_date)
         ).exists_for_patient()
     dataset.add_column(f"{med}_post_any", post_any_query)
+
+
+    # Number of prescriptions before waiting list - 1 year
+    pre_1yr_count_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_start_date - days(365), dataset.rtt_start_date - days(1))
+        ).count_for_patient()
+    dataset.add_column(f"{med}_1yr_count", pre_1yr_count_query)
+    
+    # Any prescription before waiting list - 1 year
+    pre_1yr_any_query = med_events.where(
+            med_events.date.is_on_or_between(dataset.rtt_start_date - days(365), dataset.rtt_start_date - days(1))
+        ).exists_for_patient()
+    dataset.add_column(f"{med}_1yr_any", pre_1yr_any_query)
+
 
 
 # Date of first prescription
@@ -244,9 +260,9 @@ dataset.cancer = clinical_events.where(
     ).exists_for_patient()
 
 
-# Comorbidities in past 2 years
-clin_events_2yrs = clinical_events.where(
-        clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(2), dataset.rtt_start_date)
+# Comorbidities in past 5 years
+clin_events_5yrs = clinical_events.where(
+        clinical_events.date.is_on_or_between(dataset.rtt_start_date - years(5), dataset.rtt_start_date)
     )
 
 comorb_codes = {
@@ -268,15 +284,15 @@ for comorb, comorb_codelist in comorb_codes.items():
         
     if comorb in ["diabetes","cardiac","copd","liver","oa","ra"]:
 
-        ctv3_query = clin_events_2yrs.where(
-                clin_events_2yrs.ctv3_code.is_in(comorb_codelist)
+        ctv3_query = clin_events_5yrs.where(
+                clin_events_5yrs.ctv3_code.is_in(comorb_codelist)
             ).exists_for_patient()
         dataset.add_column(comorb, ctv3_query)
 
     else:
 
-        snomed_query = clin_events_2yrs.where(
-                clin_events_2yrs.snomedct_code.is_in(comorb_codelist)
+        snomed_query = clin_events_5yrs.where(
+                clin_events_5yrs.snomedct_code.is_in(comorb_codelist)
             ).exists_for_patient()
         dataset.add_column(comorb, snomed_query)
 

@@ -43,7 +43,7 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
 rtt_month <- ortho_final %>%
   mutate(month = pmax(rtt_start_month, as.Date("2020-01-01")),
          type = "RTT start date") %>%
-  group_by(month, type) %>%
+  group_by(month, type, routine, admitted) %>%
   summarise(count = n()) %>%
   bind_rows(
     ortho_final %>%
@@ -93,6 +93,7 @@ write.csv(wait_pcent, here::here("output", "clockstops", "wait_time_pcent_ortho.
 
 # By week
 wait_time <- ortho_final %>%
+  subset(routine == "Routine") %>%
   group_by(week52) %>%
   mutate(total = n()) %>%
   group_by(week52, admitted, routine, total) %>%
@@ -113,6 +114,7 @@ write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.
 wait_gp <- function(gp, name){
   
   ortho_final %>%
+    subset(routine == "Routine") %>%
     group_by({{gp}}, admitted, routine) %>%
     mutate(total = n(),
            p25 = quantile(wait_time, .25, na.rm=TRUE),
@@ -126,8 +128,7 @@ wait_gp <- function(gp, name){
            cohort = "ortho", 
            source = "clockstops") %>%
     rename(category = {{gp}}) %>%
-    ungroup() %>%
-    subset(routine!= "Missing" & !is.na(routine))
+    ungroup() 
   
 }
 

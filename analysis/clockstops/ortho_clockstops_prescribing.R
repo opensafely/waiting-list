@@ -43,13 +43,14 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv
   mutate(period = ifelse(grepl("pre_", variable), "Pre-WL",
                          ifelse(grepl("wait_", variable), "During WL", 
                                 ifelse(grepl("post_", variable), "Post WL",
-                                       "Missing"))),
+                                       ifelse(grepl("1yr_", variable), "Pre-WL (1 year)",
+                                          "Missing")))),
          measure = ifelse(grepl("time", variable), "Person time",
                           ifelse(grepl("short_opioid", variable), "Short-acting opioid",
                             ifelse(grepl("long_opioid", variable), "Long-acting opioid",
                               ifelse(grepl("weak_opioid", variable), "Weak opioid",
                                 ifelse(grepl("strong_opioid", variable), "Strong opioid",
-                                    ifelse(grepl("babapentinoid", variable), "Gabapentinoid",
+                                    ifelse(grepl("gabapentinoid", variable), "Gabapentinoid",
                                        ifelse(grepl("antidepressant", variable), "Antidepressant",
                                           ifelse(grepl("nsaid", variable), "NSAID",
                                              ifelse(grepl("tca", variable), "TCA",
@@ -102,7 +103,6 @@ prescribing_group <- rbind(
     summ(ethnicity6, "Ethnicity"),
     summ(region, "Region"),
     summ(sex, "Sex")) %>%
-  subset(variable == "Full cohort" | !(measure %in% c("TCA","Gabapentinoid"))) %>%
   arrange(source, cohort, routine, variable, category, period, measure) 
 
 prescribing_group <- prescribing_group[,c("source", "cohort", "routine", "admitted", "variable", 
