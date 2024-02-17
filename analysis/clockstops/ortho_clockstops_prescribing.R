@@ -54,7 +54,9 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv
                                        ifelse(grepl("antidepressant", variable), "Antidepressant",
                                           ifelse(grepl("nsaid", variable), "NSAID",
                                              ifelse(grepl("tca", variable), "TCA",
-                                                "Any opioid"))))))))))
+                                                "Any opioid"))))))))),
+         med_any = ifelse(value >= 1, 1, 0),
+         med_3plus = ifelse(value >=3, 1, 0))
 
 person_time <- ortho_final %>%
     subset(measure == "Person time") %>%
@@ -62,7 +64,59 @@ person_time <- ortho_final %>%
     rename(person_time = value)
 
 ortho_final <- merge(subset(ortho_final, measure != "Person time"), person_time, 
-                     by = c("patient_id", "period")) 
+                     by = c("patient_id", "period"), all.x = TRUE) 
+
+
+##################### Medicine prescribing counts ######################
+
+
+# Frequency distribution of categorical variables
+cat_dist_meds <- function() {
+  cat_dist <- function(variable, name) {
+    
+    dat %>%
+      subset(routine == "Routine") %>%
+      group_by({{variable}}, measure, period, routine, admitted) %>%
+      summarise(count_any = sum(med_any),
+                count_3plus = sum(med_3plus),
+                total = n()) %>%
+      mutate(
+        var = name, total = rounding(total),
+        count_any = rounding(count_any),
+        count_3plus = rounding(count_3plus)
+      ) %>%
+      ungroup() %>%
+      mutate(
+        total = rounding(total),
+        source = "clockstops", 
+        cohort = "ortho"
+      ) %>%
+      rename(category = {{variable}}) %>%
+      mutate(category = as.character(category))
+    
+  }
+  
+  rbind(
+    cat_dist(age_group, "Age"),
+    cat_dist(imd10, "IMD"),
+    cat_dist(ethnicity6, "Ethnicity"),
+    cat_dist(region, "Region"),
+    cat_dist(sex, "Sex")
+  ) 
+  
+}
+
+# Overall
+dat <- ortho_final
+
+meds <- cat_dist_meds() 
+
+meds <- meds[,c("source", "cohort", "routine", "admitted", 
+                        "var", "category",  "period",
+                        "measure", "count_any", "count_3plus", "total") ]
+
+write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
+          row.names = FALSE) 
 
 
 ################## Medicine Rx count variables - overall and stratified ####################
@@ -71,28 +125,15 @@ ortho_final <- merge(subset(ortho_final, measure != "Person time"), person_time,
 #   for each period and each medicine group
 summ <- function(gp, var){
 
-    tmp <- ortho_final %>%
+    ortho_final %>%
       mutate(full = "Full cohort") %>%
-      subset(routine != "Missing" & value >= 1) %>%
+      subset(routine == "Routine" & period != "Pre-WL (1 year)") %>%
       group_by(routine, admitted, period, measure, {{gp}}) %>%
       summarise(person_days = rounding(sum(person_time)),
-                n_any = rounding(n())
-      ) %>%
+                count_rx = rounding(sum(value))) %>%
       rename(category = {{gp}}) %>%
-      mutate(variable = var)
+    mutate(variable = var, source = "clockstops", cohort = "ortho") 
     
-    tmp2 <- ortho_final %>%
-      mutate(full = "Full cohort") %>%
-      subset(routine != "Missing" & value >= 3) %>%
-      group_by(routine, admitted, period, measure, {{gp}}) %>%
-      summarise(n_3plus = rounding(n())) %>%
-      rename(category = {{gp}}) %>%
-    mutate(variable = var)
-    
-    tmp3 <- merge(tmp, tmp2, by = c("routine", "admitted", "variable", "category", "period", "measure")) %>%
-        mutate(source = "clockstops", cohort = "ortho") 
-    
-    return(tmp3)
   
 }
 
@@ -106,8 +147,8 @@ prescribing_group <- rbind(
   arrange(source, cohort, routine, variable, category, period, measure) 
 
 prescribing_group <- prescribing_group[,c("source", "cohort", "routine", "admitted", "variable", 
-                                          "category","person_days", "measure",  
-                                          "period", "n_any", "n_3plus")]
+                                          "category","period","person_days", "measure", "count_rx"
+                                          )]
 
 write.csv(prescribing_group, here::here("output", "clockstops", "med_by_period_ortho.csv"),
           row.names = FALSE)
