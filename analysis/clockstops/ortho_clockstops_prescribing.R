@@ -28,7 +28,7 @@ dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-ortho_final <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv.gz"),
+ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
                         col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
                                          rtt_end_date = col_date(format="%Y-%m-%d"),
                                          reg_end_date = col_date(format="%Y-%m-%d"),
@@ -38,23 +38,24 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_full_clockstops.csv
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
   dplyr::select(c(patient_id, ends_with(c("_count")), post_time_adj, wait_time_adj, pre_time,
                                         routine, admitted, age_group, sex, imd10, ethnicity6, region)) %>%
-  reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6","region",
-                        "routine", "admitted")) %>%
-  mutate(period = ifelse(grepl("pre_", variable), "Pre-WL",
-                         ifelse(grepl("wait_", variable), "During WL", 
-                                ifelse(grepl("post_", variable), "Post WL",
-                                       ifelse(grepl("1yr_", variable), "Pre-WL (1 year)",
-                                          "Missing")))),
-         measure = ifelse(grepl("time", variable), "Person time",
-                          ifelse(grepl("short_opioid", variable), "Short-acting opioid",
-                            ifelse(grepl("long_opioid", variable), "Long-acting opioid",
-                              ifelse(grepl("weak_opioid", variable), "Weak opioid",
-                                ifelse(grepl("strong_opioid", variable), "Strong opioid",
-                                    ifelse(grepl("gabapentinoid", variable), "Gabapentinoid",
-                                       ifelse(grepl("antidepressant", variable), "Antidepressant",
-                                          ifelse(grepl("nsaid", variable), "NSAID",
-                                             ifelse(grepl("tca", variable), "TCA",
-                                                "Any opioid"))))))))),
+  reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6",
+                        "region","routine", "admitted")) %>%
+  mutate(period = case_when(
+                      grepl("pre_", variable) ~ "Pre-WL",
+                      grepl("wait_", variable) ~ "During WL", 
+                      grepl("post_", variable) ~ "Post WL",
+                      grepl("1yr_", variable) ~ "Pre-WL (1 year)"),
+         measure = case_when(
+                      grepl("time", variable) ~ "Person time",
+                      grepl("short_opioid", variable) ~ "Short-acting opioid",
+                      grepl("long_opioid", variable) ~ "Long-acting opioid",
+                      grepl("weak_opioid", variable) ~ "Weak opioid",
+                      grepl("strong_opioid", variable) ~ "Strong opioid",
+                      grepl("gabapentinoid", variable) ~ "Gabapentinoid",
+                      grepl("antidepressant", variable) ~ "Antidepressant",
+                      grepl("nsaid", variable) ~ "NSAID",
+                      grepl("tca", variable) ~ "TCA",
+                      TRUE ~ "Any opioid"),
          med_any = ifelse(value >= 1, 1, 0),
          med_3plus = ifelse(value >=3, 1, 0))
 
@@ -67,10 +68,11 @@ ortho_final <- merge(subset(ortho_final, measure != "Person time"), person_time,
                      by = c("patient_id", "period"), all.x = TRUE) 
 
 
-##################### Medicine prescribing counts ######################
+######### Medicine prescribing frequencies - overall and stratified ############
 
 
-# Frequency distribution of categorical variables
+# Number of people with any prescription and 3+ prescriptions
+# during each time period
 cat_dist_meds <- function() {
   cat_dist <- function(variable, name) {
     
@@ -106,7 +108,7 @@ cat_dist_meds <- function() {
   
 }
 
-# Overall
+
 dat <- ortho_final
 
 meds <- cat_dist_meds() 
@@ -133,7 +135,6 @@ summ <- function(gp, var){
                 count_rx = rounding(sum(value))) %>%
       rename(category = {{gp}}) %>%
     mutate(variable = var, source = "clockstops", cohort = "ortho") 
-    
   
 }
 
