@@ -52,7 +52,7 @@ short_opioid_codes = set(opioid_codes) - set(long_opioid_codes)
 ### Other medications
 
 antidepressant_codes = codelist_from_csv(
-    "codelists/user-anschaf--dmd.csv",
+    "codelists/user-anschaf-antidepressants-dmd.csv",
     column = "code"
 )
 
