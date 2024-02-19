@@ -174,11 +174,11 @@
       "downloaded_at": "2023-12-14 13:15:41.850804Z",
       "sha": "4d76e8be2809f2d865793309b00c7c4ef187c76f"
     },
-    "user-speed-vm-antidepressants-for-pain-dmd.csv": {
-      "id": "user/speed-vm/antidepressants-for-pain-dmd/60cf6481",
-      "url": "https://www.opencodelists.org/codelist/user/speed-vm/antidepressants-for-pain-dmd/60cf6481/",
-      "downloaded_at": "2024-01-19 12:04:40.999623Z",
-      "sha": "dc441f75ebc1dd6cd57f1918f49526d8ba09084b"
+    "user-speed-vm-antidepressants-for-pain-indication-dmd.csv": {
+      "id": "user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556",
+      "url": "https://www.opencodelists.org/codelist/user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556/",
+      "downloaded_at": "2024-02-19 21:08:44.240615Z",
+      "sha": "59fea38defca9896ef48dd3c8bea9d649420542d"
     }
   }
 }
