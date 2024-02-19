@@ -34,16 +34,16 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                     dod = col_date(format="%Y-%m-%d"),
                     end_date = col_date(format="%Y-%m-%d"),
                     rtt_start_month =  col_date(format="%Y-%m-%d"),
-                    rtt_end_month =  col_date(format="%Y-%m-%d"))) 
+                    rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
+  subset(routine == "Routine" & admitted == TRUE)
   
-
 
 ############# Plot start/end dates by month #################
 
 rtt_month <- ortho_final %>%
   mutate(month = pmax(rtt_start_month, as.Date("2020-01-01")),
          type = "RTT start date") %>%
-  group_by(month, type, routine, admitted) %>%
+  group_by(month, type) %>%
   summarise(count = n()) %>%
   bind_rows(
     ortho_final %>%
@@ -52,7 +52,7 @@ rtt_month <- ortho_final %>%
       group_by(month, type) %>%
       summarise(count = n())
   ) %>%
-  mutate(count = rounding(count), source = "clockstops", cohort = "ortho") 
+  mutate(count = rounding(count), source = "clockstops", cohort = "Orthopaedic - Routine/Admitted") 
 
 write.csv(rtt_month, here::here("output", "clockstops", "rtt_dates_ortho.csv"),
           row.names = FALSE)
@@ -64,48 +64,32 @@ write.csv(rtt_month, here::here("output", "clockstops", "rtt_dates_ortho.csv"),
 quantile <- scales::percent(c(.1,.25,.5,.75,.9,.95,.99))
 
 # Percentiles
-wait_pcent_overall <- ortho_final %>% 
+wait_pcent <- ortho_final %>% 
   summarise(p10 = quantile(wait_time, .1, na.rm=TRUE),
             p25 = quantile(wait_time, .25, na.rm=TRUE),
             p50 = quantile(wait_time, .5, na.rm=TRUE),
             p75 = quantile(wait_time, .75, na.rm=TRUE),
             p90 = quantile(wait_time, .9, na.rm=TRUE)) %>%
-  mutate(source = "clockstops", cohort = "ortho", routine = "All", admitted = "All") 
+  mutate(source = "clockstops", cohort = "Orthopaedic - Routine/Admitted")
 
-wait_pcent_stratified <- ortho_final %>% 
-  group_by(routine, admitted) %>%
-  summarise(p10 = quantile(wait_time, .1, na.rm=TRUE),
-            p25 = quantile(wait_time, .25, na.rm=TRUE),
-            p50 = quantile(wait_time, .5, na.rm=TRUE),
-            p75 = quantile(wait_time, .75, na.rm=TRUE),
-            p90 = quantile(wait_time, .9, na.rm=TRUE)) %>%
-  mutate(source = "clockstops", cohort = "ortho",
-         admitted = ifelse(admitted == TRUE, "Admitted", "Not admitted")) %>%
-  subset(routine != "Missing" & !is.na(routine))
-
-wait_pcent <- rbind(wait_pcent_overall, wait_pcent_stratified)
-
-wait_pcent <- wait_pcent[,c("source", "cohort", "routine", "admitted", 
-                            "p10", "p25", "p50", "p75", "p90")]
+wait_pcent <- wait_pcent[,c("source", "cohort", "p10", "p25", "p50", "p75", "p90")]
 
 write.csv(wait_pcent, here::here("output", "clockstops", "wait_time_pcent_ortho.csv"),
           row.names = FALSE)
 
 # By week
 wait_time <- ortho_final %>%
-  subset(routine == "Routine") %>%
   group_by(week52) %>%
   mutate(total = n()) %>%
   group_by(week52, admitted, routine, total) %>%
   summarise(count = n()) %>%
   mutate(count = rounding(count),
          total = rounding(total),
-         source = "clockstops", cohort = "ortho") %>%
-  subset(routine != "Missing" & !is.na(routine)) %>%
-  arrange(source, cohort, routine, admitted, week52, total)
+         source = "clockstops", 
+         cohort = "Orthopaedic - Routine/Admitted") %>%
+  arrange(source, cohort, week52, total)
 
-wait_time <- wait_time[,c("source", "cohort", "routine", "admitted", 
-                          "week52", "count",  "total")]
+wait_time <- wait_time[,c("source", "cohort", "week52", "count",  "total")]
 
 write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.csv"),
           row.names = FALSE)
@@ -114,19 +98,18 @@ write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.
 wait_gp <- function(gp, name){
   
   ortho_final %>%
-    subset(routine == "Routine") %>%
-    group_by({{gp}}, admitted, routine) %>%
+    group_by({{gp}}) %>%
     mutate(total = n(),
            p25 = quantile(wait_time, .25, na.rm=TRUE),
            p50 = quantile(wait_time, .5, na.rm=TRUE),
            p75 = quantile(wait_time, .75, na.rm=TRUE)) %>%
-    group_by({{gp}}, routine, admitted, week_gp, total, p25, p50, p75) %>%
+    group_by({{gp}}, week_gp, total, p25, p50, p75) %>%
     summarise(count = n()) %>%
     mutate(count = rounding(count),
            total = rounding(total),
            var = name,
-           cohort = "ortho", 
-           source = "clockstops") %>%
+           source = "clockstops", 
+           cohort = "Orthopaedic - Routine/Admitted") %>%
     rename(category = {{gp}}) %>%
     ungroup() 
   
@@ -139,7 +122,7 @@ wait_by_group <- rbind(
   wait_gp(ethnicity6, "Ethnicity"),
   wait_gp(region, "Region")
   ) %>% 
-  arrange(var, category, routine, week_gp) %>%
+  arrange(var, category, week_gp) %>%
   subset(!(is.na(category)  | 
             (var == "IMD decile" & category == "Unknown") |
             (var == "Region" & category == "Missing"))
@@ -147,7 +130,7 @@ wait_by_group <- rbind(
 
 
 wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
-                                  "admitted", "routine", "week_gp", "count", "total",
+                                  "week_gp", "count", "total",
                                   "p25", "p50", "p75")]
 
 write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group_ortho.csv"),

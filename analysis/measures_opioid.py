@@ -128,7 +128,7 @@ cancer = clinical_events.where(
 
 ### Grouping/stratification variables (Final list TBD) ###
 prior_opioid_count = all_opioid_rx.where(
-        all_opioid_rx.date.is_on_or_between(rtt_start_date - days(182), rtt_start_date - days(7))
+        all_opioid_rx.date.is_on_or_between(rtt_start_date - days(182), rtt_start_date - days(1))
     ).count_for_patient()
 
 prior_opioid_rx = (prior_opioid_count >= 3)
@@ -202,6 +202,9 @@ denominator = (
 
         # Routine priority type
         & routine.is_in(["Routine"])
+
+        # Admitted
+        & admitted
     )
 
 
@@ -213,9 +216,7 @@ measures.define_measure(
     # Denominator = only include people whose RTT end date and study end date are after interval end date
     #   IOW, exclude people who are no longer on waiting list or have been censored
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"routine": routine,
-              "admitted": admitted}
+    intervals=weeks(52).starting_on("2000-01-01")
     )
 
 # Prescribing post WL
@@ -225,9 +226,7 @@ measures.define_measure(
     # Denominator = only include people whose RTT end date is after interval end date
     #   IOW, exclude people who have been censored
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"routine": routine,
-              "admitted": admitted}
+    intervals=weeks(26).starting_on("2000-01-01")
     )
 
 # Prescribing pre WL
@@ -237,9 +236,7 @@ measures.define_measure(
     # Denominator = only include people whose RTT end date is after interval end date
     #   IOW, exclude people who have been censored
     denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"routine": routine,
-              "admitted": admitted}
+    intervals=weeks(26).starting_on("2000-01-01")
     )
 
 
@@ -251,9 +248,7 @@ measures.define_measure(
     numerator=count_opioid_pre,
     denominator=denominator,
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx,
-              "routine": routine,
-              "admitted": admitted}
+    group_by={"prior_opioid_rx": prior_opioid_rx}
     )
 
 # Prescribing during WL - stratified by prior opioid Rx
@@ -262,9 +257,7 @@ measures.define_measure(
     numerator=count_opioid_wait,
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx,
-              "routine": routine,
-              "admitted": admitted}
+    group_by={"prior_opioid_rx": prior_opioid_rx}
     )
 
 # Prescribing post WL - stratified by prior opioid Rx
@@ -273,7 +266,5 @@ measures.define_measure(
     numerator=count_opioid_post,
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx,
-              "routine": routine,
-              "admitted": admitted}
+    group_by={"prior_opioid_rx": prior_opioid_rx}
     )

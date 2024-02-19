@@ -25,6 +25,6 @@ user/anschaf/gabapentinoids-dmd/7a9c2248/
 opensafely/strongopioidsCW-dmd/2f6dc8a9/
 user/anschaf/opioids-for-analgesia-dmd/643f6f09/
 user/anschaf/weak-opioids-dmd/4b2ffbd4/
-user/anschaf/antidepressants-dmd/3220889f/
+user/anschaf/antidepressants-dmd/71bd2ed7/
 opensafely/nsaids-oral/3fe99055/
-user/speed-vm/antidepressants-for-pain-dmd/60cf6481/
+user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556

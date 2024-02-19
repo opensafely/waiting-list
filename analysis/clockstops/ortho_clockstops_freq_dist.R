@@ -46,7 +46,8 @@ age_stats <- ortho_final %>%
                              p50 = ~quantile(., .5, na.rm=TRUE),
                              p75 = ~quantile(., .75, na.rm=TRUE),
                              mean = ~mean(.))) %>%
-      mutate(variable = "Age summary statistics", routine = "Full cohort", admitted = NA)
+      mutate(variable = "Age summary statistics", routine = "Full cohort", admitted = NA,
+             prior_opioid_rx = NA)
 
 age_stats_group <- ortho_final %>%
   group_by(routine, admitted) %>%
@@ -54,10 +55,21 @@ age_stats_group <- ortho_final %>%
                                p50 = ~quantile(., .5, na.rm=TRUE),
                                p75 = ~quantile(., .75, na.rm=TRUE),
                                mean = ~mean(.))) %>%
+  mutate(variable = "Age summary statistics",
+         prior_opioid_rx = NA)
+
+
+age_stats_prior <- ortho_final %>%
+  subset(routine == "Routine" & admitted == TRUE) %>%
+  group_by(prior_opioid_rx, admitted, routine) %>%
+  summarise_at(vars(age), list(p25 = ~quantile(., .25, na.rm=TRUE),
+                               p50 = ~quantile(., .5, na.rm=TRUE),
+                               p75 = ~quantile(., .75, na.rm=TRUE),
+                               mean = ~mean(.))) %>%
   mutate(variable = "Age summary statistics")
 
-age_stats_combined <- rbind(age_stats, age_stats_group)
-    
+age_stats_combined <- rbind(age_stats, age_stats_group, age_stats_prior)
+
 
 write.csv(age_stats_combined, here::here("output", "clockstops", "age_stats.csv"),
           row.names = FALSE) 
@@ -198,3 +210,40 @@ cat_dist <- cat_dist[,c("source", "cohort", "var", "category", "count", "total",
 
 write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_ortho.csv"),
           row.names = FALSE) 
+
+
+#####################################################
+############ By prior opioid rx #####################
+#####################################################
+
+
+############ Categorical variable relative frequency distributions #############
+
+# Prior opioid rx only
+dat <- ortho_final %>%
+  subset(routine == "Routine" & admitted == TRUE & prior_opioid_rx == TRUE)
+
+prior_yes <- cat_dist_combined() %>%
+  rename(count_prior_opioid = count, total_prior_opioid = total)
+
+
+# No prior opioid rx only
+dat <- ortho_final %>%
+  subset(routine == "Routine" & admitted == TRUE & prior_opioid_rx == FALSE)
+
+prior_no <- cat_dist_combined() %>%
+  rename(count_opioid_naive = count, total_opioid_naive = total)
+
+
+# Merge 
+cat_dist <- list(prior_yes, prior_no) %>% 
+  reduce(full_join, by=c("category","var","cohort","source")) %>%
+  filter(category != FALSE) %>%
+  arrange(var, category) 
+
+cat_dist <- cat_dist[,c("source", "cohort", "var", "category", 
+                        "count_prior_opioid", "total_opioid_naive")]
+
+write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_ortho_prior.csv"),
+          row.names = FALSE) 
+

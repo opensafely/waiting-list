@@ -18,6 +18,7 @@ library('ggplot2')
 library('zoo')
 library('reshape2')
 library('fs')
+library('arrow')
 
 ## Rounding function
 source(here("analysis", "custom_functions.R"))
@@ -29,13 +30,8 @@ dir_create(here::here("dummy"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
-  col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
-                   rtt_end_date = col_date(format="%Y-%m-%d"),
-                   reg_end_date = col_date(format="%Y-%m-%d"),
-                   dod = col_date(format="%Y-%m-%d"),
-                   end_date = col_date(format="%Y-%m-%d"),
-                   first_opioid_date = col_date(format="%Y-%m-%d"))) %>%
+full <- arrow::read_feather(here::here("output", "data", "dataset_clockstops.arrow")) %>%
+                
                 # Create new variables
                 mutate(
                     # Month of WL start/end
@@ -50,12 +46,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                                             "Missing")),
                     
                     priority_type = ifelse(is.na(priority_type), "Missing", priority_type),
-                    
-                    # Admitted
-                    admitted = (waiting_list_type %in% c("IRTT","PTLI","RTTI")),
-
-                    # Orthopaedic surgery
-                    ortho_surgery = (treatment_function %in% c("110", "111")),
+                    prior_opioid_rx = (opioid_pre_count >=3),
                     
                     # Died while on WL
                     died_during_wl = (!is.na(dod) & dod <= rtt_end_date),

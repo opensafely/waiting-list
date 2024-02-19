@@ -10,11 +10,11 @@ actions:
   # Closed (completed) RTT pathways
   generate_dataset_clockstops:
     run: ehrql:v1 generate-dataset analysis/dataset_definition_clockstops.py 
-      --output output/data/dataset_clockstops.csv.gz
-      #--dummy-data-file dummy/dummy_ortho_clockstops.arrow
+      --output output/data/dataset_clockstops.arrow
+      --dummy-data-file dummy/dummy_ortho_clockstops.arrow
     outputs:
       highly_sensitive:
-        cohort: output/data/dataset_clockstops.csv.gz
+        cohort: output/data/dataset_clockstops.arrow
 
   # Open (incomplete) RTT pathways
   # generate_dataset_openpathways:
@@ -105,19 +105,19 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_strong_opioid.csv
 
-  measures_opioid_stratified:
-    run: ehrql:v1 generate-measures analysis/measures_opioid_stratified.py 
-      --output output/measures/measures_opioid_stratified.csv
-      --
-      --codelist "opioid_codes"
-    outputs:
-      moderately_sensitive:
-        measure_csv: output/measures/measures_opioid_stratified.csv
+  # measures_opioid_stratified:
+  #   run: ehrql:v1 generate-measures analysis/measures_opioid_stratified.py 
+  #     --output output/measures/measures_opioid_stratified.csv
+  #     --
+  #     --codelist "opioid_codes"
+  #   outputs:
+  #     moderately_sensitive:
+  #       measure_csv: output/measures/measures_opioid_stratified.csv
 
   # Combine measures
   opioids_by_week:
     run: r:latest analysis/clockstops/opioids_by_week.R
-    needs: [measures_any_opioid, measures_weak_opioid, measures_strong_opioid, measures_long_opioid, measures_short_opioid, measures_opioid_stratified]
+    needs: [measures_any_opioid, measures_weak_opioid, measures_strong_opioid, measures_long_opioid, measures_short_opioid]
     outputs:
       moderately_sensitive:
         data: output/clockstops/opioid*.csv
@@ -182,6 +182,7 @@ actions:
    outputs:
       moderately_sensitive:
         data1: output/clockstops/cat_var_dist_ortho.csv
+        data2: output/clockstops/cat_var_dist_ortho_prior.csv
 
   ortho_clockstops_prescribing:
    run: r:latest analysis/clockstops/ortho_clockstops_prescribing.R

@@ -36,15 +36,15 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                                          end_date = col_date(format="%Y-%m-%d"),
                                          rtt_start_month =  col_date(format="%Y-%m-%d"),
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
+  subset(routine == "Routine" & admitted == TRUE) %>%
   dplyr::select(c(patient_id, ends_with(c("_count")), post_time_adj, wait_time_adj, pre_time,
-                                        routine, admitted, age_group, sex, imd10, ethnicity6, region)) %>%
-  reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6",
-                        "region","routine", "admitted")) %>%
+                                       age_group, sex, imd10, ethnicity6, region, prior_opioid_rx)) %>%
+  reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6", "region",
+                        "prior_opioid_rx")) %>%
   mutate(period = case_when(
                       grepl("pre_", variable) ~ "Pre-WL",
                       grepl("wait_", variable) ~ "During WL", 
-                      grepl("post_", variable) ~ "Post WL",
-                      grepl("1yr_", variable) ~ "Pre-WL (1 year)"),
+                      grepl("post_", variable) ~ "Post WL"),
          measure = case_when(
                       grepl("time", variable) ~ "Person time",
                       grepl("short_opioid", variable) ~ "Short-acting opioid",
@@ -57,7 +57,7 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                       grepl("tca", variable) ~ "TCA",
                       TRUE ~ "Any opioid"),
          med_any = ifelse(value >= 1, 1, 0),
-         med_3plus = ifelse(value >=3, 1, 0))
+         med_3plus = ifelse(value >= 3, 1, 0)) 
 
 person_time <- ortho_final %>%
     subset(measure == "Person time") %>%
@@ -77,8 +77,7 @@ cat_dist_meds <- function() {
   cat_dist <- function(variable, name) {
     
     dat %>%
-      subset(routine == "Routine") %>%
-      group_by({{variable}}, measure, period, routine, admitted) %>%
+      group_by({{variable}}, measure, period) %>%
       summarise(count_any = sum(med_any),
                 count_3plus = sum(med_3plus),
                 total = n()) %>%
@@ -91,7 +90,7 @@ cat_dist_meds <- function() {
       mutate(
         total = rounding(total),
         source = "clockstops", 
-        cohort = "ortho"
+        cohort = "Orthopaedic - Routine/Admitted"
       ) %>%
       rename(category = {{variable}}) %>%
       mutate(category = as.character(category))
@@ -103,7 +102,8 @@ cat_dist_meds <- function() {
     cat_dist(imd10, "IMD"),
     cat_dist(ethnicity6, "Ethnicity"),
     cat_dist(region, "Region"),
-    cat_dist(sex, "Sex")
+    cat_dist(sex, "Sex"),
+    cat_dist(prior_opioid_rx, "Prior opioid Rx")
   ) 
   
 }
@@ -113,8 +113,7 @@ dat <- ortho_final
 
 meds <- cat_dist_meds() 
 
-meds <- meds[,c("source", "cohort", "routine", "admitted", 
-                        "var", "category",  "period",
+meds <- meds[,c("source", "cohort", "var", "category",  "period",
                         "measure", "count_any", "count_3plus", "total") ]
 
 write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
@@ -128,13 +127,15 @@ write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
 summ <- function(gp, var){
 
     ortho_final %>%
-      mutate(full = "Full cohort") %>%
-      subset(routine == "Routine" & period != "Pre-WL (1 year)") %>%
-      group_by(routine, admitted, period, measure, {{gp}}) %>%
+      mutate(full = "Full cohort",
+             prior_opioid_rx = ifelse(prior_opioid_rx == TRUE,
+                                      "Yes", "No")) %>%
+      group_by(period, measure, {{gp}}) %>%
       summarise(person_days = rounding(sum(person_time)),
                 count_rx = rounding(sum(value))) %>%
       rename(category = {{gp}}) %>%
-    mutate(variable = var, source = "clockstops", cohort = "ortho") 
+      mutate(variable = var,  source = "clockstops", 
+           cohort = "Orthopaedic - Routine/Admitted") 
   
 }
 
@@ -144,12 +145,13 @@ prescribing_group <- rbind(
     summ(imd10, "IMD decile"),
     summ(ethnicity6, "Ethnicity"),
     summ(region, "Region"),
-    summ(sex, "Sex")) %>%
-  arrange(source, cohort, routine, variable, category, period, measure) 
+    summ(sex, "Sex"),
+    summ(prior_opioid_rx, "Prior opioid Rx")) %>%
+  arrange(source, cohort, variable, category, period, measure) 
 
-prescribing_group <- prescribing_group[,c("source", "cohort", "routine", "admitted", "variable", 
-                                          "category","period","person_days", "measure", "count_rx"
-                                          )]
+prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
+                                          "category","period","person_days", 
+                                          "measure", "count_rx")]
 
 write.csv(prescribing_group, here::here("output", "clockstops", "med_by_period_ortho.csv"),
           row.names = FALSE)
