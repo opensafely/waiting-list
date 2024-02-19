@@ -54,7 +54,8 @@ dataset.wait_time = (dataset.rtt_end_date - dataset.rtt_start_date).days
 dataset.treatment_function = last_clockstops.activity_treatment_function_code
 dataset.waiting_list_type = last_clockstops.waiting_list_type
 dataset.priority_type = last_clockstops.priority_type_code
-
+dataset.admitted = (last_clockstops.waiting_list_type.is_in(["IRTT","PTLI","PLTI","RTTI","PTL1"]))
+dataset.ortho_surgery = (last_clockstops.activity_treatment_function_code.is_in(["110","111"]))
 
 #### Censoring dates ####
 
@@ -136,20 +137,6 @@ for med, med_codelist in med_codes.items():
     dataset.add_column(f"{med}_post_any", post_any_query)
 
 
-    # Number of prescriptions before waiting list - 1 year
-    pre_1yr_count_query = med_events.where(
-            med_events.date.is_on_or_between(dataset.rtt_start_date - days(365), dataset.rtt_start_date - days(1))
-        ).count_for_patient()
-    dataset.add_column(f"{med}_1yr_count", pre_1yr_count_query)
-    
-    # Any prescription before waiting list - 1 year
-    pre_1yr_any_query = med_events.where(
-            med_events.date.is_on_or_between(dataset.rtt_start_date - days(365), dataset.rtt_start_date - days(1))
-        ).exists_for_patient()
-    dataset.add_column(f"{med}_1yr_any", pre_1yr_any_query)
-
-
-
 # Date of first prescription
 dataset.first_opioid_date = med_events.where(
             med_events.dmd_code.is_in(codelists.opioid_codes)
@@ -157,6 +144,7 @@ dataset.first_opioid_date = med_events.where(
         ).sort_by(
             med_events.date
         ).first_for_patient().date
+
 
 
 #### Demographics ####
