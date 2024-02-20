@@ -179,6 +179,12 @@
       "url": "https://www.opencodelists.org/codelist/user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556/",
       "downloaded_at": "2024-02-19 21:08:44.240615Z",
       "sha": "59fea38defca9896ef48dd3c8bea9d649420542d"
+    },
+    "user-anschaf-nsaids-dmd.csv": {
+      "id": "user/anschaf/nsaids-dmd/79d56eb9",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/nsaids-dmd/79d56eb9/",
+      "downloaded_at": "2024-02-20 19:29:59.586310Z",
+      "sha": "27be799a24d3c0504f486ed65ce6fd69b09df237"
     }
   }
 }
