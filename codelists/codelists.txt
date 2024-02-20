@@ -28,3 +28,4 @@ user/anschaf/weak-opioids-dmd/4b2ffbd4/
 user/anschaf/antidepressants-dmd/71bd2ed7/
 opensafely/nsaids-oral/3fe99055/
 user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556
+user/anschaf/nsaids-dmd/79d56eb9/

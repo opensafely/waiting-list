@@ -62,7 +62,7 @@ gabapentinoid_codes = codelist_from_csv(
 )
 
 nsaid_codes = codelist_from_csv(
-    "codelists/opensafely-nsaids-oral.csv",
+    "codelists/user-anschaf-nsaids-dmd.csv",
     column = "code"
 )
 
