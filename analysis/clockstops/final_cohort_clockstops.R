@@ -30,7 +30,13 @@ dir_create(here::here("dummy"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-full <- arrow::read_feather(here::here("output", "data", "dataset_clockstops.arrow")) %>%
+full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
+                 col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
+                                  rtt_end_date = col_date(format="%Y-%m-%d"),
+                                  reg_end_date = col_date(format="%Y-%m-%d"),
+                                  dod = col_date(format="%Y-%m-%d"),
+                                  end_date = col_date(format="%Y-%m-%d"),
+                                  first_opioid_date = col_date(format="%Y-%m-%d"))) %>%
                 
                 # Create new variables
                 mutate(
