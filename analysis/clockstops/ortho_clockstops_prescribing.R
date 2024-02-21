@@ -74,15 +74,18 @@ ortho_final <- merge(subset(ortho_final, measure != "Person time"), person_time,
 # Number of people with any prescription and 3+ prescriptions
 # during each time period
 cat_dist_meds <- function() {
-  cat_dist <- function(variable, name) {
+  cat_dist <- function(var, name) {
     
-    dat %>%
-      group_by({{variable}}, measure, period) %>%
+    dat %>% 
+      mutate(full = "Full cohort", prior_opioid_rx = 
+               ifelse(prior_opioid_rx == TRUE,"Yes", "No")) %>%
+      subset(period %in% c("Pre-WL","Post WL")) %>%
+      group_by({{var}}, measure, period) %>%
       summarise(count_any = sum(med_any),
                 count_3plus = sum(med_3plus),
                 total = n()) %>%
       mutate(
-        var = name, total = rounding(total),
+        variable = name, total = rounding(total),
         count_any = rounding(count_any),
         count_3plus = rounding(count_3plus)
       ) %>%
@@ -92,12 +95,13 @@ cat_dist_meds <- function() {
         source = "clockstops", 
         cohort = "Orthopaedic - Routine/Admitted"
       ) %>%
-      rename(category = {{variable}}) %>%
+      rename(category = {{var}}) %>%
       mutate(category = as.character(category))
     
   }
   
   rbind(
+    cat_dist(full, "Full cohort"),
     cat_dist(age_group, "Age"),
     cat_dist(imd10, "IMD"),
     cat_dist(ethnicity6, "Ethnicity"),
@@ -111,48 +115,60 @@ cat_dist_meds <- function() {
 
 dat <- ortho_final
 
-meds <- cat_dist_meds() 
+meds <- cat_dist_meds() %>%   
+  subset(!(is.na(category)  | (variable == "IMD decile" & category == "Unknown") |
+                                     (variable == "Region" & category == "Missing"))) 
 
-meds <- meds[,c("source", "cohort", "var", "category",  "period",
+meds <- meds[,c("source", "cohort", "variable", "category",  "period",
                         "measure", "count_any", "count_3plus", "total") ]
 
 write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
-          row.names = FALSE) 
+           row.names = FALSE) 
 
 
 ################## Medicine Rx count variables - overall and stratified ####################
+# 
+# # Count total number of Rx, total person-days
+# #   for each period and each medicine group
+# summ <- function(gp, var){
+# 
+#     ortho_final %>%
+#       mutate(full = "Full cohort",
+#              prior_opioid_rx = ifelse(prior_opioid_rx == TRUE,
+#                                       "Yes", "No")) %>%
+#       subset(!(measure %in% c("Gabapentinoid", "NSAID", "Antidepressant", "TCA"))) %>%
+#       group_by(period, measure, {{gp}}) %>%
+#       summarise(person_days = rounding(sum(person_time)),
+#                 count_rx = rounding(sum(value))) %>%
+#       rename(category = {{gp}}) %>%
+#       mutate(variable = var,  source = "clockstops", 
+#            cohort = "Orthopaedic - Routine/Admitted") 
+#   
+# }
+# 
+# prescribing_group <- rbind(
+#     summ(full, "Full cohort"),
+#     summ(age_group, "Age"),
+#     summ(imd10, "IMD decile"),
+#     summ(ethnicity6, "Ethnicity"),
+#     summ(region, "Region"),
+#     summ(sex, "Sex"),
+#     summ(prior_opioid_rx, "Prior opioid Rx")) %>%
+#   subset(!(is.na(category)  | (variable == "IMD decile" & category == "Unknown") |
+#              (variable == "Region" & category == "Missing"))) %>%
+#   arrange(source, cohort, variable, category, period, measure) 
+# 
+# prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
+#                                           "category","period","person_days", 
+#                                           "measure", "count_rx")]
 
-# Count total number of Rx, total person-days
-#   for each period and each medicine group
-summ <- function(gp, var){
 
-    ortho_final %>%
-      mutate(full = "Full cohort",
-             prior_opioid_rx = ifelse(prior_opioid_rx == TRUE,
-                                      "Yes", "No")) %>%
-      group_by(period, measure, {{gp}}) %>%
-      summarise(person_days = rounding(sum(person_time)),
-                count_rx = rounding(sum(value))) %>%
-      rename(category = {{gp}}) %>%
-      mutate(variable = var,  source = "clockstops", 
-           cohort = "Orthopaedic - Routine/Admitted") 
-  
-}
 
-prescribing_group <- rbind(
-    summ(full, "Full cohort"),
-    summ(age_group, "Age"),
-    summ(imd10, "IMD decile"),
-    summ(ethnicity6, "Ethnicity"),
-    summ(region, "Region"),
-    summ(sex, "Sex"),
-    summ(prior_opioid_rx, "Prior opioid Rx")) %>%
-  arrange(source, cohort, variable, category, period, measure) 
-
-prescribing_group <- prescribing_group[,c("source", "cohort", "variable", 
-                                          "category","period","person_days", 
-                                          "measure", "count_rx")]
-
-write.csv(prescribing_group, here::here("output", "clockstops", "med_by_period_ortho.csv"),
-          row.names = FALSE)
+### Combine into one file
+# 
+# all_meds <- merge(meds, prescribing_group, by = c("period", "measure", "category", "variable",
+#                                                   "source", "cohort"))
+# 
+# write.csv(all_meds, here::here("output", "clockstops", "med_by_period_ortho.csv"),
+#           row.names = FALSE)
 

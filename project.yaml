@@ -190,7 +190,7 @@ actions:
    outputs:
       moderately_sensitive:
         data1: output/clockstops/med_by_period_ortho.csv
-        data2: output/clockstops/meds_dist_ortho.csv
+       # data2: output/clockstops/meds_dist_ortho.csv
 
   # full_stats_clockstops:
   #  run: r:latest analysis/clockstops/full_stats_clockstops.R
