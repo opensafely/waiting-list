@@ -85,13 +85,28 @@ wait_time <- ortho_final %>%
   summarise(count = n()) %>%
   mutate(count = rounding(count),
          total = rounding(total),
-         source = "clockstops", 
+         source = "clockstops", prior_opioid_rx = "Full cohort",
          cohort = "Orthopaedic - Routine/Admitted") %>%
   arrange(source, cohort, week52, total)
 
-wait_time <- wait_time[,c("source", "cohort", "week52", "count",  "total")]
+# By week and prior opioid Rx
+wait_time_prior <- ortho_final %>%
+  group_by(week52, prior_opioid_rx) %>%
+  mutate(total = n()) %>%
+  group_by(week52, admitted, routine, prior_opioid_rx, total) %>%
+  summarise(count = n()) %>%
+  mutate(count = rounding(count),
+         total = rounding(total),
+         source = "clockstops", 
+         cohort = "Orthopaedic - Routine/Admitted",
+         prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes" , "No")) %>%
+  arrange(source, cohort, week52, total)
 
-write.csv(wait_time, file = here::here("output", "clockstops", "wait_time_ortho.csv"),
+wait_time_both <- rbind(wait_time, wait_time_prior)
+
+wait_time_both <- wait_time_both[,c("source", "cohort", "prior_opioid_rx", "week52", "count",  "total")]
+
+write.csv(wait_time_both, file = here::here("output", "clockstops", "wait_time_ortho.csv"),
           row.names = FALSE)
 
 # Stratified by demographics
@@ -120,7 +135,8 @@ wait_by_group <- rbind(
   wait_gp(sex, "Sex"),
   wait_gp(imd10, "IMD decile"),
   wait_gp(ethnicity6, "Ethnicity"),
-  wait_gp(region, "Region")
+  wait_gp(region, "Region"),
+  wait_gp(prior_opioid_rx, "Prior opioid Rx")
   ) %>% 
   arrange(var, category, week_gp) %>%
   subset(!(is.na(category)  | 

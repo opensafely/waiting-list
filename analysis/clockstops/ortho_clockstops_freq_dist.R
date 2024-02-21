@@ -242,7 +242,8 @@ cat_dist <- list(prior_yes, prior_no) %>%
   arrange(var, category) 
 
 cat_dist <- cat_dist[,c("source", "cohort", "var", "category", 
-                        "count_prior_opioid", "total_opioid_naive")]
+                        "count_prior_opioid", "total_prior_opioid", 
+                        "count_opioid_naive", "total_opioid_naive")]
 
 write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_ortho_prior.csv"),
           row.names = FALSE) 
