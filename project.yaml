@@ -105,15 +105,6 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_strong_opioid.csv
 
-  # measures_opioid_stratified:
-  #   run: ehrql:v1 generate-measures analysis/measures_opioid_stratified.py 
-  #     --output output/measures/measures_opioid_stratified.csv
-  #     --
-  #     --codelist "opioid_codes"
-  #   outputs:
-  #     moderately_sensitive:
-  #       measure_csv: output/measures/measures_opioid_stratified.csv
-
   # Combine measures
   opioids_by_week:
     run: r:latest analysis/clockstops/opioids_by_week.R
@@ -189,22 +180,8 @@ actions:
    needs: [final_cohort_clockstops]
    outputs:
       moderately_sensitive:
-        data1: output/clockstops/med_by_period_ortho.csv
-       # data2: output/clockstops/meds_dist_ortho.csv
-
-  # full_stats_clockstops:
-  #  run: r:latest analysis/clockstops/full_stats_clockstops.R
-  #  needs: [final_cohort_clockstops]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data1: output/clockstops/rtt_dates_full.csv
-  #       data2: output/clockstops/cat_var_dist_full.csv
-  #       data3: output/clockstops/wait_time_pcent_full.csv
-  #       data4: output/clockstops/wait_time_full.csv
-  #       data5: output/clockstops/med_by_period_full.csv
-  #       data6: output/clockstops/wait_by_group_full.csv
-  #       plot1: output/clockstops/wait_time_full.png
-  #       plot2: output/clockstops/rtt_dates_full.png
+        #data1: output/clockstops/med_by_period_ortho.csv
+        data2: output/clockstops/meds_dist_ortho.csv
 
   ######################################################################################
   
