@@ -79,7 +79,7 @@ write.csv(wait_pcent, here::here("output", "clockstops", "wait_time_pcent_ortho.
 
 # By week
 wait_time <- ortho_final %>%
-  mutate9(total = n()) %>%
+  mutate(total = n()) %>%
   group_by(week52, admitted, routine, total) %>%
   summarise(count = n()) %>%
   mutate(count = rounding(count),
