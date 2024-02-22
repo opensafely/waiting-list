@@ -79,8 +79,7 @@ write.csv(wait_pcent, here::here("output", "clockstops", "wait_time_pcent_ortho.
 
 # By week
 wait_time <- ortho_final %>%
-  group_by(week52) %>%
-  mutate(total = n()) %>%
+  mutate9(total = n()) %>%
   group_by(week52, admitted, routine, total) %>%
   summarise(count = n()) %>%
   mutate(count = rounding(count),
@@ -91,7 +90,7 @@ wait_time <- ortho_final %>%
 
 # By week and prior opioid Rx
 wait_time_prior <- ortho_final %>%
-  group_by(week52, prior_opioid_rx) %>%
+  group_by(prior_opioid_rx) %>%
   mutate(total = n()) %>%
   group_by(week52, admitted, routine, prior_opioid_rx, total) %>%
   summarise(count = n()) %>%
