@@ -10,35 +10,11 @@ actions:
   # Closed (completed) RTT pathways
   generate_dataset_clockstops:
     run: ehrql:v1 generate-dataset analysis/dataset_definition_clockstops.py 
-      --output output/data/dataset_clockstops.csv.gz
-      #--dummy-data-file dummy/dummy_ortho_clockstops.arrow
+      --output output/data/dataset_clockstops.arrow
+      --dummy-data-file dummy/dummy_ortho_clockstops.arrow
     outputs:
       highly_sensitive:
-        cohort: output/data/dataset_clockstops.csv.gz
-
-  # Open (incomplete) RTT pathways
-  # generate_dataset_openpathways:
-  #   run: ehrql:v1 generate-dataset analysis/dataset_definition_openpathways.py 
-  #     --output output/data/dataset_openpathways.csv.gz
-  #   outputs:
-  #     highly_sensitive:
-  #       cohort: output/data/dataset_openpathways.csv.gz  
-
-  #### Check missing end date ####
-
-  # generate_dataset_clockstops_missing:
-  #   run: ehrql:v1 generate-dataset analysis/dataset_definition_clockstops_missing.py 
-  #     --output output/data/dataset_clockstops_missing.csv.gz
-  #   outputs:
-  #     highly_sensitive:
-  #       cohort: output/data/dataset_clockstops_missing.csv.gz  
-
-  # checks_missing_clockstops:
-  #  run: r:latest analysis/clockstops/checks_missing_clockstops.R
-  #  needs: [generate_dataset_clockstops_missing]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data: output/clockstops/check_missing_dates.csv 
+        cohort: output/data/dataset_clockstops.arrow
   
   
   #### Check number of pathways over time ####
@@ -49,13 +25,6 @@ actions:
     outputs:
       moderately_sensitive:
         measure_csv: output/measures/measures_checks.csv
-
-  checks_overall_clockstops:
-   run: r:latest analysis/clockstops/checks_overall_clockstops.R
-   needs: [measures_checks]
-   outputs:
-      moderately_sensitive:
-        data: output/clockstops/chec*.csv
 
 
   ##### Opioid measures - closed pathways #####
@@ -112,40 +81,16 @@ actions:
     outputs:
       moderately_sensitive:
         data: output/clockstops/opioid*.csv
-  
-  # measures_opioid_weeks_during:
-  #   run: ehrql:v1 generate-measures analysis/measures_opioid_weeks_during.py 
-  #     --output output/measures/measures_opioid_weeks_during.csv
-  #     --dummy-data-file dummy/dummy_opioid_weeks_during.csv
-  #   outputs:
-  #     moderately_sensitive:
-  #       measure_csv: output/measures/measures_opioid_weeks_during.csv
-
-  # measures_opioid_weeks_post:
-  #   run: ehrql:v1 generate-measures analysis/measures_opioid_weeks_post.py 
-  #     --output output/measures/measures_opioid_weeks_post.csv
-  #     --dummy-data-file dummy/dummy_opioid_weeks_post.csv
-  #   outputs:
-  #     moderately_sensitive:
-  #       measure_csv: output/measures/measures_opioid_weeks_post.csv
-
-  # opioids_by_week_group:
-  #  run: r:latest analysis/clockstops/opioids_by_week_group.R
-  #  needs: [measures_opioid_weeks_during, measures_opioid_weeks_post]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data: output/clockstops/opioid_by_week_group.csv
-  #       plots: output/clockstops/opioid_by_week_group*.png
-        
+      
        
   ##### Analysis - closed pathways #####
   
-  # checks_cohort_clockstops:
-  #  run: r:latest analysis/clockstops/checks_cohort_clockstops.R
-  #  needs: [generate_dataset_clockstops]
-  #  outputs:
-  #     moderately_sensitive:
-  #       data: output/clockstops/check*.csv
+  checks_cohort_clockstops:
+   run: r:latest analysis/clockstops/checks_cohort_clockstops.R
+   needs: [generate_dataset_clockstops]
+   outputs:
+      moderately_sensitive:
+        data: output/clockstops/check*.csv
 
   final_cohort_clockstops:
    run: r:latest analysis/clockstops/final_cohort_clockstops.R

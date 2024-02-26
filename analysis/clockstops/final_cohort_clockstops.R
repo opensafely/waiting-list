@@ -30,13 +30,7 @@ dir_create(here::here("dummy"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
-                 col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
-                                  rtt_end_date = col_date(format="%Y-%m-%d"),
-                                  reg_end_date = col_date(format="%Y-%m-%d"),
-                                  dod = col_date(format="%Y-%m-%d"),
-                                  end_date = col_date(format="%Y-%m-%d"),
-                                  first_opioid_date = col_date(format="%Y-%m-%d"))) %>%
+full <- arrow::read_feather(here::here("output", "data", "dataset_clockstops.arrow")) %>%
                 
                 # Create new variables
                 mutate(
@@ -89,10 +83,12 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                                             "Restriction period",
                                             "Recovery period")),
                                           
-                    age_missing = (is.na(age)),
-                    age_not_18_110 = (!is.na(age) & (age<18 | age >=110)),
-                    sex_missing = is.na(sex),
-                    sex_not_m_f = (!is.na(sex) & !(sex %in% c("male","female")))
+                    age_missing = ifelse(is.na(age), TRUE, FALSE),
+                    age_not_18_110 = ifelse(!is.na(age) & (age<18 | age >=110),
+                                            TRUE, FALSE),
+                    sex_missing = ifelse(is.na(sex) | sex == "unknown", TRUE, FALSE),
+                    sex_not_m_f = ifelse(!is.na(sex) & !(sex %in% c("unknown", "male", "female")),
+                                         TRUE, FALSE)
                 )
                     
                         
