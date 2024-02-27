@@ -9,12 +9,12 @@ actions:
 
   # Closed (completed) RTT pathways
   generate_dataset_clockstops:
-    run: ehrql:v1 generate-dataset analysis/dataset_definition_clockstops.py 
-      --output output/data/dataset_clockstops.arrow
-      --dummy-data-file dummy/dummy_ortho_clockstops.arrow
+    run: ehrql:v1 generate-dataset analysis/dataset_definition_clockstops.py
+      --output output/data/dataset_clockstops.csv.gz
+      #--dummy-data-file dummy/dummy_ortho_clockstops.arrow
     outputs:
       highly_sensitive:
-        cohort: output/data/dataset_clockstops.arrow
+        cohort: output/data/dataset_clockstops.csv.gz
   
   
   #### Check number of pathways over time ####
@@ -85,12 +85,12 @@ actions:
        
   ##### Analysis - closed pathways #####
   
-  checks_cohort_clockstops:
-   run: r:latest analysis/clockstops/checks_cohort_clockstops.R
-   needs: [generate_dataset_clockstops]
-   outputs:
-      moderately_sensitive:
-        data: output/clockstops/check*.csv
+  # checks_cohort_clockstops:
+  #  run: r:latest analysis/clockstops/checks_cohort_clockstops.R
+  #  needs: [generate_dataset_clockstops]
+  #  outputs:
+  #     moderately_sensitive:
+  #       data: output/clockstops/check*.csv
 
   final_cohort_clockstops:
    run: r:latest analysis/clockstops/final_cohort_clockstops.R
