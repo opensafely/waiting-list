@@ -67,8 +67,7 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
               dplyr::select(c(opioid_type, opioid_rx, denominator, opioid_type, wait_gp,
                               week, period, prior_opioid_rx)) %>%
               arrange(opioid_type, period, opioid_rx, week) %>%
-              filter(!(wait_gp == "<=18 weeks" & period == "During WL" & week >18)) %>%
-              filter(!(wait_gp != "All" & period != "Post WL"))
+              filter(wait_gp == "All" |  period == "Post-WL")
 
 #%>% subset(!(wait_gp != "All" & opioid_type != "Any opioid"))
 
@@ -76,16 +75,25 @@ opioid_rx <- opioid_rx[,c("opioid_type", "period",  "prior_opioid_rx", "wait_gp"
                           "week", "opioid_rx", "denominator")]
 
 
+# FUll cohort only
 opioid_rx_full <- opioid_rx %>%
   subset(prior_opioid_rx == "Full cohort")
 
 write.csv(opioid_rx_full, file = here::here("output", "clockstops", "opioid_by_week_full.csv"),
           row.names = FALSE)
 
+# By prior opioid prescribing
 opioid_rx_prior <- opioid_rx %>%
-  subset(prior_opioid_rx != "Full cohort")
+  subset(prior_opioid_rx != "Full cohort" & wait_gp == "All")
 
 write.csv(opioid_rx_prior, file = here::here("output", "clockstops", "opioid_by_week_prior.csv"),
+          row.names = FALSE)
+
+# By wait time
+opioid_rx_wait <- opioid_rx %>%
+  subset(prior_opioid_rx != "Full cohort" & wait_gp != "All")
+
+write.csv(opioid_rx_wait, file = here::here("output", "clockstops", "opioid_by_week_wait.csv"),
           row.names = FALSE)
 
 
