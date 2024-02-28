@@ -105,13 +105,15 @@ full_exclusions <- full %>%
             age_not_18_110 = sum(age_not_18_110),
             sex_missing = sum(sex_missing),
             sex_not_m_f = sum(sex_not_m_f),
-            not_ortho = sum(ortho_surgery == FALSE)) %>%
+            not_ortho = sum(ortho_surgery == FALSE),
+            died_during_wl = sum(died_during_wl == TRUE)) %>%
   ungroup() %>%
   mutate(age_missing = rounding(age_missing),
          age_not_18_110 = rounding(age_not_18_110),
          sex_missing = rounding(sex_missing),
          sex_not_m_f = rounding(sex_not_m_f),
-         not_ortho = rounding(not_ortho))
+         not_ortho = rounding(not_ortho),
+         died_during_wl = rounding(died_during_wl))
 
 write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_full_exclusions.csv"),
           row.names = FALSE)
@@ -119,7 +121,8 @@ write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_ful
 
 full_final <- full %>%
   subset(!is.na(age) & age >= 18 & age < 110
-         & !is.na(sex) & (sex %in% c("male", "female")))
+         & !is.na(sex) & (sex %in% c("male", "female"))
+         & died_during_wl == FALSE)
 
 ## Save as final
 write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
@@ -132,7 +135,6 @@ write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstop
 ortho <- full_final %>%
   subset(ortho_surgery == TRUE) %>%
   dplyr::select(!c(age_missing, age_not_18_110, sex_missing, sex_not_m_f))
-
 
 # Number of people excluded due to cancer 
 exclude <- ortho %>%

@@ -127,7 +127,6 @@ cat_dist_combined <- function() {
     cat_dist(oud, "Opioid use disorder"),
     cat_dist(ra, "Rheumatoid arthritis"),
 
-    cat_dist(died_during_wl, "Died while on WL"),
     cat_dist(died_during_post, "Died during post-WL follow-up")
   ) 
   
