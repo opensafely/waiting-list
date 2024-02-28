@@ -215,7 +215,7 @@ denominator = (
         & admitted
 
         # Alive at end of waiting list
-        & patients.date_of_death >= rtt_end_date
+        & (patients.date_of_death >= rtt_end_date)
     )
 
 
