@@ -68,7 +68,7 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
                               week, period, prior_opioid_rx)) %>%
               arrange(opioid_type, period, opioid_rx, week) %>%
               filter(!(wait_gp == "<=18 weeks" & period == "During WL" & week >18)) %>%
-              filter(!(opioid_type == "Long-acting opioid" & wait_gp != "All"))
+              filter(!(wait_gp != "All" & period != "Post WL"))
 
 #%>% subset(!(wait_gp != "All" & opioid_type != "Any opioid"))
 
