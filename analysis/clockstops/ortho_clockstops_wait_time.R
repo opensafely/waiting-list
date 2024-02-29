@@ -117,7 +117,7 @@ wait_gp <- function(gp, name){
            p25 = quantile(wait_time, .25, na.rm=TRUE),
            p50 = quantile(wait_time, .5, na.rm=TRUE),
            p75 = quantile(wait_time, .75, na.rm=TRUE)) %>%
-    group_by({{gp}}, week_gp, total, p25, p50, p75) %>%
+    group_by({{gp}}, wait_gp, total, p25, p50, p75) %>%
     summarise(count = n()) %>%
     mutate(count = rounding(count),
            total = rounding(total),
@@ -137,14 +137,14 @@ wait_by_group <- rbind(
   wait_gp(region, "Region"),
   wait_gp(prior_opioid_rx, "Prior opioid Rx")
   ) %>% 
-  arrange(var, category, week_gp) %>%
+  arrange(var, category, wait_gp) %>%
   subset(!(is.na(category)  | 
             (var == "IMD decile" & category == "Unknown") |
             (var == "Region" & category == "Missing"))
          )
 
 wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
-                                  "week_gp", "count", "total",
+                                  "wait_gp", "count", "total",
                                   "p25", "p50", "p75")]
 
 write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group_ortho.csv"),
