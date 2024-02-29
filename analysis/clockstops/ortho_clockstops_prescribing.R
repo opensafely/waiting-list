@@ -38,9 +38,10 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
   subset(routine == "Routine" & admitted == TRUE) %>%
   dplyr::select(c(patient_id, ends_with(c("_count")), post_time_adj, wait_time_adj, pre_time,
-                                       age_group, sex, imd10, ethnicity6, region, prior_opioid_rx)) %>%
+                                       age_group, sex, imd10, ethnicity6, region, prior_opioid_rx,
+                                       wait_gp)) %>%
   reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6", "region",
-                        "prior_opioid_rx")) %>%
+                        "prior_opioid_rx", "wait_gp")) %>%
   mutate(period = case_when(
                       grepl("pre_", variable) ~ "Pre-WL",
                       grepl("wait_", variable) ~ "During WL", 
@@ -107,7 +108,8 @@ cat_dist_meds <- function() {
     cat_dist(ethnicity6, "Ethnicity"),
     cat_dist(region, "Region"),
     cat_dist(sex, "Sex"),
-    cat_dist(prior_opioid_rx, "Prior opioid Rx")
+    cat_dist(prior_opioid_rx, "Prior opioid Rx"),
+    cat_dist(wait_gp, "Time on waiting list")
   ) 
   
 }

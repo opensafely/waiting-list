@@ -79,7 +79,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     week52 =  ifelse(week > 52, 52, week),
                     
                     # Week category
-                    week_gp = ifelse(week <= 18, "<=18 weeks", 
+                    wait_gp = ifelse(week <= 18, "<=18 weeks", 
                                      ifelse(week > 18 & week <= 52, "19-52 weeks", 
                                             "52+ weeks")),
                     
