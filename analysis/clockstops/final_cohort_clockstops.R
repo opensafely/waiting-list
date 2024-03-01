@@ -1,6 +1,6 @@
 ###############################################################
 # This script creates final cohorts for analysis 
-# for: 1. all people with a closed RTT pathway (May21-May22)
+# for: 1. all people with a closed RTT pathway (May21-Apr22)
 # and 2. all people with a closed RTT pathway for trauma/orthopaedic surgery
 ###############################################################
 
@@ -26,17 +26,10 @@ source(here("analysis", "custom_functions.R"))
 ## Create directories if needed
 dir_create(here::here("output", "clockstops"), showWarnings = FALSE, recurse = TRUE)
 dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
-dir_create(here::here("dummy"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
-                 col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
-                                  rtt_end_date = col_date(format="%Y-%m-%d"),
-                                  reg_end_date = col_date(format="%Y-%m-%d"),
-                                  dod = col_date(format="%Y-%m-%d"),
-                                  end_date = col_date(format="%Y-%m-%d"),
-                                  first_opioid_date = col_date(format="%Y-%m-%d"))) %>%
+full <- arrow::read_feather(here::here("output", "data", "dataset_clockstops.arrow")) %>%
                 
                 # Create new variables
                 mutate(
@@ -78,7 +71,7 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                     # Week variable capped at one year (for some analyses)
                     week52 =  ifelse(week > 52, 52, week),
                     
-                    # Week category
+                    # Waiting time category
                     wait_gp = ifelse(week <= 18, "<=18 weeks", 
                                      ifelse(week > 18 & week <= 52, "19-52 weeks", 
                                             "52+ weeks")),
@@ -89,10 +82,8 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
                                             "Restriction period",
                                             "Recovery period")),
                                           
-                    age_missing = ifelse(is.na(age), TRUE, FALSE),
-                    age_not_18_110 = ifelse(!is.na(age) & (age<18 | age >=110),
-                                            TRUE, FALSE),
-                    sex_missing = ifelse(is.na(sex) | sex == "unknown", TRUE, FALSE),
+                    age_not_18_110 = ifelse((age<18 | age >=110), TRUE, FALSE),
+                    sex_missing = ifelse(sex == "unknown", TRUE, FALSE),
                     sex_not_m_f = ifelse(!is.na(sex) & !(sex %in% c("unknown", "male", "female")),
                                          TRUE, FALSE)
                 )
@@ -101,19 +92,17 @@ full <- read_csv(here::here("output", "data", "dataset_clockstops.csv.gz"),
 full_exclusions <- full %>% 
   mutate(total = n()) %>%
   group_by(total) %>%
-  summarise(age_missing = sum(age_missing),
-            age_not_18_110 = sum(age_not_18_110),
+  summarise(age_not_18_110 = sum(age_not_18_110),
             sex_missing = sum(sex_missing),
             sex_not_m_f = sum(sex_not_m_f),
-            not_ortho = sum(ortho_surgery == FALSE),
-            died_during_wl = sum(died_during_wl == TRUE)) %>%
+            not_ortho = sum(is.na(ortho_surgery) | ortho_surgery == FALSE)) %>%
   ungroup() %>%
-  mutate(age_missing = rounding(age_missing),
-         age_not_18_110 = rounding(age_not_18_110),
+  mutate(age_not_18_110 = rounding(age_not_18_110),
          sex_missing = rounding(sex_missing),
          sex_not_m_f = rounding(sex_not_m_f),
          not_ortho = rounding(not_ortho),
-         died_during_wl = rounding(died_during_wl))
+         cohort = "Full WL population") %>%
+  reshape2::melt(id = c("cohort", "total"))
 
 write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_full_exclusions.csv"),
           row.names = FALSE)
@@ -121,12 +110,11 @@ write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_ful
 
 full_final <- full %>%
   subset(!is.na(age) & age >= 18 & age < 110
-         & !is.na(sex) & (sex %in% c("male", "female"))
-         & died_during_wl == FALSE)
+         & !is.na(sex) & (sex %in% c("male", "female")))
 
 ## Save as final
-write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
-          row.names = FALSE)
+# write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
+#           row.names = FALSE)
 
 
 ####################################################
@@ -137,29 +125,32 @@ ortho <- full_final %>%
   dplyr::select(!c(age_missing, age_not_18_110, sex_missing, sex_not_m_f))
 
 # Number of people excluded due to cancer 
-exclude <- ortho %>%
+ortho_exclusions <- ortho %>%
   mutate(total = n()) %>%
-  group_by(cancer, total) %>%
-  summarise(count = n()) %>%
+  group_by(total) %>%
+  summarise(cancer = sum(cancer),
+            died_during_wl = sum(died_during_wl)) %>%
   ungroup() %>%
-  mutate(var = "Cancer",
-         count = rounding(count),
-         total = rounding(total),
-         source = "clockstops", 
-         cohort = "ortho"
+  mutate(total = rounding(total),
+         cancer = rounding(cancer),
+         died_during_wl = rounding(died_during_wl),
+         cohort = "Orthopaedic"
   ) %>%
-  rename(category = cancer)
+  reshape2::melt(id = c("total", "cohort"))
 
-exclude <- exclude[,c("source", "cohort", "var","category","count","total")]
+all_exclusions <- rbind(full_exclusions, ortho_exclusions) %>%
+  rename(reason = variable, count = value)
 
-write.csv(exclude, here::here("output", "clockstops", "exclude_ortho.csv"),
+all_exclusions <- all_exclusions[,c("cohort", "total", "reason", "count")]
+
+write.csv(all_exclusions, here::here("output", "clockstops", "exclude_ortho.csv"),
           row.names = FALSE)
 
 
 ######## FINAL ORTHOPAEDIC COHORT #########
 
 ortho_final <- ortho %>%
-  subset(cancer == FALSE)
+  subset(cancer == FALSE & died_during_wl == FALSE)
 
 
 ## Save as final

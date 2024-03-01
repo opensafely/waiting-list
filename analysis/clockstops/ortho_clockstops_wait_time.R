@@ -1,6 +1,6 @@
 ###############################################################
 # This script creates summary statistics for all key variables
-# for all people with a closed RTT pathway (May21-May22)
+# for all people with a closed RTT pathway (May21-Apr22)
 ###############################################################
 
 # For running locally only #
@@ -59,7 +59,6 @@ write.csv(rtt_month, here::here("output", "clockstops", "rtt_dates_ortho.csv"),
 
 
 ############### Waiting time distribution #################
-
 
 quantile <- scales::percent(c(.1,.25,.5,.75,.9,.95,.99))
 
@@ -123,7 +122,10 @@ wait_gp <- function(gp, name){
            total = rounding(total),
            var = name,
            source = "clockstops", 
-           cohort = "Orthopaedic - Routine/Admitted") %>%
+           cohort = "Orthopaedic - Routine/Admitted",
+           p25 = ifelse(total <= 32, NA, p25),
+           p50 = ifelse(total <= 32, NA, p50),
+           p75 = ifelse(total <= 32, NA< p75)) %>%
     rename(category = {{gp}}) %>%
     ungroup() 
   
@@ -137,11 +139,7 @@ wait_by_group <- rbind(
   wait_gp(region, "Region"),
   wait_gp(prior_opioid_rx, "Prior opioid Rx")
   ) %>% 
-  arrange(var, category, wait_gp) %>%
-  subset(!(is.na(category)  | 
-            (var == "IMD decile" & category == "Unknown") |
-            (var == "Region" & category == "Missing"))
-         )
+  arrange(var, category, wait_gp) 
 
 wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
                                   "wait_gp", "count", "total",

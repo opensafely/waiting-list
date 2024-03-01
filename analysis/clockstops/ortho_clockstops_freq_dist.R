@@ -1,6 +1,6 @@
 ###############################################################
 # This script creates summary statistics for all key variables
-# for all people with a closed RTT pathway (May21-May22)
+# for all people with a closed RTT pathway (May21-Apr22)
 ###############################################################
 
 # For running locally only #
@@ -42,34 +42,28 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
 quantile <- scales::percent(c(.25,.5,.75))
 
 age_stats <- ortho_final %>%
-      summarise_at(vars(age), list(p25 = ~quantile(., .25, na.rm=TRUE),
-                             p50 = ~quantile(., .5, na.rm=TRUE),
-                             p75 = ~quantile(., .75, na.rm=TRUE),
-                             mean = ~mean(.))) %>%
-      mutate(variable = "Age summary statistics", routine = "Full cohort", admitted = NA,
-             prior_opioid_rx = NA)
-
-age_stats_group <- ortho_final %>%
-  group_by(routine, admitted) %>%
-  summarise_at(vars(age), list(p25 = ~quantile(., .25, na.rm=TRUE),
-                               p50 = ~quantile(., .5, na.rm=TRUE),
-                               p75 = ~quantile(., .75, na.rm=TRUE),
-                               mean = ~mean(.))) %>%
-  mutate(variable = "Age summary statistics",
-         prior_opioid_rx = NA)
-
+  subset(routine == "Routine" & admitted == TRUE) %>%
+  summarise(p25 = quantile(age, .25, na.rm=TRUE),
+                p50 = quantile(age, .5, na.rm=TRUE),
+                p75 = quantile(age, .75, na.rm=TRUE),
+                mean = mean(age)) %>%
+      mutate(variable = "Age summary statistics", 
+             prior_opioid_rx = NA,
+             source = "clockstops",
+             cohort = "Orthopaedic - Routine/Admitted")
 
 age_stats_prior <- ortho_final %>%
   subset(routine == "Routine" & admitted == TRUE) %>%
-  group_by(prior_opioid_rx, admitted, routine) %>%
-  summarise_at(vars(age), list(p25 = ~quantile(., .25, na.rm=TRUE),
-                               p50 = ~quantile(., .5, na.rm=TRUE),
-                               p75 = ~quantile(., .75, na.rm=TRUE),
-                               mean = ~mean(.))) %>%
-  mutate(variable = "Age summary statistics")
+  group_by(prior_opioid_rx) %>%
+  summarise(p25 = quantile(age, .25, na.rm=TRUE),
+               p50 = quantile(age, .5, na.rm=TRUE),
+               p75 = quantile(age, .75, na.rm=TRUE),
+               mean = mean(age)) %>%
+  mutate(variable = "Age summary statistics",
+         source = "clockstops",
+         cohort = "Orthopaedic - Routine/Admitted")
 
-age_stats_combined <- rbind(age_stats, age_stats_group, age_stats_prior)
-
+age_stats_combined <- rbind(age_stats, age_stats_prior)
 
 write.csv(age_stats_combined, here::here("output", "clockstops", "age_stats.csv"),
           row.names = FALSE) 
@@ -94,7 +88,7 @@ cat_dist_combined <- function() {
       mutate(
         total = rounding(total),
         source = "clockstops", 
-        cohort = "ortho"
+        cohort = "Orthopaedic"
       ) %>%
       rename(category = {{variable}}) %>%
       mutate(category = as.character(category))
@@ -107,6 +101,7 @@ cat_dist_combined <- function() {
     cat_dist(censor_before_study_end, "Censor before study end"),
     cat_dist(rtt_multiple, "Multiple RTT pathways"),
     cat_dist(covid_timing, "Start date timing"),
+    cat_dist(died_during_post, "Died during post-WL follow-up"),
 
     cat_dist(age_group, "Age group"),
     cat_dist(sex, "Sex"),
@@ -125,17 +120,13 @@ cat_dist_combined <- function() {
     cat_dist(anxiety, "Anxiety"),
     cat_dist(smi, "Severe mental illness"),
     cat_dist(oud, "Opioid use disorder"),
-    cat_dist(ra, "Rheumatoid arthritis"),
-
-    cat_dist(died_during_post, "Died during post-WL follow-up")
+    cat_dist(ra, "Rheumatoid arthritis")
   ) 
   
 }
 
-# Overall
-dat <- ortho_final
 
-overall <- cat_dist_combined() 
+####### Stratified by urgent/routine and admitted/not-admitted (for supp) #########
 
 # Urgent / admitted only
 dat <- ortho_final %>%
@@ -147,9 +138,9 @@ urgent_admit <- cat_dist_combined() %>%
 # Routine / admitted only
 dat <- ortho_final %>%
   subset(routine == "Routine" & admitted == TRUE)
+
 routine_admit <- cat_dist_combined() %>%
   rename(count_routine_admitted = count, total_routine_admitted = total)
-
 
 # Urgent / not admitted only
 dat <- ortho_final %>%
@@ -167,41 +158,51 @@ routine_notadmit <- cat_dist_combined() %>%
 
 
 # Merge 
-cat_dist <- list(overall, urgent_admit, routine_admit, urgent_notadmit, routine_notadmit) %>% 
+cat_dist <- list(urgent_admit, routine_admit, urgent_notadmit, routine_notadmit) %>% 
   reduce(full_join, by=c("category","var","cohort","source")) %>%
   filter(category != FALSE) %>%
-  mutate(# Un-redact true zeroes
+  mutate(
+          # Un-redact true zeroes
           count_routine_admitted =
-           ifelse(var == "Priority type" &(category %in% c("Missing", "two week wait", "urgent")),
+           ifelse(var == "Priority type" & 
+                    (category %in% c("Missing", "two week wait", "urgent")),
                                             0, count_routine_admitted),
          
          count_routine_notadmitted = 
-           ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
+           ifelse(var == "Priority type" &
+                    (category %in% c("Missing", "two week wait", "urgent")),
                                             0, count_routine_notadmitted),
          
          total_routine_admitted = 
-           ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
-                  0, total_routine_admitted),
+           ifelse(var == "Priority type" & 
+                    (category %in% c("Missing", "two week wait", "urgent")),
+                                            0, total_routine_admitted),
          
          total_routine_notadmitted = 
-           ifelse(var == "Priority type" & (category %in% c("Missing", "two week wait", "urgent")),
-                  0, total_routine_notadmitted),
+           ifelse(var == "Priority type" & 
+                    (category %in% c("Missing", "two week wait", "urgent")),
+                                            0, total_routine_notadmitted),
          
          count_urgent_admitted =
-           ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, count_urgent_admitted),
+           ifelse(var == "Priority type" & 
+                    (category %in% c("Missing", "routine")), 
+                                            0, count_urgent_admitted),
          
          count_urgent_notadmitted = 
-           ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, count_urgent_notadmitted),
+           ifelse(var == "Priority type" & 
+                    (category %in% c("Missing", "routine")), 0, count_urgent_notadmitted),
          
          total_urgent_admitted = 
-           ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, total_urgent_admitted),
+           ifelse(var == "Priority type" & 
+                    (category %in% c("Missing", "routine")), 0, total_urgent_admitted),
          
          total_urgent_notadmitted = 
-           ifelse(var == "Priority type" & (category %in% c("Missing", "routine")), 0, total_urgent_notadmitted)
+           ifelse(var == "Priority type" & 
+                    (category %in% c("Missing", "routine")), 0, total_urgent_notadmitted)
          ) %>%
   arrange(var, category) 
 
-cat_dist <- cat_dist[,c("source", "cohort", "var", "category", "count", "total",
+cat_dist <- cat_dist[,c("source", "cohort", "var", "category", 
        "count_routine_admitted", "total_routine_admitted",
        "count_routine_notadmitted", "total_routine_notadmitted",
        "count_urgent_admitted", "total_urgent_admitted",
@@ -224,7 +225,6 @@ dat <- ortho_final %>%
 
 prior_yes <- cat_dist_combined() %>%
   rename(count_prior_opioid = count, total_prior_opioid = total)
-
 
 # No prior opioid rx only
 dat <- ortho_final %>%
