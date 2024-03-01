@@ -122,7 +122,7 @@ full_final <- full %>%
 # Restrict to people with trauma/orthopaedic surgery
 ortho <- full_final %>%
   subset(ortho_surgery == TRUE) %>%
-  dplyr::select(!c(age_missing, age_not_18_110, sex_missing, sex_not_m_f))
+  dplyr::select(!c(age_not_18_110, sex_missing, sex_not_m_f))
 
 # Number of people excluded due to cancer 
 ortho_exclusions <- ortho %>%
