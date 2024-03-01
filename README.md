@@ -1,6 +1,8 @@
 # Opioid prescribing to people on elective waiting lists
 
-[View on OpenSAFELY](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252Fwaiting-list)
+[View OpenSAFELY workspace for this project:](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252Fwaiting-list)
+
+The codelists used in this project are available in the [codelists folder](https://github.com/opensafely/waiting-list/tree/main/codelists). 
 
 Details of the purpose and any published outputs from this project can be found at the link above.
 
