@@ -49,22 +49,24 @@ strong_opioid_rx <- read_csv(here::here("output", "measures", "measures_strong_o
               mutate(opioid_type = "Strong opioid")
 
 
-####
+############## Data cleaning ############
 
 opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_rx, strong_opioid_rx) %>%
               mutate(
                 # Convert interval start date to number of weeks 
                 week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,
                 period = ifelse(grepl("pre", measure), "Pre-WL", 
-                                ifelse(grepl("post", measure), "Post-WL", "During WL")),
+                                ifelse(grepl("post", measure), "Post-WL", 
+                                       "During WL")),
                 
                 opioid_rx = numerator,
                 prior_opioid_rx = ifelse(is.na(prior_opioid_rx), "Full cohort",
-                                       ifelse(prior_opioid_rx == TRUE, "Prior opioid Rx", "Opioid naive")),
+                                       ifelse(prior_opioid_rx == TRUE, "Prior opioid Rx", 
+                                              "Opioid naive")),
                 
                 wait_gp = ifelse(is.na(wait_gp), "All", wait_gp)
               )  %>%
-              dplyr::select(c(opioid_type, opioid_rx, denominator, opioid_type, wait_gp,
+              dplyr::select(c(opioid_type, opioid_rx, denominator, wait_gp,
                               week, period, prior_opioid_rx)) %>%
               filter(wait_gp == "All" |  period == "Post-WL")
 
@@ -73,6 +75,8 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
 opioid_rx <- opioid_rx[,c("opioid_type", "period",  "prior_opioid_rx", "wait_gp", 
                           "week", "opioid_rx", "denominator")]
 
+
+############## Split into multiple files #################
 
 # Full cohort only
 opioid_rx_full <- opioid_rx %>%
