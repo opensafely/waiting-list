@@ -91,25 +91,25 @@ write.csv(wait_pcent_combined, here::here("output", "clockstops", "wait_time_pce
 # By week
 wait_time <- ortho_routine_final %>%
   mutate(total = n()) %>%
-  group_by(week52, admitted, routine, total) %>%
+  group_by(week52, total) %>%
   summarise(count = n()) %>%
   mutate(count = rounding(count),
          total = rounding(total),
          prior_opioid_rx = "Full cohort",
          cohort = "Orthopaedic - Routine/Admitted") %>%
-  arrange(source, cohort, week52, total)
+  arrange(cohort, week52, total)
 
 # By week and prior opioid Rx
 wait_time_prior <- ortho_routine_final %>%
   group_by(prior_opioid_rx) %>%
   mutate(total = n()) %>%
-  group_by(week52, admitted, routine, prior_opioid_rx, total) %>%
+  group_by(week52, prior_opioid_rx, total) %>%
   summarise(count = n()) %>%
   mutate(count = rounding(count),
          total = rounding(total),
          cohort = "Orthopaedic - Routine/Admitted",
          prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes" , "No")) %>%
-  arrange(source, cohort, week52, total)
+  arrange(cohort, week52, total)
 
 wait_time_both <- rbind(wait_time, wait_time_prior)
 
@@ -157,8 +157,8 @@ wait_by_group <- rbind(
   ) %>% 
   arrange(var, category) 
 
-wait_by_group <- wait_by_group[,c("source", "cohort", "var", "category",
-                                  "wait_gp1", "wait_gp2", "wait_gp3", "count", "total",
+wait_by_group <- wait_by_group[,c( "cohort", "var", "category",
+                                  "wait_gp1", "wait_gp2", "wait_gp3", "total",
                                   "p25", "p50", "p75")]
 
 write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group_ortho.csv"),

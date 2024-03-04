@@ -120,7 +120,7 @@ cat_dist_meds <- function() {
 }
 
 
-dat <- ortho_final_2
+dat <- ortho_routine_final_2
 
 meds <- cat_dist_meds() %>%   
   subset(!(is.na(category)  | (variable == "IMD decile" & category == "Unknown") |
@@ -139,7 +139,7 @@ write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
 #   for each period and each medicine group
 summ <- function(gp, var){
 
-    ortho_final_2 %>%
+    ortho_routine_final_2 %>%
       mutate(full = "Full cohort",
              prior_opioid_gp = ifelse(prior_opioid_rx == TRUE,
                                       "Yes", "No")) %>%

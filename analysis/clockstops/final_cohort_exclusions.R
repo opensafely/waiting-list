@@ -56,8 +56,7 @@ exclusions_2 <- full %>%
 
 # Save as final
 full_final <- full %>%
-  subset(sex_missing == FALSE & sex_not_m_f == FALSE &
-           start_before_end == FALSE & wl_type_missing == FALSE)
+  subset(start_before_end == FALSE)
 
 
 write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
@@ -132,7 +131,7 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
   )
 
 # Number of people excluded due to non-M/F sex
-exclusions_3 <- full %>% 
+exclusions_3 <- ortho %>% 
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(sex_missing = rounding(sum(sex_missing)),
@@ -165,7 +164,7 @@ exclusions_5 <- ortho %>%
 # Number of people excluded due to not being routine/admitted
 exclusions_6 <- ortho %>%
   subset(sex_missing == FALSE & sex_not_m_f == FALSE & 
-           missing_priority == FALSE & missing_admission == FALSE & age_not_18_110 == FALSE) %>%
+           routine == "Routine" & admitted == TRUE & age_not_18_110 == FALSE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(not_routine_admitted = rounding(sum(routine != "Routine" | admitted == FALSE))) %>%
@@ -176,7 +175,7 @@ exclusions_6 <- ortho %>%
 # Number of people excluded due to dying before end of waiting list
 exclusions_7 <- ortho %>%
   subset(sex_missing == FALSE & sex_not_m_f == FALSE 
-         & missing_priority == FALSE & missing_admission == FALSE & age_not_18_110 == FALSE
+         & age_not_18_110 == FALSE
          & routine == "Routine" & admitted == TRUE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
