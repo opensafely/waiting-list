@@ -28,7 +28,7 @@ dir_create(here::here("output", "data"), showWarnings = FALSE, recurse = TRUE)
 
 
 ## Load data ##
-ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
+ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routine_clockstops.csv.gz"),
                         col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
                                          rtt_end_date = col_date(format="%Y-%m-%d"),
                                          reg_end_date = col_date(format="%Y-%m-%d"),
@@ -36,9 +36,6 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                                          end_date = col_date(format="%Y-%m-%d"),
                                          rtt_start_month =  col_date(format="%Y-%m-%d"),
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
-  
-  # Restrict to routine / admitted pathways
-  subset(routine == "Routine" & admitted == TRUE) %>%
   
   dplyr::select(c(patient_id, ends_with(c("_count")), post_time_adj, 
                   wait_time_adj, pre_time, age_group, sex, imd10, 
@@ -70,12 +67,12 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
          med_3plus = ifelse(value >= 3, 1, 0)) 
 
 # Split out person-time and merge it back in
-person_time <- ortho_final %>%
+person_time <- ortho_routine_final %>%
     subset(measure == "Person time") %>%
     dplyr::select(c(patient_id, period, value)) %>%
     rename(person_time = value)
 
-ortho_final_2 <- merge(subset(ortho_final, measure != "Person time"), person_time, 
+ortho_routine_final_2 <- merge(subset(ortho_routine_final, measure != "Person time"), person_time, 
                      by = c("patient_id", "period"), all.x = TRUE) 
 
 
@@ -102,7 +99,6 @@ cat_dist_meds <- function() {
       ungroup() %>%
       mutate(
         total = rounding(total),
-        source = "clockstops", 
         cohort = "Orthopaedic - Routine/Admitted"
       ) %>%
       rename(category = {{var}}) %>%
@@ -130,7 +126,7 @@ meds <- cat_dist_meds() %>%
   subset(!(is.na(category)  | (variable == "IMD decile" & category == "Unknown") |
                                      (variable == "Region" & category == "Missing"))) 
 
-meds <- meds[,c("source", "cohort", "variable", "category",  "period",
+meds <- meds[,c("cohort", "variable", "category",  "period",
                         "measure", "count_any", "count_3plus", "total") ]
 
 write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
@@ -152,8 +148,7 @@ summ <- function(gp, var){
       summarise(person_days = rounding(sum(person_time)),
                 count_rx = rounding(sum(value))) %>%
       rename(category = {{gp}}) %>%
-      mutate(variable = var,  source = "clockstops",
-           cohort = "Orthopaedic - Routine/Admitted")
+      mutate(variable = var,  cohort = "Orthopaedic - Routine/Admitted")
 
 }
 
@@ -161,17 +156,17 @@ prescribing_group <- rbind(
     summ(full, "Full cohort"),
     summ(prior_opioid_gp, "Prior opioid Rx"),
     summ(wait_gp, "Time on waiting list")) %>%
-  arrange(source, cohort, variable, category, period, measure)
+  arrange(cohort, variable, category, period, measure)
 
-prescribing_group <- prescribing_group[,c("source", "cohort", "variable",
+prescribing_group <- prescribing_group[,c("cohort", "variable",
                                           "category","period","person_days",
                                           "measure", "count_rx")]
 
 
 
 ## Combine into one file
-all_meds <- merge(meds, prescribing_group, by = c("period", "measure", "category", "variable",
-                                                  "source", "cohort"))
+all_meds <- merge(meds, prescribing_group, by = c("period", "measure", "category", 
+                                                  "variable", "cohort"))
 
 write.csv(all_meds, here::here("output", "clockstops", "med_by_period_ortho.csv"),
           row.names = FALSE)
