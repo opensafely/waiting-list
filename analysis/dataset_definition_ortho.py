@@ -1,6 +1,6 @@
 ################################################################################
 # This script defines and extracts relevant variables for people with a completed
-# RTT pathway from May 2021 - Apr 2022 regardless of treatment type/specialty
+# RTT pathway from May 2021 - Apr 2022 for orthopaedic surgery
 ################################################################################
 
 
@@ -25,7 +25,7 @@ clockstops = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
         & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
-        & wl_clockstops.waiting_list_type.is_in(["IRTT","ORTT","PTLO","PTLI","RTTO","RTTI"])
+        & wl_clockstops.activity_treatment_function_code.is_in(["110","111"])
     )
 
 # Number of RTT pathways per person
@@ -54,15 +54,15 @@ dataset.wait_time = (dataset.rtt_end_date - dataset.rtt_start_date).days
 dataset.treatment_function = last_clockstops.activity_treatment_function_code
 dataset.waiting_list_type = last_clockstops.waiting_list_type
 dataset.priority_type = last_clockstops.priority_type_code
-dataset.admitted = (last_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI"]))
-dataset.ortho_surgery = (last_clockstops.activity_treatment_function_code.is_in(["110","111"]))
 
 #### Censoring dates ####
 
 # Registered 6 months before WL start
-registrations = practice_registrations.where(
-        practice_registrations.start_date.is_on_or_before(dataset.rtt_start_date - days(182))
-    ).for_patient_on(dataset.rtt_start_date)
+registrations = practice_registrations.spanning(
+        dataset.rtt_start_date - days(182), dataset.rtt_start_date
+    ).sort_by(
+        practice_registrations.end_date
+    ).last_for_patient()
 
 dataset.reg_end_date = registrations.end_date
 dataset.dod = patients.date_of_death
@@ -288,7 +288,10 @@ for comorb, comorb_codelist in comorb_codes.items():
 #### DEFINE POPULATION ####
 
 dataset.define_population(
-    dataset.end_date.is_after(dataset.rtt_start_date)
+    (dataset.age>=18)
+    & (dataset.age<110)
+    & dataset.sex.is_in(['male','female'])
+    & dataset.end_date.is_after(dataset.rtt_start_date)
     & registrations.exists_for_patient()
     & last_clockstops.exists_for_patient()
 )
