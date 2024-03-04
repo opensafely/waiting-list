@@ -125,7 +125,7 @@ wait_gp <- function(gp, name){
            cohort = "Orthopaedic - Routine/Admitted",
            p25 = ifelse(total <= 32, NA, p25),
            p50 = ifelse(total <= 32, NA, p50),
-           p75 = ifelse(total <= 32, NA< p75)) %>%
+           p75 = ifelse(total <= 32, NA, p75)) %>%
     rename(category = {{gp}}) %>%
     ungroup() 
   
