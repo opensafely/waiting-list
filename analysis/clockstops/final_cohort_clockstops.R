@@ -48,7 +48,7 @@ full <- arrow::read_feather(here::here("output", "data", "dataset_clockstops.arr
                     prior_opioid_rx = (opioid_pre_count >=3),
                     
                     # Died while on WL
-                    died_during_wl = (!is.na(dod) & dod <= rtt_end_date),
+                    died_during_wl = (!is.na(dod) & dod < rtt_end_date),
                     died_during_post = (!is.na(dod) & dod <= (rtt_end_date + 182)),
                        
                     # Time on WL, censored at death/deregistration
@@ -85,37 +85,43 @@ full <- arrow::read_feather(here::here("output", "data", "dataset_clockstops.arr
                     age_not_18_110 = ifelse((age<18 | age >=110), TRUE, FALSE),
                     sex_missing = ifelse(sex == "unknown", TRUE, FALSE),
                     sex_not_m_f = ifelse(!is.na(sex) & !(sex %in% c("unknown", "male", "female")),
-                                         TRUE, FALSE)
+                                         TRUE, FALSE),
+                    
+                    not_ortho = (is.na(ortho_surgery) | ortho_surgery == FALSE)
                 )
                     
                         
-full_exclusions <- full %>% 
+exclusions_1 <- full %>% 
   mutate(total = n()) %>%
   group_by(total) %>%
   summarise(age_not_18_110 = sum(age_not_18_110),
             sex_missing = sum(sex_missing),
-            sex_not_m_f = sum(sex_not_m_f),
-            not_ortho = sum(is.na(ortho_surgery) | ortho_surgery == FALSE)) %>%
+            sex_not_m_f = sum(sex_not_m_f)) %>%
   ungroup() %>%
   mutate(age_not_18_110 = rounding(age_not_18_110),
          sex_missing = rounding(sex_missing),
          sex_not_m_f = rounding(sex_not_m_f),
-         not_ortho = rounding(not_ortho),
          total = rounding(total),
-         cohort = "Full WL population") %>%
-  reshape2::melt(id = c("cohort", "total"))
+         cohort = "1. Full WL population") %>%
+  reshape2::melt(id = c("cohort", "total")) 
 
-write.csv(full_exclusions, file = here::here("output", "clockstops", "cohort_full_exclusions.csv"),
-          row.names = FALSE)
+exclusions_2 <- full %>%
+  subset(age_not_18_110 == FALSE & sex_missing == FALSE & sex_not_m_f == FALSE) %>%
+  mutate(total = n()) %>%
+  group_by(total) %>%
+  summarise(not_ortho = sum(not_ortho)) %>%
+  ungroup() %>%
+  mutate(not_ortho = rounding(not_ortho),
+         total = rounding(total),
+         cohort = "2. Full WL pop with no missing age/sex") %>%
+  reshape2::melt(id = c("total", "cohort"))
 
-
+# Save as final
 full_final <- full %>%
-  subset(!is.na(age) & age >= 18 & age < 110
-         & !is.na(sex) & (sex %in% c("male", "female")))
+  subset(age_not_18_110 == FALSE & sex_missing == FALSE & sex_not_m_f == FALSE)
 
-## Save as final
-# write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
-#           row.names = FALSE)
+write.csv(full_final, file = here::here("output", "data", "cohort_full_clockstops.csv.gz"),
+          row.names = FALSE)
 
 
 ####################################################
@@ -123,10 +129,22 @@ full_final <- full %>%
 # Restrict to people with trauma/orthopaedic surgery
 ortho <- full_final %>%
   subset(ortho_surgery == TRUE) %>%
+  mutate(not_routine_admitted =  (routine != "Routine" | admitted == FALSE)) %>%
   dplyr::select(!c(age_not_18_110, sex_missing, sex_not_m_f))
 
 # Number of people excluded due to cancer 
-ortho_exclusions <- ortho %>%
+exclusions_3 <- ortho %>%
+  mutate(total = n()) %>%
+  group_by(total) %>%
+  summarise(not_routine_admitted = sum(not_routine_admitted)) %>%
+  ungroup() %>%
+  mutate(total = rounding(total),
+         not_routine_admitted = rounding(not_routine_admitted),
+         cohort = "3. All orthopaedic") %>%
+  reshape2::melt(id = c("total", "cohort"))
+  
+exclusions_4 <- ortho %>%
+  subset(not_routine_admitted == FALSE) %>%
   mutate(total = n()) %>%
   group_by(total) %>%
   summarise(cancer = sum(cancer),
@@ -135,11 +153,11 @@ ortho_exclusions <- ortho %>%
   mutate(total = rounding(total),
          cancer = rounding(cancer),
          died_during_wl = rounding(died_during_wl),
-         cohort = "Orthopaedic"
+         cohort = "4. Orthopaedic routine/admitted only"
   ) %>%
   reshape2::melt(id = c("total", "cohort"))
 
-all_exclusions <- rbind(full_exclusions, ortho_exclusions) %>%
+all_exclusions <- rbind(exclusions_1, exclusions_2, exclusions_3, exclusions_4) %>%
   rename(reason = variable, count = value)
 
 all_exclusions <- all_exclusions[,c("cohort", "total", "reason", "count")]
@@ -148,11 +166,10 @@ write.csv(all_exclusions, here::here("output", "clockstops", "exclude_ortho.csv"
           row.names = FALSE)
 
 
+
 ######## FINAL ORTHOPAEDIC COHORT #########
 
-ortho_final <- ortho %>%
-  subset(cancer == FALSE & died_during_wl == FALSE)
-
+ortho_final <- ortho
 
 ## Save as final
 write.csv(ortho_final, file = here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
