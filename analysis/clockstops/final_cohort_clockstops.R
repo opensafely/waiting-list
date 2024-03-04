@@ -101,6 +101,7 @@ full_exclusions <- full %>%
          sex_missing = rounding(sex_missing),
          sex_not_m_f = rounding(sex_not_m_f),
          not_ortho = rounding(not_ortho),
+         total = rounding(total),
          cohort = "Full WL population") %>%
   reshape2::melt(id = c("cohort", "total"))
 
