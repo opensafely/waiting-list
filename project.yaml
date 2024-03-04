@@ -8,13 +8,22 @@ actions:
   ##### Dataset definitions #####
 
   # Closed (completed) RTT pathways
-  generate_dataset_clockstops:
-    run: ehrql:v1 generate-dataset analysis/dataset_definition_clockstops.py
-      --output output/data/dataset_clockstops.arrow
-      --dummy-data-file dummy/dummy_ortho_clockstops.arrow
+  generate_dataset_full:
+    run: ehrql:v1 generate-dataset analysis/dataset_definition_full.py
+      --output output/data/dataset_full.arrow
+      #--dummy-data-file dummy/dummy_ortho_clockstops.arrow
     outputs:
       highly_sensitive:
-        cohort: output/data/dataset_clockstops.arrow
+        cohort: output/data/dataset_full.arrow
+  
+  # Closed (completed) RTT pathways
+  generate_dataset_ortho:
+    run: ehrql:v1 generate-dataset analysis/dataset_definition_ortho.py
+      --output output/data/dataset_ortho.arrow
+      #--dummy-data-file dummy/dummy_ortho_clockstops.arrow
+    outputs:
+      highly_sensitive:
+        cohort: output/data/dataset_ortho.arrow
   
   
   #### Check number of pathways over time ####
@@ -92,19 +101,19 @@ actions:
   #     moderately_sensitive:
   #       data: output/clockstops/check*.csv
 
-  final_cohort_clockstops:
-   run: r:latest analysis/clockstops/final_cohort_clockstops.R
-   needs: [generate_dataset_clockstops]
+  final_cohort_exclusions:
+   run: r:latest analysis/clockstops/final_cohort_exclusions.R
+   needs: [generate_dataset_full, generate_dataset_ortho]
    outputs:
       highly_sensitive:
         cohort: output/data/cohort*.csv.gz
       moderately_sensitive:
-       # exclusions1: output/clockstops/cohort_full_exclusions.csv
+       #exclusions1: output/clockstops/cohort_full_exclusions.csv
         exclusions2: output/clockstops/exclude*.csv
         
   ortho_clockstops_wait_time:
    run: r:latest analysis/clockstops/ortho_clockstops_wait_time.R
-   needs: [final_cohort_clockstops]
+   needs: [final_cohort_exclusions]
    outputs:
       moderately_sensitive:
         data1: output/clockstops/rtt_dates_ortho.csv
@@ -114,7 +123,7 @@ actions:
 
   ortho_clockstops_freq_dist:
    run: r:latest analysis/clockstops/ortho_clockstops_freq_dist.R
-   needs: [final_cohort_clockstops]
+   needs: [final_cohort_exclusions]
    outputs:
       moderately_sensitive:
         data1: output/clockstops/cat_var_dist_ortho.csv
@@ -122,7 +131,7 @@ actions:
 
   ortho_clockstops_prescribing:
    run: r:latest analysis/clockstops/ortho_clockstops_prescribing.R
-   needs: [final_cohort_clockstops]
+   needs: [final_cohort_exclusions]
    outputs:
       moderately_sensitive:
         #data1: output/clockstops/med_by_period_ortho.csv
