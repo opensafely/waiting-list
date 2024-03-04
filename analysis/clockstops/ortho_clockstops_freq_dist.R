@@ -37,30 +37,37 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) 
 
 
+## Load data ##
+ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routine_clockstops.csv.gz"),
+                        col_types = cols(rtt_start_date = col_date(format="%Y-%m-%d"),
+                                         rtt_end_date = col_date(format="%Y-%m-%d"),
+                                         reg_end_date = col_date(format="%Y-%m-%d"),
+                                         dod = col_date(format="%Y-%m-%d"),
+                                         end_date = col_date(format="%Y-%m-%d"),
+                                         rtt_start_month =  col_date(format="%Y-%m-%d"),
+                                         rtt_end_month =  col_date(format="%Y-%m-%d"))) 
+
+
 ############ Mean/median age ###############
 
 quantile <- scales::percent(c(.25,.5,.75))
 
-age_stats <- ortho_final %>%
-  subset(routine == "Routine" & admitted == TRUE) %>%
+age_stats <- ortho_routine_final %>%
   summarise(p25 = quantile(age, .25, na.rm=TRUE),
                 p50 = quantile(age, .5, na.rm=TRUE),
                 p75 = quantile(age, .75, na.rm=TRUE),
                 mean = mean(age)) %>%
       mutate(variable = "Age summary statistics", 
-             prior_opioid_rx = NA,
-             source = "clockstops",
+             prior_opioid_rx = NA, 
              cohort = "Orthopaedic - Routine/Admitted")
 
-age_stats_prior <- ortho_final %>%
-  subset(routine == "Routine" & admitted == TRUE) %>%
+age_stats_prior <- ortho_routine_final %>%
   group_by(prior_opioid_rx) %>%
   summarise(p25 = quantile(age, .25, na.rm=TRUE),
                p50 = quantile(age, .5, na.rm=TRUE),
                p75 = quantile(age, .75, na.rm=TRUE),
                mean = mean(age)) %>%
   mutate(variable = "Age summary statistics",
-         source = "clockstops",
          cohort = "Orthopaedic - Routine/Admitted")
 
 age_stats_combined <- rbind(age_stats, age_stats_prior)
@@ -87,7 +94,6 @@ cat_dist_combined <- function() {
       ungroup() %>%
       mutate(
         total = rounding(total),
-        source = "clockstops", 
         cohort = "Orthopaedic"
       ) %>%
       rename(category = {{variable}}) %>%
@@ -159,7 +165,7 @@ routine_notadmit <- cat_dist_combined() %>%
 
 # Merge 
 cat_dist <- list(urgent_admit, routine_admit, urgent_notadmit, routine_notadmit) %>% 
-  reduce(full_join, by=c("category","var","cohort","source")) %>%
+  reduce(full_join, by=c("category","var","cohort")) %>%
   filter(category != FALSE) %>%
   mutate(
           # Un-redact true zeroes
@@ -202,7 +208,7 @@ cat_dist <- list(urgent_admit, routine_admit, urgent_notadmit, routine_notadmit)
          ) %>%
   arrange(var, category) 
 
-cat_dist <- cat_dist[,c("source", "cohort", "var", "category", 
+cat_dist <- cat_dist[,c("cohort", "var", "category", 
        "count_routine_admitted", "total_routine_admitted",
        "count_routine_notadmitted", "total_routine_notadmitted",
        "count_urgent_admitted", "total_urgent_admitted",
@@ -220,15 +226,15 @@ write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_ortho.csv"
 ############ Categorical variable relative frequency distributions #############
 
 # Prior opioid rx only
-dat <- ortho_final %>%
-  subset(routine == "Routine" & admitted == TRUE & prior_opioid_rx == TRUE)
+dat <- ortho_routine_final %>%
+  subset(prior_opioid_rx == TRUE)
 
 prior_yes <- cat_dist_combined() %>%
   rename(count_prior_opioid = count, total_prior_opioid = total)
 
 # No prior opioid rx only
-dat <- ortho_final %>%
-  subset(routine == "Routine" & admitted == TRUE & prior_opioid_rx == FALSE)
+dat <- ortho_routine_final %>%
+  subset(prior_opioid_rx == FALSE)
 
 prior_no <- cat_dist_combined() %>%
   rename(count_opioid_naive = count, total_opioid_naive = total)
@@ -236,11 +242,11 @@ prior_no <- cat_dist_combined() %>%
 
 # Merge 
 cat_dist <- list(prior_yes, prior_no) %>% 
-  reduce(full_join, by=c("category","var","cohort","source")) %>%
+  reduce(full_join, by=c("category","var","cohort")) %>%
   filter(category != FALSE) %>%
   arrange(var, category) 
 
-cat_dist <- cat_dist[,c("source", "cohort", "var", "category", 
+cat_dist <- cat_dist[,c("cohort", "var", "category", 
                         "count_prior_opioid", "total_prior_opioid", 
                         "count_opioid_naive", "total_opioid_naive")]
 

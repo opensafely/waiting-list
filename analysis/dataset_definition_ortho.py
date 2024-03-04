@@ -288,9 +288,7 @@ for comorb, comorb_codelist in comorb_codes.items():
 #### DEFINE POPULATION ####
 
 dataset.define_population(
-    (dataset.age>=18)
-    & (dataset.age<110)
-    & dataset.sex.is_in(['male','female'])
+    dataset.sex.is_in(['male','female'])
     & dataset.end_date.is_after(dataset.rtt_start_date)
     & registrations.exists_for_patient()
     & last_clockstops.exists_for_patient()
