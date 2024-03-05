@@ -1,7 +1,5 @@
 # Opioid prescribing to people on elective waiting lists
 
-Preprint: [Changes in opioid prescribing during the COVID-19 pandemic in England: cohort study of 20 million patients in OpenSAFELY-TPP](https://www.medrxiv.org/content/10.1101/2024.02.23.24303238v1)
-
 Details of the purpose of this project can be found at the [OpenSAFELY workspace for this project](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252Fwaiting-list).
 
 The codelists used in this project are available in the [codelists folder](https://github.com/opensafely/waiting-list/tree/main/codelists). 
