@@ -127,7 +127,9 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     age_not_18_110 = ifelse((age<18 | age >=110), TRUE, FALSE),
     sex_missing = ifelse(sex == "unknown", TRUE, FALSE),
     sex_not_m_f = ifelse(!is.na(sex) & !(sex %in% c("unknown", "male", "female")),
-                         TRUE, FALSE)
+                         TRUE, FALSE),
+    
+    not_routine_admitted = (!(routine == "Routine" & admitted == TRUE))
   )
 
 # Number of people excluded due to non-M/F sex
@@ -163,11 +165,11 @@ exclusions_5 <- ortho %>%
 
 # Number of people excluded due to not being routine/admitted
 exclusions_6 <- ortho %>%
-  subset(sex_missing == FALSE & sex_not_m_f == FALSE & 
-           routine == "Routine" & admitted == TRUE & age_not_18_110 == FALSE) %>%
+  subset(sex_missing == FALSE & sex_not_m_f == FALSE & missing_priority == FALSE
+         & missing_admission == FALSE & age_not_18_110 == FALSE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
-  summarise(not_routine_admitted = rounding(sum(routine != "Routine" | admitted == FALSE))) %>%
+  summarise(not_routine_admitted = rounding(sum(not_routine_admitted))) %>%
   ungroup() %>%
   mutate(cohort = "6. Orthopaedic - no missing priority/admission type") %>%
   reshape2::melt(id = c("total", "cohort"))
@@ -175,8 +177,7 @@ exclusions_6 <- ortho %>%
 # Number of people excluded due to dying before end of waiting list
 exclusions_7 <- ortho %>%
   subset(sex_missing == FALSE & sex_not_m_f == FALSE 
-         & age_not_18_110 == FALSE
-         & routine == "Routine" & admitted == TRUE) %>%
+         & age_not_18_110 == FALSE & routine == "Routine" & admitted == TRUE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(died_before_wl_end = rounding(sum(died_during_wl))) %>%
