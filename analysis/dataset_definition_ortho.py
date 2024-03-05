@@ -18,6 +18,7 @@ import codelists
 dataset = create_dataset()
 dataset.configure_dummy_data(population_size=10000)
 
+
 #### Waiting list variables ####
 
 # WL data - exclude rows with missing dates/dates outside study period/end date before start date
@@ -206,34 +207,34 @@ dataset.ethnicity6 = case(
     otherwise="Unknown"
 )
 
-# Ethnicity 16 categories
-ethnicity16 = clinical_events.where(
-        clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_16)
-    ).where(
-        clinical_events.date.is_on_or_before(dataset.rtt_start_date)
-    ).sort_by(
-        clinical_events.date
-    ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_16)
+# # Ethnicity 16 categories
+# ethnicity16 = clinical_events.where(
+#         clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_16)
+#     ).where(
+#         clinical_events.date.is_on_or_before(dataset.rtt_start_date)
+#     ).sort_by(
+#         clinical_events.date
+#     ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_16)
 
-dataset.ethnicity16 = case(
-    when(ethnicity16 == "1").then("White - British"),
-    when(ethnicity16 == "2").then("White - Irish"),
-    when(ethnicity16 == "3").then("White - Other"),
-    when(ethnicity16 == "4").then("Mixed - White/Black Caribbean"),
-    when(ethnicity16 == "5").then("Mixed - White/Black African"),
-    when(ethnicity16 == "6").then("Mixed - White/Asian"),
-    when(ethnicity16 == "7").then("Mixed - Other"),
-    when(ethnicity16 == "8").then("Asian or Asian British - Indian"),
-    when(ethnicity16 == "9").then("Asian or Asian British - Pakistani"),
-    when(ethnicity16 == "10").then("Asian or Asian British - Bangladeshi"),
-    when(ethnicity16 == "11").then("Asian or Asian British - Other"),
-    when(ethnicity16 == "12").then("Black - Caribbean"),    
-    when(ethnicity16 == "13").then("Black - African"),
-    when(ethnicity16 == "14").then("Black - Other"),
-    when(ethnicity16 == "15").then("Other - Chinese"),
-    when(ethnicity16 == "16").then("Other - Other"),
-    otherwise="Unknown"
-)
+# dataset.ethnicity16 = case(
+#     when(ethnicity16 == "1").then("White - British"),
+#     when(ethnicity16 == "2").then("White - Irish"),
+#     when(ethnicity16 == "3").then("White - Other"),
+#     when(ethnicity16 == "4").then("Mixed - White/Black Caribbean"),
+#     when(ethnicity16 == "5").then("Mixed - White/Black African"),
+#     when(ethnicity16 == "6").then("Mixed - White/Asian"),
+#     when(ethnicity16 == "7").then("Mixed - Other"),
+#     when(ethnicity16 == "8").then("Asian or Asian British - Indian"),
+#     when(ethnicity16 == "9").then("Asian or Asian British - Pakistani"),
+#     when(ethnicity16 == "10").then("Asian or Asian British - Bangladeshi"),
+#     when(ethnicity16 == "11").then("Asian or Asian British - Other"),
+#     when(ethnicity16 == "12").then("Black - Caribbean"),    
+#     when(ethnicity16 == "13").then("Black - African"),
+#     when(ethnicity16 == "14").then("Black - Other"),
+#     when(ethnicity16 == "15").then("Other - Chinese"),
+#     when(ethnicity16 == "16").then("Other - Other"),
+#     otherwise="Unknown"
+# )
 
 dataset.region = practice_registrations.for_patient_on(dataset.rtt_start_date).practice_nuts1_region_name
 
@@ -288,8 +289,7 @@ for comorb, comorb_codelist in comorb_codes.items():
 #### DEFINE POPULATION ####
 
 dataset.define_population(
-    dataset.sex.is_in(['male','female'])
-    & dataset.end_date.is_after(dataset.rtt_start_date)
+    dataset.end_date.is_after(dataset.rtt_start_date)
     & registrations.exists_for_patient()
     & last_clockstops.exists_for_patient()
 )

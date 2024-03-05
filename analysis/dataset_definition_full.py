@@ -44,9 +44,8 @@ last_clockstops = clockstops.sort_by(
         clockstops.pseudo_organisation_code_patient_pathway_identifier_issuer
     ).last_for_patient()
 
-dataset.rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
-dataset.rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
-dataset.waiting_list_type = last_clockstops.waiting_list_type
+rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
+rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
 
 
 #### Censoring dates ####
@@ -58,9 +57,9 @@ registrations = practice_registrations.spanning(
         practice_registrations.end_date
     ).last_for_patient()
 
-dataset.reg_end_date = registrations.end_date
-dataset.dod = patients.date_of_death
-dataset.end_date = minimum_of(dataset.reg_end_date, dataset.dod, dataset.rtt_end_date + days(182))
+reg_end_date = registrations.end_date
+dod = patients.date_of_death
+dataset.end_date = minimum_of(reg_end_date, dod, rtt_end_date + days(182))
 
 
 #### Demographics ####
