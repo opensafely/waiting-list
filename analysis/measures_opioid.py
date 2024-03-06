@@ -159,7 +159,7 @@ denominator = (
         & ~cancer
 
         # Censoring date (death/deregistration) after start of waiting list
-        & (end_date > rtt_start_date)
+        & (end_date.is_after(rtt_start_date))
 
         # Routine priority type
         & (last_clockstops.priority_type_code.is_in(["routine"]))       
@@ -168,7 +168,7 @@ denominator = (
         & (last_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI"]))
 
         # Alive at end of waiting list
-        & (patients.date_of_death >= rtt_end_date)
+        & ((patients.date_of_death >= rtt_end_date) | patients.date_of_death.is_null())
     )
 
 
