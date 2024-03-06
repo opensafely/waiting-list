@@ -144,6 +144,7 @@ sex = patients.sex
 
 measures = create_measures()
 
+measures.configure_dummy_data(population_size=500)
 
 # Denominator 
 denominator = (        
@@ -173,74 +174,74 @@ denominator = (
 
 
 # Prescribing during WL
-measures.define_measure(
-    name="count_wait",
-    numerator=count_opioid_wait,
-    # Denominator = only include people whose RTT end date and study end date are after interval end date
-    #   IOW, exclude people who are no longer on waiting list or have been censored
-    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(52).starting_on("2000-01-01")
-    )
+# measures.define_measure(
+#     name="count_wait",
+#     numerator=count_opioid_wait,
+#     # Denominator = only include people whose RTT end date and study end date are after interval end date
+#     #   IOW, exclude people who are no longer on waiting list or have been censored
+#     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+#     intervals=weeks().starting_on("2000-01-01")
+#     )
 
 # Prescribing post WL
-measures.define_measure(
-    name="count_post",
-    numerator=count_opioid_post,
-    # Denominator = only include people whose RTT end date is after interval end date
-    #   IOW, exclude people who have been censored
-    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-    intervals=weeks(26).starting_on("2000-01-01")
-    )
+# measures.define_measure(
+#     name="count_post",
+#     numerator=count_opioid_post,
+#     # Denominator = only include people whose RTT end date is after interval end date
+#     #   IOW, exclude people who have been censored
+#     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+#     intervals=weeks(26).starting_on("2000-01-01")
+#     )
 
-# Prescribing pre WL
+# # Prescribing pre WL
 measures.define_measure(
     name="count_pre",
     numerator=count_opioid_pre,
     # Denominator = only include people whose RTT end date is after interval end date
     #   IOW, exclude people who have been censored
     denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01")
+    intervals=weeks(4).starting_on("2000-01-01")
     )
 
 
-##### By prior opioid prescribing #####
+# ##### By prior opioid prescribing #####
 
-# Prescribing pre WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_pre_prior",
-    numerator=count_opioid_pre,
-    denominator=denominator,
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
-    )
+# # Prescribing pre WL - stratified by prior opioid Rx
+# measures.define_measure(
+#     name="count_pre_prior",
+#     numerator=count_opioid_pre,
+#     denominator=denominator,
+#     intervals=weeks(26).starting_on("2000-01-01"),
+#     group_by={"prior_opioid_rx": prior_opioid_rx}
+#     )
 
-# Prescribing during WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_wait_prior",
-    numerator=count_opioid_wait,
-    denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
-    intervals=weeks(52).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
-    )
+# # Prescribing during WL - stratified by prior opioid Rx
+# measures.define_measure(
+#     name="count_wait_prior",
+#     numerator=count_opioid_wait,
+#     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
+#     intervals=weeks(52).starting_on("2000-01-01"),
+#     group_by={"prior_opioid_rx": prior_opioid_rx}
+#     )
 
-# Prescribing post WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_post_prior",
-    numerator=count_opioid_post,
-    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx}
-    )
+# # Prescribing post WL - stratified by prior opioid Rx
+# measures.define_measure(
+#     name="count_post_prior",
+#     numerator=count_opioid_post,
+#     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+#     intervals=weeks(26).starting_on("2000-01-01"),
+#     group_by={"prior_opioid_rx": prior_opioid_rx}
+#     )
 
 
-##### By prior opioid prescribing and wait duration #####
+# ##### By prior opioid prescribing and wait duration #####
 
-# Prescribing post WL - stratified by prior opioid Rx
-measures.define_measure(
-    name="count_post_prior_wait",
-    numerator=count_opioid_post,
-    denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-    intervals=weeks(26).starting_on("2000-01-01"),
-    group_by={"prior_opioid_rx": prior_opioid_rx,
-              "wait_gp": wait_gp}
-    )
+# # Prescribing post WL - stratified by prior opioid Rx
+# measures.define_measure(
+#     name="count_post_prior_wait",
+#     numerator=count_opioid_post,
+#     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
+#     intervals=weeks(26).starting_on("2000-01-01"),
+#     group_by={"prior_opioid_rx": prior_opioid_rx,
+#               "wait_gp": wait_gp}
+#     )

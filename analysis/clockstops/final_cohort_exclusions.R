@@ -136,8 +136,7 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
 exclusions_3 <- ortho %>% 
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
-  summarise(sex_missing = rounding(sum(sex_missing)),
-            sex_not_m_f = rounding(sum(sex_not_m_f))) %>%
+  summarise(sex_not_m_f = rounding(sum(sex_missing | sex_not_m_f))) %>%
   ungroup() %>%
   mutate(cohort = "3. All orthopaedic") %>%
   reshape2::melt(id = c("cohort", "total")) 
