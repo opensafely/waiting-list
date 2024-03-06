@@ -47,15 +47,6 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_any_opioid.csv
 
-  measures_any_opioid_test:
-    run: ehrql:v1 generate-measures analysis/measures_opioid_test.py 
-      --output output/measures/measures_any_opioid_test.csv
-      --
-      --codelist "opioid_codes"
-    outputs:
-      moderately_sensitive:
-        measure_csv: output/measures/measures_any_opioid_test.csv
-
   measures_long_opioid:
     run: ehrql:v1 generate-measures analysis/measures_opioid.py 
       --output output/measures/measures_long_opioid.csv
