@@ -102,7 +102,6 @@ cat_dist_combined <- function() {
   }
   
   rbind(
-    cat_dist(priority_type, "Priority type"),
     cat_dist(censor_before_rtt_end, "Censor before WL end"),
     cat_dist(censor_before_study_end, "Censor before study end"),
     cat_dist(rtt_multiple, "Multiple RTT pathways"),

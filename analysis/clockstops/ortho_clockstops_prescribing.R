@@ -97,6 +97,7 @@ cat_dist_meds <- function() {
       mutate(cohort = "Orthopaedic - Routine/Admitted") %>%
       rename(category = {{var}}) %>%
       mutate(category = as.character(category),
+             variable = name,
              total = ifelse(period == "Pre-WL", total, total_post))
     
   }
@@ -119,8 +120,7 @@ dat <- ortho_routine_final_2
 
 meds <- cat_dist_meds() 
 
-meds <- meds[,c("cohort", "category",  "period",
-                        "measure", "count_any", "count_3plus", "total") ]
+meds <- meds[,c("cohort", "variable", "category", "period", "measure", "count_any", "count_3plus", "total") ]
 
 write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
            row.names = FALSE) 
