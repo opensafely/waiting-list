@@ -105,7 +105,7 @@ registrations = practice_registrations.spanning(
     ).sort_by(
         practice_registrations.end_date
     ).last_for_patient()
-
+ 
 reg_end_date = registrations.end_date
 end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(182))
 
@@ -169,7 +169,7 @@ denominator = (
         & (last_clockstops.waiting_list_type.is_in(["IRTT","PTLI","RTTI"]))
 
         # Alive at end of waiting list
-        & (patients.date_of_death >= rtt_end_date)
+        & ((patients.date_of_death >= rtt_end_date) | patients.date_of_death.is_null())
     )
 
 
