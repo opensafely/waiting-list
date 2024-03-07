@@ -87,7 +87,7 @@ cat_dist_meds <- function() {
     dat %>% 
       mutate(full = "Full cohort", 
              prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
-      subset(period %in% c("Pre-WL","Post WL")) %>%
+     # subset(period %in% c("Pre-WL","Post WL")) %>%
       group_by({{var}}, measure, period) %>%
       summarise(count_any = rounding(sum(med_any)),
                 count_3plus = rounding(sum(med_3plus)),
@@ -146,17 +146,24 @@ summ <- function(gp, var){
 
 meds_ptime <- rbind(
     summ(full, "Full cohort"),
+    summ(age_group, "Age"),
+    summ(imd10, "IMD"),
+    summ(ethnicity6, "Ethnicity"),
+    summ(region, "Region"),
+    summ(sex, "Sex"),
     summ(prior_opioid_gp, "Prior opioid Rx"),
     summ(wait_gp, "Time on waiting list")) %>%
-  arrange(cohort, variable, category, period, measure)
+  arrange(cohort, variable, category, period, measure) %>%
+  subset(!(measure %in% c("Gabapentinoid", "NSAID", "Antidepressant", "TCA"))) 
+  
 
-meds_ptime <- meds_ptime[,c("cohort", "category","period","person_days",
-                                          "measure", "count_rx")]
-
+meds_ptime <- meds_ptime[,c("cohort","period","measure","variable","category","person_days",
+                                           "count_rx")]
 
 
 ## Combine into one file
-all_meds <- merge(meds, meds_ptime, by = c("period", "measure", "category", "cohort"))
+all_meds <- merge(meds, meds_ptime, by = c( "cohort", "period", "variable","category", "measure")) %>%
+  arrange(cohort, variable, category, period, measure) 
 
 write.csv(all_meds, here::here("output", "clockstops", "med_by_period_ortho.csv"),
           row.names = FALSE)
