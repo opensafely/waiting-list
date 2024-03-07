@@ -121,9 +121,9 @@ dat <- ortho_routine_final_2
 meds <- cat_dist_meds() 
 
 meds <- meds[,c("cohort", "variable", "category", "period", "measure", "count_any", "count_3plus", "total") ]
-# 
-# write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
-#            row.names = FALSE) 
+
+write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
+           row.names = FALSE)
 
 
 ################## Medicine Rx count variables - overall and stratified ####################
