@@ -123,7 +123,7 @@ meds <- cat_dist_meds()
 meds <- meds[,c("cohort", "variable", "category", "period", "measure", "count_any", "count_3plus", "total") ]
 
 write.csv(meds, here::here("output", "clockstops",  "meds_dist_ortho.csv"),
-           row.names = FALSE) 
+           row.names = FALSE)
 
 
 ################## Medicine Rx count variables - overall and stratified ####################
@@ -144,19 +144,19 @@ summ <- function(gp, var){
 
 }
 
-prescribing_group <- rbind(
+meds_ptime <- rbind(
     summ(full, "Full cohort"),
     summ(prior_opioid_gp, "Prior opioid Rx"),
     summ(wait_gp, "Time on waiting list")) %>%
   arrange(cohort, variable, category, period, measure)
 
-prescribing_group <- prescribing_group[,c("cohort", "category","period","person_days",
+meds_ptime <- meds_ptime[,c("cohort", "category","period","person_days",
                                           "measure", "count_rx")]
 
 
 
 ## Combine into one file
-all_meds <- merge(meds, prescribing_group, by = c("period", "measure", "category", "cohort"))
+all_meds <- merge(meds, meds_ptime, by = c("period", "measure", "category", "cohort"))
 
 write.csv(all_meds, here::here("output", "clockstops", "med_by_period_ortho.csv"),
           row.names = FALSE)
