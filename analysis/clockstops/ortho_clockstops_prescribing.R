@@ -106,7 +106,6 @@ cat_dist_meds <- function() {
     cat_dist(full, "Full cohort"),
     cat_dist(age_group, "Age"),
     cat_dist(imd10, "IMD"),
-    cat_dist(ethnicity6, "Ethnicity"),
     cat_dist(region, "Region"),
     cat_dist(sex, "Sex"),
     cat_dist(prior_opioid_rx, "Prior opioid Rx"),
@@ -148,13 +147,14 @@ meds_ptime <- rbind(
     summ(full, "Full cohort"),
     summ(age_group, "Age"),
     summ(imd10, "IMD"),
-    summ(ethnicity6, "Ethnicity"),
     summ(region, "Region"),
     summ(sex, "Sex"),
     summ(prior_opioid_gp, "Prior opioid Rx"),
     summ(wait_gp, "Time on waiting list")) %>%
   arrange(cohort, variable, category, period, measure) %>%
-  subset(!(measure %in% c("Gabapentinoid", "NSAID", "Antidepressant", "TCA"))) 
+  subset(!(measure %in% c("Gabapentinoid", "NSAID", "Antidepressant", "TCA"))) %>%
+  subset(!(variable == "Region" & is.na(category))) %>%
+  subset(!(variable == "IMD" & category == "Unknown"))
   
 
 meds_ptime <- meds_ptime[,c("cohort","period","measure","variable","category","person_days",
