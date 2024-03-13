@@ -36,7 +36,6 @@ ortho_final <- read_csv(here::here("output", "data", "cohort_ortho_clockstops.cs
                                          rtt_start_month =  col_date(format="%Y-%m-%d"),
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) 
 
-
 ############ Categorical variable relative frequency distributions #############
 ####### Stratified by urgent/routine and admitted/not-admitted (for supp) #########
 

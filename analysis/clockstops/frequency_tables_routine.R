@@ -84,6 +84,14 @@ dat <- ortho_routine_final %>%
   subset(prior_opioid_rx == TRUE)
 
 prior_yes <- cat_dist_combined() %>%
+  rbind(cat_dist(gaba_any, "Gabapentinoids (any)"),
+        cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
+        cat_dist(nsaid_any, "NSAID (any)"),
+        cat_dist(nsaid_3plus, "NSAID (>=3)"),
+        cat_dist(tca_any, "TCA (any)"),
+        cat_dist(tca_3plus, "TCA (>=3)"),
+        cat_dist(ad_any, "Antidepressant (any)"),
+        cat_dist(ad_3plus, "Antidepressant (>=3)")) %>%
   rename(count_prior_opioid = count, total_prior_opioid = total)
 
 # No prior opioid rx only
@@ -91,6 +99,14 @@ dat <- ortho_routine_final %>%
   subset(prior_opioid_rx == FALSE)
 
 prior_no <- cat_dist_combined() %>%
+  rbind(cat_dist(gaba_any, "Gabapentinoids (any)"),
+        cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
+        cat_dist(nsaid_any, "NSAID (any)"),
+        cat_dist(nsaid_3plus, "NSAID (>=3)"),
+        cat_dist(tca_any, "TCA (any)"),
+        cat_dist(tca_3plus, "TCA (>=3)"),
+        cat_dist(ad_any, "Antidepressant (any)"),
+        cat_dist(ad_3plus, "Antidepressant (>=3)")) %>%
   rename(count_opioid_naive = count, total_opioid_naive = total)
 
 

@@ -9,27 +9,31 @@ rounding <- function(vars) {
             vars > 7 ~ round(vars / 5) * 5)
 }
 
+
+# Frequency distribution of categorical variables
+cat_dist <- function(variable, name) {
+  
+  dat %>%
+    mutate(total = n()) %>%
+    group_by({{variable}}, total) %>%
+    summarise(count = n()) %>%
+    mutate(
+      var = name,
+      count = rounding(count)
+    ) %>%
+    ungroup() %>%
+    mutate(
+      total = rounding(total),
+      cohort = "Orthopaedic"
+    ) %>%
+    rename(category = {{variable}}) %>%
+    mutate(category = as.character(category))
+  
+}
+
+
 # Frequency distribution of categorical variables
 cat_dist_combined <- function() {
-  cat_dist <- function(variable, name) {
-    
-    dat %>%
-      mutate(total = n()) %>%
-      group_by({{variable}}, total) %>%
-      summarise(count = n()) %>%
-      mutate(
-        var = name,
-        count = rounding(count)
-      ) %>%
-      ungroup() %>%
-      mutate(
-        total = rounding(total),
-        cohort = "Orthopaedic"
-      ) %>%
-      rename(category = {{variable}}) %>%
-      mutate(category = as.character(category))
-    
-  }
   
   rbind(
     cat_dist(censor_before_rtt_end, "Censor before WL end"),
@@ -55,16 +59,7 @@ cat_dist_combined <- function() {
     cat_dist(anxiety, "Anxiety"),
     cat_dist(smi, "Severe mental illness"),
     cat_dist(oud, "Opioid use disorder"),
-    cat_dist(ra, "Rheumatoid arthritis"),
-    
-    cat_dist(gaba_any, "Gabapentinoids (any)"),
-    cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
-    cat_dist(nsaid_any, "NSAID (any)"),
-    cat_dist(nsaid_3plus, "NSAID (>=3)"),
-    cat_dist(tca_any, "TCA (any)"),
-    cat_dist(tca_3plus, "TCA (>=3)"),
-    cat_dist(ad_any, "Antidepressant (any)"),
-    cat_dist(ad_3plus, "Antidepressant (>=3)"),
+    cat_dist(ra, "Rheumatoid arthritis")
   ) 
   
 }
