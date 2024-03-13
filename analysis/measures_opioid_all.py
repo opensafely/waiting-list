@@ -147,6 +147,8 @@ measures = create_measures()
 
 measures.configure_dummy_data(population_size=500)
 
+measures.configure_disclosure_control(enabled=False)
+
 # Denominator 
 denominator = (        
         # Adults with non-missing age/sex
