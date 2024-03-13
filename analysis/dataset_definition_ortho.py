@@ -50,6 +50,7 @@ last_clockstops = clockstops.sort_by(
 dataset.rtt_start_date = last_clockstops.referral_to_treatment_period_start_date
 dataset.rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
 dataset.wait_time = (dataset.rtt_end_date - dataset.rtt_start_date).days
+dataset.num_weeks = (dataset.rtt_end_date - dataset.rtt_start_date).weeks
 
 # Other relevant columns
 dataset.treatment_function = last_clockstops.activity_treatment_function_code
