@@ -185,7 +185,6 @@ measures.define_measure(
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx,
-              "wait_gp": wait_gp,
               "num_weeks": num_weeks}
     )
 
@@ -198,7 +197,6 @@ measures.define_measure(
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(26).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx,
-              "wait_gp": wait_gp,
               "num_weeks": num_weeks}
     )
 
@@ -211,7 +209,6 @@ measures.define_measure(
     denominator=denominator,
     intervals=weeks(26).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx,
-              "wait_gp": wait_gp,
               "num_weeks": num_weeks}
     )
 
