@@ -71,10 +71,8 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
                                         "19-52 weeks"))
                 #wait_gp = ifelse(is.na(wait_gp), "All", wait_gp)
               )  %>%
-              dplyr::select(c(opioid_type, opioid_rx, denominator, num_weeks2,
+              dplyr::select(c(opioid_type, opioid_rx, denominator, wait_gp,
                               week, period, prior_opioid_rx)) 
-
-#%>% subset(!(wait_gp != "All" & opioid_type != "Any opioid"))
 
 opioid_rx <- opioid_rx[,c("opioid_type", "period",  "prior_opioid_rx", "wait_gp", 
                           "week", "opioid_rx", "denominator")]
