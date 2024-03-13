@@ -151,10 +151,10 @@
       "sha": "f7e7ba1728255424766d4eb76d208fee8bb45c25"
     },
     "user-anschaf-opioids-for-analgesia-dmd.csv": {
-      "id": "user/anschaf/opioids-for-analgesia-dmd/643f6f09",
-      "url": "https://www.opencodelists.org/codelist/user/anschaf/opioids-for-analgesia-dmd/643f6f09/",
-      "downloaded_at": "2024-02-16 17:04:40.130229Z",
-      "sha": "3af38839a07be747891ef4f3160a910346289959"
+      "id": "user/anschaf/opioids-for-analgesia-dmd/302b133b",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/opioids-for-analgesia-dmd/302b133b/",
+      "downloaded_at": "2024-03-13 12:17:05.118633Z",
+      "sha": "62c6a891f5d1f50b55ea3479c80fc58fc72834a3"
     },
     "user-anschaf-weak-opioids-dmd.csv": {
       "id": "user/anschaf/weak-opioids-dmd/4b2ffbd4",
@@ -167,12 +167,6 @@
       "url": "https://www.opencodelists.org/codelist/user/anschaf/antidepressants-dmd/71bd2ed7/",
       "downloaded_at": "2024-02-16 17:04:41.756371Z",
       "sha": "bead9b96653a32c8a0fe1d2b49a29d12e0812990"
-    },
-    "opensafely-nsaids-oral.csv": {
-      "id": "opensafely/nsaids-oral/3fe99055",
-      "url": "https://www.opencodelists.org/codelist/opensafely/nsaids-oral/3fe99055/",
-      "downloaded_at": "2023-12-14 13:15:41.850804Z",
-      "sha": "4d76e8be2809f2d865793309b00c7c4ef187c76f"
     },
     "user-speed-vm-antidepressants-for-pain-indication-dmd.csv": {
       "id": "user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556",

@@ -39,7 +39,7 @@ actions:
   ##### Opioid measures - closed pathways #####
 
   measures_any_opioid:
-    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+    run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
       --output output/measures/measures_any_opioid.csv
       --
       --codelist "opioid_codes"
@@ -48,7 +48,7 @@ actions:
         measure_csv: output/measures/measures_any_opioid.csv
 
   measures_long_opioid:
-    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+    run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
       --output output/measures/measures_long_opioid.csv
       --
       --codelist "long_opioid_codes"
@@ -57,7 +57,7 @@ actions:
         measure_csv: output/measures/measures_long_opioid.csv
 
   measures_short_opioid:
-    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+    run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
       --output output/measures/measures_short_opioid.csv
       --
       --codelist "short_opioid_codes"
@@ -66,7 +66,7 @@ actions:
         measure_csv: output/measures/measures_short_opioid.csv
   
   measures_weak_opioid:
-    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+    run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
       --output output/measures/measures_weak_opioid.csv
       --
       --codelist "weak_opioid_codes"
@@ -75,7 +75,7 @@ actions:
         measure_csv: output/measures/measures_weak_opioid.csv
 
   measures_strong_opioid:
-    run: ehrql:v1 generate-measures analysis/measures_opioid.py 
+    run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
       --output output/measures/measures_strong_opioid.csv
       --
       --codelist "strong_opioid_codes"
