@@ -145,7 +145,6 @@ sex = patients.sex
 
 measures = create_measures()
 
-measures.configure_dummy_data(population_size=500)
 
 # Denominator 
 denominator = (        
