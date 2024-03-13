@@ -53,7 +53,7 @@ rtt_month <- ortho_routine_final %>%
   ) %>%
   mutate(count = rounding(count), cohort = "Orthopaedic - Routine/Admitted") 
 
-write.csv(rtt_month, here::here("output", "clockstops", "rtt_dates_ortho.csv"),
+write.csv(rtt_month, here::here("output", "clockstops", "rtt_dates.csv"),
           row.names = FALSE)
 
 
@@ -71,7 +71,6 @@ wait_pcent <- ortho_routine_final %>%
   mutate(cohort = "Orthopaedic - Routine/Admitted",
          prior_opioid_rx = NA)
 
-
 wait_pcent_prior <- ortho_routine_final %>% 
   group_by(prior_opioid_rx) %>%
   summarise(p10 = quantile(wait_time, .1, na.rm=TRUE),
@@ -85,67 +84,11 @@ wait_pcent_combined <- rbind(wait_pcent, wait_pcent_prior)
 
 wait_pcent_combined <- wait_pcent_combined[,c("cohort", "prior_opioid_rx", "p10", "p25", "p50", "p75", "p90")]
 
-write.csv(wait_pcent_combined, here::here("output", "clockstops", "wait_time_pcent_ortho.csv"),
+write.csv(wait_pcent_combined, here::here("output", "clockstops", "wait_time_pcent.csv"),
           row.names = FALSE)
 
-# By week
-wait_time <- ortho_routine_final %>%
-  mutate(total = n()) %>%
-  group_by(week52, total) %>%
-  summarise(count = n()) %>%
-  mutate(count = rounding(count),
-         total = rounding(total),
-         prior_opioid_rx = "Full cohort",
-         cohort = "Orthopaedic - Routine/Admitted") %>%
-  arrange(cohort, week52, total)
 
-# By week and prior opioid Rx
-wait_time_prior <- ortho_routine_final %>%
-  group_by(prior_opioid_rx) %>%
-  mutate(total = n()) %>%
-  group_by(week52, prior_opioid_rx, total) %>%
-  summarise(count = n()) %>%
-  mutate(count = rounding(count),
-         total = rounding(total),
-         cohort = "Orthopaedic - Routine/Admitted",
-         prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes" , "No")) %>%
-  arrange(cohort, week52, total)
-
-wait_time_both <- rbind(wait_time, wait_time_prior)
-
-wait_time_both <- wait_time_both[,c("cohort", "prior_opioid_rx", "week52", "count",  "total")]
-
-write.csv(wait_time_both, file = here::here("output", "clockstops", "wait_time_ortho.csv"),
-          row.names = FALSE)
-
-# Stratified by demographics
-wait_gp <- function(gp, name){
-
-  ortho_routine_final %>%
-    group_by({{gp}}) %>%
-    mutate(total = n(),
-           p25 = quantile(wait_time, .25, na.rm=TRUE),
-           p50 = quantile(wait_time, .5, na.rm=TRUE),
-           p75 = quantile(wait_time, .75, na.rm=TRUE)) %>%
-    group_by({{gp}}, wait_gp, total, p25, p50, p75) %>%
-    summarise(count = n()) %>%
-    mutate(count = rounding(count),
-           total = rounding(total),
-           var = name,
-           cohort = "Orthopaedic - Routine/Admitted",
-           p25 = ifelse(total <= 32, NA, p25),
-           p50 = ifelse(total <= 32, NA, p50),
-           p75 = ifelse(total <= 32, NA, p75),
-           name = ifelse(wait_gp == "<=18 weeks", 1,
-                         ifelse(wait_gp == "19-52 weeks", 2, 3))) %>%
-    rename(category = {{gp}}) %>%
-    ungroup() %>%
-    arrange(var, category, name) %>%
-    pivot_wider(id_cols = c("cohort","var","category","total","p25","p50","p75"),
-                          values_from = "count", 
-                          names_prefix = "wait_gp")
-  
-}
+############ Wait time stratified by demographics #########################
 
 wait_by_group <- rbind(
   wait_gp(age_group, "Age group"),
@@ -161,7 +104,7 @@ wait_by_group <- wait_by_group[,c( "cohort", "var", "category",
                                   "wait_gp1", "wait_gp2", "wait_gp3", "total",
                                   "p25", "p50", "p75")]
 
-write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group_ortho.csv"),
+write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group.csv"),
   row.names = FALSE) 
 
 

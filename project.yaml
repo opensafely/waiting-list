@@ -111,31 +111,38 @@ actions:
        #exclusions1: output/clockstops/cohort_full_exclusions.csv
         exclusions2: output/clockstops/exclude*.csv
         
-  ortho_clockstops_wait_time:
-   run: r:latest analysis/clockstops/ortho_clockstops_wait_time.R
+  wait_time:
+   run: r:latest analysis/clockstops/wait_time.R
    needs: [final_cohort_exclusions]
    outputs:
       moderately_sensitive:
-        data1: output/clockstops/rtt_dates_ortho.csv
-        data2: output/clockstops/wait_time_pcent_ortho.csv
-        data3: output/clockstops/wait_time_ortho.csv
-        data4: output/clockstops/wait_by_group_ortho.csv
+        data1: output/clockstops/rtt_dates.csv
+        data2: output/clockstops/wait_time_pcent.csv
+        data3: output/clockstops/wait_by_group.csv
 
-  ortho_clockstops_freq_dist:
-   run: r:latest analysis/clockstops/ortho_clockstops_freq_dist.R
+  frequency_tables_all:
+   run: r:latest analysis/clockstops/frequency_tables_all.R
    needs: [final_cohort_exclusions]
    outputs:
       moderately_sensitive:
         data1: output/clockstops/cat_var_dist_ortho.csv
-        data2: output/clockstops/cat_var_dist_ortho_prior.csv
-
-  ortho_clockstops_prescribing:
-   run: r:latest analysis/clockstops/ortho_clockstops_prescribing.R
+        
+  frequency_tables_routine:
+   run: r:latest analysis/clockstops/frequency_tables_routine.R
    needs: [final_cohort_exclusions]
    outputs:
       moderately_sensitive:
-        data1: output/clockstops/med_by_period_ortho.csv
-        data2: output/clockstops/meds_dist_ortho.csv
+        data1: output/clockstops/cat_var_dist_prior.csv
+        data2: output/clockstops/age_stats.csv
+
+  opioid_prescribing:
+   run: r:latest analysis/clockstops/opioid_prescribing.R
+   needs: [final_cohort_exclusions]
+   outputs:
+      moderately_sensitive:
+        data1: output/clockstops/med_by_period.csv
+        data2: output/clockstops/med_by_period_wait.csv
+        data3: output/clockstops/total_rx_wait.csv
 
   ######################################################################################
   

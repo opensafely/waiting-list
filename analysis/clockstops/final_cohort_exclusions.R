@@ -107,15 +107,12 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     # Time pre-WL (182 days for everyone)
     pre_time = 182,
     
-    # Week of study period
-    week = ceiling(wait_time / 7),
-    
     # Week variable capped at one year (for some analyses)
-    week52 =  ifelse(week > 52, 52, week),
+    week52 =  ifelse(num_weeks > 52, 52, num_weeks),
     
     # Waiting time category
-    wait_gp = ifelse(week <= 18, "<=18 weeks", 
-                     ifelse(week > 18 & week <= 52, "19-52 weeks", 
+    wait_gp = ifelse(num_weeks <= 18, "<=18 weeks", 
+                     ifelse(num_weeks > 18 & num_weeks <= 52, "19-52 weeks", 
                             "52+ weeks")),
     
     covid_timing = ifelse(rtt_start_date < as.Date("2020-03-01"), "Pre-COVID",
