@@ -66,7 +66,7 @@ tmp_date = "2000-01-01"
 # All opioid prescriptions during study period
 all_opioid_rx = medications.where(
                 medications.dmd_code.is_in(codelists.opioid_codes)
-                & medications.date.is_on_or_between(rtt_start_date - days(365), rtt_end_date + days(182))
+                & medications.date.is_on_or_between(rtt_start_date - days(365), rtt_end_date + days(365))
             )
 
 # Standardise Rx dates relative to RTT start date for prescribing during WL 
@@ -108,7 +108,7 @@ registrations = practice_registrations.spanning(
     ).last_for_patient()
 
 reg_end_date = registrations.end_date
-end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(182))
+end_date = minimum_of(reg_end_date, patients.date_of_death, rtt_end_date + days(365))
 
 # Standardise end date relative to RTT start and end dates
 tmp_end_date_rtt_start = tmp_date + days((end_date - rtt_start_date).days)
@@ -195,7 +195,7 @@ measures.define_measure(
     # Denominator = only include people whose RTT end date is after interval end date
     #   IOW, exclude people who have been censored
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
-    intervals=weeks(26).starting_on("2000-01-01"),
+    intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx,
               "num_weeks": num_weeks}
     )
