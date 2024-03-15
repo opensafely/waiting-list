@@ -75,6 +75,44 @@ dataset.knee_hrg = apcs.where(
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
+dataset.foot_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HN32A","HN32B","HN32C",
+                                       "HN33A","HN33B","HN33C","HN33D",
+                                       "HN34A","HN34B","HN34C","HN34D",
+                                       "HN35A","HN35B","HN36Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.hand_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HN42A","HN42B",
+                                       "HN43A","HN43B","HN43C",
+                                       "HN44A","HN44B","HN44C","HN44D",
+                                       "HN45A","HN45B","HN46C","HN46Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.shoulder_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HN52A","HN52B","HN52C",
+                                       "HN53A","HN43B","HN43C",
+                                       "HN54A","HN54B","HN54C","HN54D",
+                                       "HN55Z","HN56Z","HN56Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.elbow_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HN62A","HN62B",
+                                       "HN63A","HN63B",
+                                       "HN64A","HN64B","HN64C","HN64D",
+                                       "HN65Z","HN66Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.complex_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HN80A","HN80B","HN80C","HN80D",
+                                       "HN81A","HN81B","HN81C","HN81D","HN81E"
+                                       "HN85Z","HN86A","HN86B","HN93Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
 
 #### Censoring dates ####
 
