@@ -110,7 +110,7 @@ cancer_codes = (
 
 osteoarthritis_codes = codelist_from_csv(
     "codelists/opensafely-osteoarthritis.csv",
-    column = "CTV3ID"
+    column = "code"
 )
 
 depression_codes = codelist_from_csv(
