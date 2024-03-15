@@ -107,6 +107,9 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     # Time pre-WL (182 days for everyone)
     pre_time = 182,
     
+    # Any HRG
+    any_hrg = (knee_hrg | hip_hrg | shoulder_hrg | elbow_hrg | foot_hrg | hand_hrg | complex_hrg),
+    
     # Week variable capped at one year (for some analyses)
     week52 =  ifelse(num_weeks > 52, 52, num_weeks),
     
