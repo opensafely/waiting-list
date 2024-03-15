@@ -60,12 +60,18 @@ dataset.priority_type = last_clockstops.priority_type_code
 
 # Hip/knee procedure
 dataset.hip_hrg = apcs.where(
-        apcs.spell_core_hrg_sus.is_in(["HN1"])
+        apcs.spell_core_hrg_sus.is_in(["HN12A","HN12B","HN12C","HN12D","HN12E","HN12F",
+                                       "HN13A","HN13B","HN13C","HN13D","HN13E","HN13F","HN13G","HN13H",
+                                       "HN14A","HN14B","HN14C","HN14D","HN14E","HN14F","HN14G","HN14H",
+                                       "HN15A","HN15B","HN16A","HN16B","HN16C"])
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
 dataset.knee_hrg = apcs.where(
-        apcs.spell_core_hrg_sus.is_in(["HN2"])
+        apcs.spell_core_hrg_sus.is_in(["HN22A","HN22B","HN22C","HN22D","HN22E",
+                                       "HN23A","HN23B","HN23C","HN23D","HN23E",
+                                       "HN24A","HN24B","HN24C","HN24D","HN24E","HN24F",
+                                       "HN25A","HN25B","HN26A","HN26B","HN26C"])
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
