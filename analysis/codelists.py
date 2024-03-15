@@ -162,8 +162,3 @@ oud_codes = codelist_from_csv(
   "codelists/user-hjforbes-opioid-dependency-clinical-diagnosis.csv",
   column = "code"
 )
-
-pain_codes = codelist_from_csv(
-  "codelists/opensafely-symptoms-pain.csv",
-  column = "code"
-)
