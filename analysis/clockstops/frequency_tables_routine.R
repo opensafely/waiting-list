@@ -53,22 +53,20 @@ quantile <- scales::percent(c(.25,.5,.75))
 age_stats <- ortho_routine_final %>%
   summarise(p25 = quantile(age, .25, na.rm=TRUE),
                 p50 = quantile(age, .5, na.rm=TRUE),
-                p75 = quantile(age, .75, na.rm=TRUE),
-                mean = mean(age)) %>%
+                p75 = quantile(age, .75, na.rm=TRUE)) %>%
       mutate(variable = "Age summary statistics", 
-             prior_opioid_rx = NA, 
+             prior_opioid_rx = "Full cohort", 
              cohort = "Orthopaedic - Routine/Admitted")
 
 age_stats_prior <- ortho_routine_final %>%
   group_by(prior_opioid_rx) %>%
   summarise(p25 = quantile(age, .25, na.rm=TRUE),
                p50 = quantile(age, .5, na.rm=TRUE),
-               p75 = quantile(age, .75, na.rm=TRUE),
-               mean = mean(age)) %>%
+               p75 = quantile(age, .75, na.rm=TRUE)) %>%
   mutate(variable = "Age summary statistics",
          cohort = "Orthopaedic - Routine/Admitted")
 
-age_stats_combined <- rbind(age_stats, age_stats_prior)
+age_stats_combined <- rbind(age_stats, age_stats_prior) 
 
 write.csv(age_stats_combined, here::here("output", "clockstops", "age_stats.csv"),
           row.names = FALSE) 

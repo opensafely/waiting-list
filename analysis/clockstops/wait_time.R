@@ -57,40 +57,13 @@ write.csv(rtt_month, here::here("output", "clockstops", "rtt_dates.csv"),
           row.names = FALSE)
 
 
-############### Waiting time distribution #################
-
-quantile <- scales::percent(c(.1,.25,.5,.75,.9,.95,.99))
-
-# Percentiles
-wait_pcent <- ortho_routine_final %>% 
-  summarise(p10 = quantile(wait_time, .1, na.rm=TRUE),
-            p25 = quantile(wait_time, .25, na.rm=TRUE),
-            p50 = quantile(wait_time, .5, na.rm=TRUE),
-            p75 = quantile(wait_time, .75, na.rm=TRUE),
-            p90 = quantile(wait_time, .9, na.rm=TRUE)) %>%
-  mutate(cohort = "Orthopaedic - Routine/Admitted",
-         prior_opioid_rx = NA)
-
-wait_pcent_prior <- ortho_routine_final %>% 
-  group_by(prior_opioid_rx) %>%
-  summarise(p10 = quantile(wait_time, .1, na.rm=TRUE),
-            p25 = quantile(wait_time, .25, na.rm=TRUE),
-            p50 = quantile(wait_time, .5, na.rm=TRUE),
-            p75 = quantile(wait_time, .75, na.rm=TRUE),
-            p90 = quantile(wait_time, .9, na.rm=TRUE)) %>%
-  mutate(cohort = "Orthopaedic - Routine/Admitted")
-
-wait_pcent_combined <- rbind(wait_pcent, wait_pcent_prior)
-
-wait_pcent_combined <- wait_pcent_combined[,c("cohort", "prior_opioid_rx", "p10", "p25", "p50", "p75", "p90")]
-
-write.csv(wait_pcent_combined, here::here("output", "clockstops", "wait_time_pcent.csv"),
-          row.names = FALSE)
-
-
 ############ Wait time stratified by demographics #########################
 
+dat <- ortho_routine_final %>%
+  mutate(full = "Full cohort")
+
 wait_by_group <- rbind(
+  wait_gp(full, "Full cohort"),
   wait_gp(age_group, "Age group"),
   wait_gp(sex, "Sex"),
   wait_gp(imd10, "IMD decile"),
@@ -98,7 +71,8 @@ wait_by_group <- rbind(
   wait_gp(region, "Region"),
   wait_gp(prior_opioid_rx, "Prior opioid Rx")
   ) %>% 
-  arrange(var, category) 
+  arrange(var, category) %>%
+  subset(!(var == "Region" & is.na(category)))
 
 wait_by_group <- wait_by_group[,c( "cohort", "var", "category",
                                   "wait_gp1", "wait_gp2", "wait_gp3", "total",

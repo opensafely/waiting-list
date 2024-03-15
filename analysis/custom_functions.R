@@ -104,7 +104,7 @@ ptime <- function(gp, var){
 # Stratified by demographics
 wait_gp <- function(gp, name){
   
-  ortho_routine_final %>%
+  dat %>%
     group_by({{gp}}) %>%
     mutate(total = n(),
            p25 = quantile(wait_time, .25, na.rm=TRUE),

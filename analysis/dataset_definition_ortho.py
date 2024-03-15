@@ -7,6 +7,7 @@
 from ehrql import create_dataset, case, when, days, years, minimum_of
 from ehrql.tables.tpp import (
     patients, 
+    apcs,
     medications, 
     addresses,
     practice_registrations,
@@ -57,6 +58,18 @@ dataset.treatment_function = last_clockstops.activity_treatment_function_code
 dataset.waiting_list_type = last_clockstops.waiting_list_type
 dataset.priority_type = last_clockstops.priority_type_code
 
+# Hip/knee procedure
+dataset.hip_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HN1"])
+        & apcs.admission.date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient
+
+dataset.knee_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HN2"])
+        & apcs.admission.date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient
+
+
 #### Censoring dates ####
 
 # Registered 6 months before WL start
@@ -68,13 +81,13 @@ registrations = practice_registrations.spanning(
 
 dataset.reg_end_date = registrations.end_date
 dataset.dod = patients.date_of_death
-dataset.end_date = minimum_of(dataset.reg_end_date, dataset.dod, dataset.rtt_end_date + days(182))
+dataset.end_date = minimum_of(dataset.reg_end_date, dataset.dod, dataset.rtt_end_date + days(365))
 
 # Flag if censored before WL end date
 dataset.censor_before_rtt_end = (dataset.end_date < dataset.rtt_end_date)
 
 # Flag if censored before study end date (RTT end + 6 months)
-dataset.censor_before_study_end = (dataset.end_date < dataset.rtt_end_date + days(182))
+dataset.censor_before_study_end = (dataset.end_date < dataset.rtt_end_date + days(365))
 
 
 #### Medicines data ####
@@ -126,14 +139,14 @@ for med, med_codelist in med_codes.items():
 
     # Number of prescriptions after waiting list
     post_count_query = med_events.where(
-            med_events.date.is_on_or_between(dataset.rtt_end_date + days(1), minimum_of(dataset.rtt_end_date + days(182), dataset.end_date))
+            med_events.date.is_on_or_between(dataset.rtt_end_date + days(91), minimum_of(dataset.rtt_end_date + days(273), dataset.end_date))
             & (dataset.end_date > dataset.rtt_end_date)
         ).count_for_patient()
     dataset.add_column(f"{med}_post_count", post_count_query)
     
     # Any prescription after waiting list
     post_any_query = med_events.where(
-            med_events.date.is_on_or_between(dataset.rtt_end_date + days(1), minimum_of(dataset.rtt_end_date + days(182), dataset.end_date))
+            med_events.date.is_on_or_between(dataset.rtt_end_date + days(91), minimum_of(dataset.rtt_end_date + days(273), dataset.end_date))
             & (dataset.end_date > dataset.rtt_end_date)
         ).exists_for_patient()
     dataset.add_column(f"{med}_post_any", post_any_query)
@@ -142,7 +155,7 @@ for med, med_codelist in med_codes.items():
 # Date of first prescription
 dataset.first_opioid_date = med_events.where(
             med_events.dmd_code.is_in(codelists.opioid_codes)
-            & med_events.date.is_on_or_between(dataset.rtt_start_date - days(365), minimum_of(dataset.end_date, dataset.rtt_end_date + days(182)))
+            & med_events.date.is_on_or_between(dataset.rtt_start_date - days(365), minimum_of(dataset.end_date, dataset.rtt_end_date + days(365)))
         ).sort_by(
             med_events.date
         ).first_for_patient().date
@@ -179,16 +192,6 @@ dataset.imd10 = case(
         otherwise="Unknown"
 )
 
-# IMD quintile
-dataset.imd5 = case(
-        when((imd >= 0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
-        when(imd < int(32844 * 2 / 5)).then("2"),
-        when(imd < int(32844 * 3 / 5)).then("3"),
-        when(imd < int(32844 * 4 / 5)).then("4"),
-        when(imd >= int(32844 * 4 / 5)).then("5 (least deprived)"),
-        otherwise="Unknown"
-)
-
 # Ethnicity 6 categories
 ethnicity6 = clinical_events.where(
         clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_6)
@@ -207,35 +210,6 @@ dataset.ethnicity6 = case(
     when(ethnicity6 == "6").then("Not stated"),
     otherwise="Unknown"
 )
-
-# # Ethnicity 16 categories
-# ethnicity16 = clinical_events.where(
-#         clinical_events.snomedct_code.is_in(codelists.ethnicity_codes_16)
-#     ).where(
-#         clinical_events.date.is_on_or_before(dataset.rtt_start_date)
-#     ).sort_by(
-#         clinical_events.date
-#     ).last_for_patient().snomedct_code.to_category(codelists.ethnicity_codes_16)
-
-# dataset.ethnicity16 = case(
-#     when(ethnicity16 == "1").then("White - British"),
-#     when(ethnicity16 == "2").then("White - Irish"),
-#     when(ethnicity16 == "3").then("White - Other"),
-#     when(ethnicity16 == "4").then("Mixed - White/Black Caribbean"),
-#     when(ethnicity16 == "5").then("Mixed - White/Black African"),
-#     when(ethnicity16 == "6").then("Mixed - White/Asian"),
-#     when(ethnicity16 == "7").then("Mixed - Other"),
-#     when(ethnicity16 == "8").then("Asian or Asian British - Indian"),
-#     when(ethnicity16 == "9").then("Asian or Asian British - Pakistani"),
-#     when(ethnicity16 == "10").then("Asian or Asian British - Bangladeshi"),
-#     when(ethnicity16 == "11").then("Asian or Asian British - Other"),
-#     when(ethnicity16 == "12").then("Black - Caribbean"),    
-#     when(ethnicity16 == "13").then("Black - African"),
-#     when(ethnicity16 == "14").then("Black - Other"),
-#     when(ethnicity16 == "15").then("Other - Chinese"),
-#     when(ethnicity16 == "16").then("Other - Other"),
-#     otherwise="Unknown"
-# )
 
 dataset.region = practice_registrations.for_patient_on(dataset.rtt_start_date).practice_nuts1_region_name
 
@@ -269,7 +243,6 @@ comorb_codes = {
     "oud": codelists.oud_codes
     }
 
-
 for comorb, comorb_codelist in comorb_codes.items():
         
     if comorb in ["diabetes","cardiac","copd","liver","oa","ra"]:
@@ -290,7 +263,7 @@ for comorb, comorb_codelist in comorb_codes.items():
 #### DEFINE POPULATION ####
 
 dataset.define_population(
-    dataset.end_date.is_after(dataset.rtt_start_date)
+    dataset.end_date.is_on_or_after(dataset.rtt_start_date)
     & registrations.exists_for_patient()
     & last_clockstops.exists_for_patient()
 )
