@@ -118,7 +118,7 @@ opioid_rx_wait <- opioid_rx %>%
   summarise(opioid_rx = rounding(sum(opioid_rx)),
             denominator = rounding(sum(denominator))) %>%
   arrange(prior_opioid_rx, wait_gp, opioid_type, period, week) %>%
-  dplyr::select(!(prior_opioid_rx == "Opioid naive" & opioid_type != "Any opioid"))
+  subset(!(prior_opioid_rx == "Opioid naive" & opioid_type != "Any opioid"))
 
 
 write.csv(opioid_rx_wait, file = here::here("output", "clockstops", "opioid_by_week_wait.csv"),
