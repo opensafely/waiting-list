@@ -1,227 +1,210 @@
-CTV3PreferredTermDesc,CTV3ID,CTV3Source
-Cervical spond.with myelopathy,Y5903,CTV3_Children
-Cervical spondylosis,X703j,CTV3Map_Code_Only
-Cervical spondylosis,X703j,CTV3Map_Code_And_Term
-Cervical spondylosis with myelopathy,XE1Ev,CTV3_Children
-Cervical spondylosis with radiculopathy,N119.,CTV3_Children
-Cervical spondylosis with vascular compression,N11A.,CTV3_Children
-Cervical spondylosis without myelopathy,XE1Eu,CTV3Map_Code_Only
-Lumbar spondylosis,X703k,CTV3Map_Code_And_Term
-Lumbosacral spondylosis,XaE3C,CTV3_Children
-Lumbosacral spondylosis with myelopathy,N115.,CTV3_Children
-Lumbosacral spondylosis with radiculopathy,N11C.,CTV3_Children
-Lumbosacral spondylosis without myelopathy,XE1Ex,CTV3_Children
-Multiple-level cervical spondylosis with myelopathy,N1112,CTV3_Children
-Multiple-level cervical spondylosis with radiculopathy,N1192,CTV3_Children
-Multiple-level cervical spondylosis without myelopathy,N1102,CTV3_Children
-Multiple-level lumbosacral spondylosis with myelopathy,N1152,CTV3_Children
-Multiple-level lumbosacral spondylosis with radiculopathy,N11C2,CTV3_Children
-Multiple-level lumbosacral spondylosis without myelopathy,N1142,CTV3_Children
-Multiple-level thoracic spondylosis with myelopathy,N1132,CTV3_Children
-Multiple-level thoracic spondylosis with radiculopathy,N11B2,CTV3_Children
-Multiple-level thoracic spondylosis without myelopathy,N1122,CTV3_Children
-Other spondyloses and allied disorders,N11y.,CTV3_Children
-Single-level cervical spondylosis with myelopathy,N1110,CTV3_Children
-Single-level cervical spondylosis with radiculopathy,N1190,CTV3_Children
-Single-level cervical spondylosis without myelopathy,N1100,CTV3_Children
-Single-level lumbosacral spondylosis with myelopathy,N1150,CTV3_Children
-Single-level lumbosacral spondylosis with radiculopathy,N11C0,CTV3_Children
-Single-level lumbosacral spondylosis without myelopathy,N1140,CTV3_Children
-Single-level thoracic spondylosis with myelopathy,N1130,CTV3_Children
-Single-level thoracic spondylosis with radiculopathy,N11B0,CTV3_Children
-Single-level thoracic spondylosis without myelopathy,N1120,CTV3_Children
-Spondylosis,X7039,CTV3Map_Code_Only
-Spondylosis,X7039,CTV3Map_Code_And_Term
-Spondylosis NOS,XE1Ey,CTV3Map_Code_And_Term
-Spondylosis NOS,XE1Ey,CTV3Map_Code_Only
-Spondylosis NOS,N11zz,CTV3_Children
-Spondylosis and allied disorders,XE1Et,CTV3Map_Code_Only
-"Spondylosis with myelopathy, NOS",N11z1,CTV3_Children
-"Spondylosis without myelopathy, NOS",N11z0,CTV3_Children
-Thoracic spondylosis,X70Cw,CTV3Map_Code_And_Term
-Thoracic spondylosis (& [without myelopathy]),N112.,CTV3_Children
-Thoracic spondylosis with myelopathy,N113.,CTV3_Children
-Thoracic spondylosis with radiculopathy,N11B.,CTV3_Children
-Thoracic spondylosis without myelopathy,XE1Ew,CTV3_Children
-Two-level cervical spondylosis with myelopathy,N1111,CTV3_Children
-Two-level cervical spondylosis with radiculopathy,N1191,CTV3_Children
-Two-level cervical spondylosis without myelopathy,N1101,CTV3_Children
-Two-level lumbosacral spondylosis with myelopathy,N1151,CTV3_Children
-Two-level lumbosacral spondylosis with radiculopathy,N11C1,CTV3_Children
-Two-level lumbosacral spondylosis without myelopathy,N1141,CTV3_Children
-Two-level thoracic spondylosis with myelopathy,N1131,CTV3_Children
-Two-level thoracic spondylosis with radiculopathy,N11B1,CTV3_Children
-Two-level thoracic spondylosis without myelopathy,N1121,CTV3_Children
-[X]Other spondylosis,Nyu64,CTV3_Children
-[X]Other spondylosis with myelopathy,Nyu62,CTV3_Children
-[X]Other spondylosis with radiculopathy,Nyu63,CTV3_Children
-(Lumbosacr spondylos [& no myelopath]) or (degen lumb spine),N114.,CTV3_Children
-(Spond:[cerv][lum][sac]) or (arth spine) or (osteoart spine),XE1HM,CTV3_Children
-(Spondyl & allied dis) or (arthr spine) or (osteoarth spine),N11..,High_Level_SNOMED
-Cerv spondylos (& [no myelopath]) or (osteoarthr cerv spine),N110.,CTV3_Children
-Degenerative arthropathy of spinal facet joint,X70Cy,High_Level_SNOMED
-Bouchard's nodes with arthropathy,N0503,CTV3Map_Code_And_Term
-Delivery of rehabilitation for osteoarthritis,XaLsk,CTV3Map_Code_And_Term
-Erosive osteoarthrosis,N0506,CTV3Map_Code_And_Term
-Finger osteoarthritis NOS,X7035,CTV3Map_Code_Only
-Foot osteoarthritis NOS,X7030,CTV3Map_Code_And_Term
-Generalised osteoarthritis NOS,N050z,CTV3Map_Code_And_Term
-Generalised osteoarthritis of multiple sites,N0502,CTV3Map_Code_And_Term
-Generalised osteoarthritis of the hand,XE1DW,CTV3Map_Code_Only
-Generalised osteoarthritis of unspecified site,N0500,CTV3Map_Code_And_Term
-H/O: osteoarthritis,14G2.,CTV3Map_Code_And_Term
-Heberden's nodes with arthropathy,N0507,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified",N053.,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, NOS",N053z,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, of other spec site",N0538,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, of shoulder region",N0531,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, of the ankle and foot",N0537,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, of the forearm",N0533,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, of the hand",N0534,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, of the lower leg",XE1DZ,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, of the upper arm",N0532,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, of unspecified site",N0530,CTV3Map_Code_And_Term
-"Localised osteoarthritis, unspecified, pelvic region/thigh",XE1DY,CTV3Map_Code_Only
-"Localised, primary osteoarthritis",N051.,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis NOS",N051z,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of elbow",XaEGf,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of other specified site",N0518,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of the ankle and foot",N0517,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of the forearm",N0513,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of the hand",N0514,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of the lower leg",N0516,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of the pelvic region/thigh",N0515,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of the shoulder region",N0511,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of the upper arm",N0512,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of the wrist",XaEGd,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of toe",XaEGe,CTV3Map_Code_And_Term
-"Localised, primary osteoarthritis of unspecified site",N0510,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis",N052.,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis NOS",N052z,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of other specified site",N0528,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of pelvic region/thigh",XE1DX,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of the ankle and foot",N0527,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of the forearm",N0523,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of the hand",N0524,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of the lower leg",N0526,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of the shoulder region",N0521,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of the upper arm",N0522,CTV3Map_Code_And_Term
-"Localised, secondary osteoarthritis of unspecified site",N0520,CTV3Map_Code_And_Term
-O/E - hands - Heberden's nodes,2G26.,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspec, of unspecified sites",N0540,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified",N054.,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, multiple sites",N0549,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, of ankle/foot",N0547,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, of forearm",N0543,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, of hand",N0544,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, of lower leg",N0546,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, of pelvis/thigh",N0545,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, of shoulder",N0541,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, of upper arm",N0542,CTV3Map_Code_And_Term
-"Oligoarticular osteoarthritis, unspecified, other spec sites",N0548,CTV3Map_Code_And_Term
-Osteoarthritis,XE1DV,CTV3Map_Code_Only
-Osteoarthritis NOS,N05zz,CTV3_Children
-"Osteoarthritis NOS, of DIP joint of finger",N05zH,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of PIP joint of finger",N05zG,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of acromioclavicular joint",N05zB,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of ankle",N05zN,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of ankle and foot",XE1Dg,CTV3Map_Code_Only
-"Osteoarthritis NOS, of elbow",N05zC,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of hip",N05zJ,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of knee",N05zL,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of other tarsal joint",N05zR,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of shoulder",N05z9,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of shoulder region",N05z1,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of sternoclavicular joint",N05zA,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of subtalar joint",N05zP,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of talonavicular joint",N05zQ,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of the forearm",XE1Dc,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of the hand",XE1Dd,CTV3Map_Code_Only
-"Osteoarthritis NOS, of the lower leg",XE1Df,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of the upper arm",XE1Db,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of unspecified site",N05z0,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of wrist",N05zE,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, other specified site",N05z8,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, pelvic region/thigh",XE1De,CTV3Map_Code_Only
-"Osteoarthritis of more than one site, unspecified, NOS",N054z,CTV3Map_Code_And_Term
-Osteoarthritis of spinal facet joint,X703A,CTV3Map_Code_And_Term
-Patellofemoral osteoarthritis,XaYQD,CTV3Map_Code_Only
-"Post-traumatic coxarthrosis, bilateral",N0529,CTV3Map_Code_And_Term
-"Primary coxarthrosis, bilateral",N0519,CTV3Map_Code_And_Term
-Thumb osteoarthritis NOS,X7034,CTV3Map_Code_And_Term
-Toe osteoarthritis NOS,X702z,CTV3Map_Code_And_Term
-[X]Other post-traumatic coxarthrosis,Nyu23,CTV3Map_Code_And_Term
-(Heberden nodes) or (Bouchard nodes) or (gen osteoarth hand),N0501,CTV3_Children
-(Spondylosis NOS) or (osteoarthritis spine),N11z.,CTV3_Children
-Ankle osteoarthritis NOS,X7031,CTV3Map_Code_Only
-Bouchard's node,X76G5,CTV3Map_Code_Only
-Bouchard's node,X76G5,CTV3Map_Code_And_Term
-Endemic osteoarthritis,X704R,CTV3_Children
-Exacerbation of osteoarthritis,XaIna,CTV3_Children
-Finger osteoarthritis NOS,X7035,CTV3Map_Code_And_Term
-Foot osteoarthritis NOS,X7030,CTV3Map_Code_Only
-Generalised osteoarthritis,N050.,CTV3Map_Code_And_Term
-Generalised osteoarthritis of the hand,XE1DW,CTV3Map_Code_And_Term
-Heberden's node,XM05w,CTV3Map_Code_And_Term
-Heberden's node,XM05w,CTV3Map_Code_Only
-Idiopathic osteoarthritis,N0504,CTV3_Children
-Idiopathic osteoarthritis,X7038,CTV3Map_Code_And_Term
-Localised osteoarthritis,X7041,CTV3_Children
-"Localised osteoarthritis, unspecified, of the lower leg",XE1DZ,CTV3Map_Code_Only
-"Localised osteoarthritis, unspecified, pelvic region/thigh",XE1DY,CTV3Map_Code_And_Term
-O/E - Heberden's nodes,XaBzh,CTV3_Children
-Osteoarthritis,XE1DV,CTV3Map_Code_And_Term
-Osteoarthritis (& [allied disorders]),N05..,CTV3_Children
-Osteoarthritis - ankle/foot,Xa3gR,CTV3_Children
-Osteoarthritis - hand joint,Xa3gQ,CTV3_Children
-Osteoarthritis - other joint,Xa3gS,CTV3_Children
-Osteoarthritis -multiple joint,XE1Gm,CTV3_Children
-Osteoarthritis NOS,XE1Da,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of 1st metatarsophalangeal joint",N05zS,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of ankle and foot",XE1Dg,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of distal radioulnar joint",N05zD,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of elbow",N05zC,CTV3Map_Code_Only
-"Osteoarthritis NOS, of hip",N05zJ,CTV3Map_Code_Only
-"Osteoarthritis NOS, of interphalangeal joint of toe",N05zU,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of knee",N05zL,CTV3Map_Code_Only
-"Osteoarthritis NOS, of lesser metatarsophalangeal joint",N05zT,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of metacarpophalangeal joint",N05zF,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of sacroiliac joint",N05zK,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of the forearm",XE1Dc,CTV3Map_Code_Only
-"Osteoarthritis NOS, of the hand",XE1Dd,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of the lower leg",XE1Df,CTV3Map_Code_Only
-"Osteoarthritis NOS, of the upper arm",XE1Db,CTV3Map_Code_Only
-"Osteoarthritis NOS, of tibiofibular joint",N05zM,CTV3Map_Code_And_Term
-"Osteoarthritis NOS, of wrist",N05zE,CTV3Map_Code_Only
-"Osteoarthritis NOS, pelvic region/thigh",XE1De,CTV3Map_Code_And_Term
-Osteoarthritis NOS: [ankle &/or foot] or [toe],N05z7,CTV3_Children
-Osteoarthritis NOS: [hand] or [finger] or [thumb],N05z4,CTV3_Children
-Osteoarthritis NOS: [lower leg] or [knee],N05z6,CTV3_Children
-Osteoarthritis NOS: [of the forearm] or [wrist],N05z3,CTV3_Children
-Osteoarthritis NOS: [of the upper arm] or [elbow],N05z2,CTV3_Children
-Osteoarthritis NOS: [pelvic region and/or thigh] or [hip],N05z5,CTV3_Children
-Osteoarthritis of acromioclavicular joint,X703C,CTV3_Children
-Osteoarthritis of ankle,X703M,CTV3_Children
-Osteoarthritis of distal interphalangeal joint,X703H,CTV3_Children
-Osteoarthritis of elbow,X703D,CTV3_Children
-Osteoarthritis of finger joint,X703G,CTV3_Children
-Osteoarthritis of first carpometacarpal joint,X703F,CTV3_Children
-Osteoarthritis of first metatarsalphalangeal joint,X703O,CTV3_Children
-Osteoarthritis of foot joint,XaBmY,CTV3_Children
-Osteoarthritis of hip,X703K,CTV3_Children
-Osteoarthritis of knee,X703L,CTV3_Children
-Osteoarthritis of metacarpophalangeal joint,XM1NQ,CTV3_Children
-Osteoarthritis of metacarpophalangeal joint of finger,X703J,CTV3_Children
-Osteoarthritis of proximal interphalangeal joint,X703I,CTV3_Children
-Osteoarthritis of shoulder joint,X703B,CTV3_Children
-Osteoarthritis of subtalar joint,X703N,CTV3_Children
-Osteoarthritis of toe joint,X703P,CTV3_Children
-Osteoarthritis of wrist,X703E,CTV3_Children
-Osteoarthritis: [localised low leg unsp] or [patellofemoral],N0536,CTV3_Children
-Patellofemoral osteoarthritis,XaYQD,CTV3Map_Code_And_Term
-Secondary osteoarthritis,X703Q,CTV3_Children
-Thumb osteoarthritis NOS,X7034,CTV3Map_Code_Only
-Toe osteoarthritis NOS,X702z,CTV3Map_Code_Only
-[Joint degeneration] or [osteoarthritis NOS],N05z.,CTV3_Children
-(Otto pel)(hip osteoart NOS)(loc osteoart uns pel reg/thigh),N0535,CTV3_Children
-Otto's pelvis,X7042,CTV3Map_Code_Only
+code,term
+14G2.,H/O: osteoarthritis
+2G26.,O/E - hands - Heberden's nodes
+N05..,Osteoarthritis (& [allied disorders])
+N050.,Generalised osteoarthritis
+N0500,Generalised osteoarthritis of unspecified site
+N0501,(Heberden nodes) or (Bouchard nodes) or (gen osteoarth hand)
+N0502,Generalised osteoarthritis of multiple sites
+N0503,Bouchard's nodes with arthropathy
+N0504,Idiopathic osteoarthritis
+N0506,Erosive osteoarthrosis
+N0507,Heberden's nodes with arthropathy
+N050z,Generalised osteoarthritis NOS
+N051.,"Localised, primary osteoarthritis"
+N0510,"Localised, primary osteoarthritis of unspecified site"
+N0511,"Localised, primary osteoarthritis of the shoulder region"
+N0512,"Localised, primary osteoarthritis of the upper arm"
+N0513,"Localised, primary osteoarthritis of the forearm"
+N0514,"Localised, primary osteoarthritis of the hand"
+N0515,"Localised, primary osteoarthritis of the pelvic region/thigh"
+N0516,"Localised, primary osteoarthritis of the lower leg"
+N0517,"Localised, primary osteoarthritis of the ankle and foot"
+N0518,"Localised, primary osteoarthritis of other specified site"
+N0519,"Primary coxarthrosis, bilateral"
+N051z,"Localised, primary osteoarthritis NOS"
+N052.,"Localised, secondary osteoarthritis"
+N0520,"Localised, secondary osteoarthritis of unspecified site"
+N0521,"Localised, secondary osteoarthritis of the shoulder region"
+N0522,"Localised, secondary osteoarthritis of the upper arm"
+N0523,"Localised, secondary osteoarthritis of the forearm"
+N0524,"Localised, secondary osteoarthritis of the hand"
+N0526,"Localised, secondary osteoarthritis of the lower leg"
+N0527,"Localised, secondary osteoarthritis of the ankle and foot"
+N0528,"Localised, secondary osteoarthritis of other specified site"
+N0529,"Post-traumatic coxarthrosis, bilateral"
+N052z,"Localised, secondary osteoarthritis NOS"
+N053.,"Localised osteoarthritis, unspecified"
+N0530,"Localised osteoarthritis, unspecified, of unspecified site"
+N0531,"Localised osteoarthritis, unspecified, of shoulder region"
+N0532,"Localised osteoarthritis, unspecified, of the upper arm"
+N0533,"Localised osteoarthritis, unspecified, of the forearm"
+N0534,"Localised osteoarthritis, unspecified, of the hand"
+N0535,(Otto pel)(hip osteoart NOS)(loc osteoart uns pel reg/thigh)
+N0536,Osteoarthritis: [localised low leg unsp] or [patellofemoral]
+N0537,"Localised osteoarthritis, unspecified, of the ankle and foot"
+N0538,"Localised osteoarthritis, unspecified, of other spec site"
+N053z,"Localised osteoarthritis, unspecified, NOS"
+N054.,"Oligoarticular osteoarthritis, unspecified"
+N0540,"Oligoarticular osteoarthritis, unspec, of unspecified sites"
+N0541,"Oligoarticular osteoarthritis, unspecified, of shoulder"
+N0542,"Oligoarticular osteoarthritis, unspecified, of upper arm"
+N0543,"Oligoarticular osteoarthritis, unspecified, of forearm"
+N0544,"Oligoarticular osteoarthritis, unspecified, of hand"
+N0545,"Oligoarticular osteoarthritis, unspecified, of pelvis/thigh"
+N0546,"Oligoarticular osteoarthritis, unspecified, of lower leg"
+N0547,"Oligoarticular osteoarthritis, unspecified, of ankle/foot"
+N0548,"Oligoarticular osteoarthritis, unspecified, other spec sites"
+N0549,"Oligoarticular osteoarthritis, unspecified, multiple sites"
+N054z,"Osteoarthritis of more than one site, unspecified, NOS"
+N05z.,[Joint degeneration] or [osteoarthritis NOS]
+N05z0,"Osteoarthritis NOS, of unspecified site"
+N05z1,"Osteoarthritis NOS, of shoulder region"
+N05z2,Osteoarthritis NOS: [of the upper arm] or [elbow]
+N05z3,Osteoarthritis NOS: [of the forearm] or [wrist]
+N05z4,Osteoarthritis NOS: [hand] or [finger] or [thumb]
+N05z5,Osteoarthritis NOS: [pelvic region and/or thigh] or [hip]
+N05z6,Osteoarthritis NOS: [lower leg] or [knee]
+N05z7,Osteoarthritis NOS: [ankle &/or foot] or [toe]
+N05z8,"Osteoarthritis NOS, other specified site"
+N05z9,"Osteoarthritis NOS, of shoulder"
+N05zA,"Osteoarthritis NOS, of sternoclavicular joint"
+N05zB,"Osteoarthritis NOS, of acromioclavicular joint"
+N05zC,"Osteoarthritis NOS, of elbow"
+N05zD,"Osteoarthritis NOS, of distal radioulnar joint"
+N05zE,"Osteoarthritis NOS, of wrist"
+N05zF,"Osteoarthritis NOS, of metacarpophalangeal joint"
+N05zG,"Osteoarthritis NOS, of PIP joint of finger"
+N05zH,"Osteoarthritis NOS, of DIP joint of finger"
+N05zJ,"Osteoarthritis NOS, of hip"
+N05zK,"Osteoarthritis NOS, of sacroiliac joint"
+N05zL,"Osteoarthritis NOS, of knee"
+N05zM,"Osteoarthritis NOS, of tibiofibular joint"
+N05zN,"Osteoarthritis NOS, of ankle"
+N05zP,"Osteoarthritis NOS, of subtalar joint"
+N05zQ,"Osteoarthritis NOS, of talonavicular joint"
+N05zR,"Osteoarthritis NOS, of other tarsal joint"
+N05zS,"Osteoarthritis NOS, of 1st metatarsophalangeal joint"
+N05zT,"Osteoarthritis NOS, of lesser metatarsophalangeal joint"
+N05zU,"Osteoarthritis NOS, of interphalangeal joint of toe"
+N05zz,Osteoarthritis NOS
+N11..,(Spondyl & allied dis) or (arthr spine) or (osteoarth spine)
+N110.,Cerv spondylos (& [no myelopath]) or (osteoarthr cerv spine)
+N1100,Single-level cervical spondylosis without myelopathy
+N1101,Two-level cervical spondylosis without myelopathy
+N1102,Multiple-level cervical spondylosis without myelopathy
+N1110,Single-level cervical spondylosis with myelopathy
+N1111,Two-level cervical spondylosis with myelopathy
+N1112,Multiple-level cervical spondylosis with myelopathy
+N112.,Thoracic spondylosis (& [without myelopathy])
+N1120,Single-level thoracic spondylosis without myelopathy
+N1121,Two-level thoracic spondylosis without myelopathy
+N1122,Multiple-level thoracic spondylosis without myelopathy
+N113.,Thoracic spondylosis with myelopathy
+N1130,Single-level thoracic spondylosis with myelopathy
+N1131,Two-level thoracic spondylosis with myelopathy
+N1132,Multiple-level thoracic spondylosis with myelopathy
+N114.,(Lumbosacr spondylos [& no myelopath]) or (degen lumb spine)
+N1140,Single-level lumbosacral spondylosis without myelopathy
+N1141,Two-level lumbosacral spondylosis without myelopathy
+N1142,Multiple-level lumbosacral spondylosis without myelopathy
+N115.,Lumbosacral spondylosis with myelopathy
+N1150,Single-level lumbosacral spondylosis with myelopathy
+N1151,Two-level lumbosacral spondylosis with myelopathy
+N1152,Multiple-level lumbosacral spondylosis with myelopathy
+N119.,Cervical spondylosis with radiculopathy
+N1190,Single-level cervical spondylosis with radiculopathy
+N1191,Two-level cervical spondylosis with radiculopathy
+N1192,Multiple-level cervical spondylosis with radiculopathy
+N11A.,Cervical spondylosis with vascular compression
+N11B.,Thoracic spondylosis with radiculopathy
+N11B0,Single-level thoracic spondylosis with radiculopathy
+N11B1,Two-level thoracic spondylosis with radiculopathy
+N11B2,Multiple-level thoracic spondylosis with radiculopathy
+N11C.,Lumbosacral spondylosis with radiculopathy
+N11C0,Single-level lumbosacral spondylosis with radiculopathy
+N11C1,Two-level lumbosacral spondylosis with radiculopathy
+N11C2,Multiple-level lumbosacral spondylosis with radiculopathy
+N11y.,Other spondyloses and allied disorders
+N11z.,(Spondylosis NOS) or (osteoarthritis spine)
+N11z0,"Spondylosis without myelopathy, NOS"
+N11z1,"Spondylosis with myelopathy, NOS"
+N11zz,Spondylosis NOS
+Nyu23,[X]Other post-traumatic coxarthrosis
+Nyu62,[X]Other spondylosis with myelopathy
+Nyu63,[X]Other spondylosis with radiculopathy
+Nyu64,[X]Other spondylosis
+X702z,Toe osteoarthritis NOS
+X7030,Foot osteoarthritis NOS
+X7031,Ankle osteoarthritis NOS
+X7034,Thumb osteoarthritis NOS
+X7035,Finger osteoarthritis NOS
+X7038,Idiopathic osteoarthritis
+X7039,Spondylosis
+X703A,Osteoarthritis of spinal facet joint
+X703B,Osteoarthritis of shoulder joint
+X703C,Osteoarthritis of acromioclavicular joint
+X703D,Osteoarthritis of elbow
+X703E,Osteoarthritis of wrist
+X703F,Osteoarthritis of first carpometacarpal joint
+X703G,Osteoarthritis of finger joint
+X703H,Osteoarthritis of distal interphalangeal joint
+X703I,Osteoarthritis of proximal interphalangeal joint
+X703J,Osteoarthritis of metacarpophalangeal joint of finger
+X703K,Osteoarthritis of hip
+X703L,Osteoarthritis of knee
+X703M,Osteoarthritis of ankle
+X703N,Osteoarthritis of subtalar joint
+X703O,Osteoarthritis of first metatarsalphalangeal joint
+X703P,Osteoarthritis of toe joint
+X703Q,Secondary osteoarthritis
+X703j,Cervical spondylosis
+X703k,Lumbar spondylosis
+X7041,Localised osteoarthritis
+X7042,Otto's pelvis
+X704R,Endemic osteoarthritis
+X70Cw,Thoracic spondylosis
+X70Cy,Degenerative arthropathy of spinal facet joint
+X76G5,Bouchard's node
+XE1DV,Osteoarthritis
+XE1DW,Generalised osteoarthritis of the hand
+XE1DX,"Localised, secondary osteoarthritis of pelvic region/thigh"
+XE1DY,"Localised osteoarthritis, unspecified, pelvic region/thigh"
+XE1DZ,"Localised osteoarthritis, unspecified, of the lower leg"
+XE1Da,Osteoarthritis NOS
+XE1Db,"Osteoarthritis NOS, of the upper arm"
+XE1Dc,"Osteoarthritis NOS, of the forearm"
+XE1Dd,"Osteoarthritis NOS, of the hand"
+XE1De,"Osteoarthritis NOS, pelvic region/thigh"
+XE1Df,"Osteoarthritis NOS, of the lower leg"
+XE1Dg,"Osteoarthritis NOS, of ankle and foot"
+XE1Et,Spondylosis and allied disorders
+XE1Eu,Cervical spondylosis without myelopathy
+XE1Ev,Cervical spondylosis with myelopathy
+XE1Ew,Thoracic spondylosis without myelopathy
+XE1Ex,Lumbosacral spondylosis without myelopathy
+XE1Ey,Spondylosis NOS
+XE1Gm,Osteoarthritis -multiple joint
+XE1HM,(Spond:[cerv][lum][sac]) or (arth spine) or (osteoart spine)
+XM05w,Heberden's node
+XM1NQ,Osteoarthritis of metacarpophalangeal joint
+Xa3gQ,Osteoarthritis - hand joint
+Xa3gR,Osteoarthritis - ankle/foot
+Xa3gS,Osteoarthritis - other joint
+XaBmY,Osteoarthritis of foot joint
+XaBzh,O/E - Heberden's nodes
+XaE3C,Lumbosacral spondylosis
+XaEGd,"Localised, primary osteoarthritis of the wrist"
+XaEGe,"Localised, primary osteoarthritis of toe"
+XaEGf,"Localised, primary osteoarthritis of elbow"
+XaIna,Exacerbation of osteoarthritis
+XaLsk,Delivery of rehabilitation for osteoarthritis
+XaVyj,Hip disability and osteoarthritis outcome score
+XaYQD,Patellofemoral osteoarthritis
+Y5903,Cervical spond.with myelopathy
+Y8078,Osteoarthritis - elbow joint
+Y8079,Osteoarthritis - hip joint
+Y8080,Osteoarthritis - knee joint
+Y8081,Osteoarthritis - NOS
+Y8082,Osteoarthritis - wrist joint
+Y8083,Osteoarthritis -shoulder joint

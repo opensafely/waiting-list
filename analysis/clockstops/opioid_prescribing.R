@@ -170,7 +170,7 @@ write.csv(all_prior_wait, here::here("output", "clockstops", "med_by_period_wait
 
 
 week_tot_rx <- ortho_routine_final %>%
-  subset(period == "During WL" & num_weeks <= 52) %>%
+  subset(period == "During WL" & num_weeks <= 52 & measure!= "Person time" & num_weeks > 0) %>%
   group_by(num_weeks, measure, prior_opioid_rx) %>%
   summarise(opioid_rx = rounding(sum(value)),
          denominator = rounding(n())) %>%

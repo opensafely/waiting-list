@@ -110,7 +110,7 @@ cancer_codes = (
 
 osteoarthritis_codes = codelist_from_csv(
     "codelists/opensafely-osteoarthritis.csv",
-    column = "CTV3ID"
+    column = "code"
 )
 
 depression_codes = codelist_from_csv(
@@ -155,15 +155,10 @@ copd_codes = codelist_from_csv(
 
 ra_codes = codelist_from_csv(
   "codelists/opensafely-rheumatoid-arthritis.csv",
-  column = "CTV3ID"
+  column = "code"
 )
 
 oud_codes = codelist_from_csv(
   "codelists/user-hjforbes-opioid-dependency-clinical-diagnosis.csv",
-  column = "code"
-)
-
-pain_codes = codelist_from_csv(
-  "codelists/opensafely-symptoms-pain.csv",
   column = "code"
 )
