@@ -99,7 +99,9 @@ dat <- ortho_routine_final %>%
   subset(prior_opioid_rx == FALSE)
 
 prior_no <- cat_dist_combined() %>%
-  rbind(cat_dist(gaba_any, "Gabapentinoids (any)"),
+  rbind(cat_dist(hip_hrg, "Hip procedure"),
+        cat_dist(knee_hrg, "Knee procedure"),
+        cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
         cat_dist(nsaid_3plus, "NSAID (>=3)"),
