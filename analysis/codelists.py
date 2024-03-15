@@ -155,7 +155,7 @@ copd_codes = codelist_from_csv(
 
 ra_codes = codelist_from_csv(
   "codelists/opensafely-rheumatoid-arthritis.csv",
-  column = "CTV3ID"
+  column = "code"
 )
 
 oud_codes = codelist_from_csv(
