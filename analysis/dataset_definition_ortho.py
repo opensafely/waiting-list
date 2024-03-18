@@ -58,12 +58,13 @@ dataset.treatment_function = last_clockstops.activity_treatment_function_code
 dataset.waiting_list_type = last_clockstops.waiting_list_type
 dataset.priority_type = last_clockstops.priority_type_code
 
-# Hip/knee procedure
+### Hip/knee procedure - non trauma
 dataset.hip_hrg = apcs.where(
         apcs.spell_core_hrg_sus.is_in(["HN12A","HN12B","HN12C","HN12D","HN12E","HN12F",
                                        "HN13A","HN13B","HN13C","HN13D","HN13E","HN13F","HN13G","HN13H",
                                        "HN14A","HN14B","HN14C","HN14D","HN14E","HN14F","HN14G","HN14H",
-                                       "HN15A","HN15B","HN16A","HN16B","HN16C"])
+                                       "HN15A","HN15B",
+                                       "HN16A","HN16B","HN16C"])
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
@@ -71,7 +72,8 @@ dataset.knee_hrg = apcs.where(
         apcs.spell_core_hrg_sus.is_in(["HN22A","HN22B","HN22C","HN22D","HN22E",
                                        "HN23A","HN23B","HN23C","HN23D","HN23E",
                                        "HN24A","HN24B","HN24C","HN24D","HN24E","HN24F",
-                                       "HN25A","HN25B","HN26A","HN26B","HN26C"])
+                                       "HN25A","HN25B",
+                                       "HN26A","HN26B","HN26C"])
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
@@ -87,15 +89,15 @@ dataset.hand_hrg = apcs.where(
         apcs.spell_core_hrg_sus.is_in(["HN42A","HN42B",
                                        "HN43A","HN43B","HN43C",
                                        "HN44A","HN44B","HN44C","HN44D",
-                                       "HN45A","HN45B","HN46C","HN46Z"])
+                                       "HN45A","HN45B","HN45C","HN46Z"])
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
 dataset.shoulder_hrg = apcs.where(
         apcs.spell_core_hrg_sus.is_in(["HN52A","HN52B","HN52C",
-                                       "HN53A","HN43B","HN43C",
+                                       "HN53A","HN53B","HN53C",
                                        "HN54A","HN54B","HN54C","HN54D",
-                                       "HN55Z","HN56Z","HN56Z"])
+                                       "HN55Z","HN56Z"])
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
@@ -111,6 +113,61 @@ dataset.complex_hrg = apcs.where(
         apcs.spell_core_hrg_sus.is_in(["HN80A","HN80B","HN80C","HN80D",
                                        "HN81A","HN81B","HN81C","HN81D","HN81E"
                                        "HN85Z","HN86A","HN86B","HN93Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+### Hip/knee procedure - trauma
+dataset.hip_trauma_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HT12A","HT12B","HT12C","HT12D","HT12E",
+                                       "HT13A","HT13B","HT13C","HT13D","HT13E",
+                                       "HT14A","HT14B","HT14C",
+                                       "HT15Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.knee_trauma_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HT22A","HT22B","HT22C",
+                                       "HT23A","HT23B","HT23C","HT23D","HT23E",
+                                       "HT24A","HT24B","HT24C","HT24D",
+                                       "HT25Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.foot_trauma_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HT32A","HT32B","HT32C",
+                                       "HT33A","HT33B","HT33C","HT33D","HT33E",
+                                       "HT34A","HT34B","HT34C","HT34D","HT34E",
+                                       "HT35Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.hand_trauma_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HT42A","HT42B",
+                                       "HT43A","HT43B","HT43C","HT43D","HT43E",
+                                       "HT44A","HT44B","HT44C","HT44D","HT44E",
+                                       "HT45Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.shoulder_trauma_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HT52A","HT52B","HT52C",
+                                       "HT53A","HT53B","HT53C","HT53D","HT53E",
+                                       "HT54A","HT54B","HT54C","HT54D",
+                                       "HT55Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.elbow_trauma_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HT62A","HT62B",
+                                       "HT63A","HT63B","HT63C","HT63D","HT63E","HT63F",
+                                       "HT64A","HT64B","HT64C","HT64D",
+                                       "HT65Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
+dataset.complex_trauma_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["HT81A","HT81B","HT81C","HT81D",
+                                       "HT86A","HT86B","HT86C"])
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
