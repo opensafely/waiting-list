@@ -89,7 +89,19 @@ prior_yes <- cat_dist_combined() %>%
         cat_dist(hand_hrg, "Hand procedure"),
         cat_dist(foot_hrg, "Foot procedure"),
         cat_dist(complex_hrg, "Complex procedure"),
-        cat_dist(any_hrg, "Any procedure"),
+        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
+        
+        cat_dist(hip_trauma_hrg, "Hip procedure (trauma)"),
+        cat_dist(knee_trauma_hrg, "Knee procedure (trauma)"),
+        cat_dist(shoulder_trauma_hrg, "Shoulder procedure (trauma)"),
+        cat_dist(elbow_trauma_hrg, "Elbow procedure (trauma)"),
+        cat_dist(hand_trauma_hrg, "Hand procedure (trauma)"),
+        cat_dist(foot_trauma_hrg, "Foot procedure (trauma)"),
+        cat_dist(complex_trauma_hrg, "Complex procedure (trauma)"),
+        cat_dist(any_trauma_hrg, "Any procedure (trauma)"),
+        
+        cat_dist(any_hrg, "Any procedure (trauma or non-trauma)"),
+        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
@@ -112,7 +124,19 @@ prior_no <- cat_dist_combined() %>%
         cat_dist(hand_hrg, "Hand procedure"),
         cat_dist(foot_hrg, "Foot procedure"),
         cat_dist(complex_hrg, "Complex procedure"),
-        cat_dist(any_hrg, "Any procedure"),
+        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
+        
+        cat_dist(hip_trauma_hrg, "Hip procedure (trauma)"),
+        cat_dist(knee_trauma_hrg, "Knee procedure (trauma)"),
+        cat_dist(shoulder_trauma_hrg, "Shoulder procedure (trauma)"),
+        cat_dist(elbow_trauma_hrg, "Elbow procedure (trauma)"),
+        cat_dist(hand_trauma_hrg, "Hand procedure (trauma)"),
+        cat_dist(foot_trauma_hrg, "Foot procedure (trauma)"),
+        cat_dist(complex_trauma_hrg, "Complex procedure (trauma)"),
+        cat_dist(any_trauma_hrg, "Any procedure (trauma)"),
+        
+        cat_dist(any_hrg, "Any procedure (trauma or non-trauma)"),
+        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),

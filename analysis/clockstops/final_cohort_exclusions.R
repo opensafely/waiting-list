@@ -108,8 +108,10 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     pre_time = 182,
     
     # Any HRG
-    any_hrg = (knee_hrg | hip_hrg | shoulder_hrg | elbow_hrg | foot_hrg | hand_hrg | complex_hrg),
-    
+    any_nontrauma_hrg = (knee_hrg | hip_hrg | shoulder_hrg | elbow_hrg | foot_hrg | hand_hrg | complex_hrg),
+    any_trauma_hrg = (knee_trauma_hrg | hip_trauma_hrg | shoulder_trauma_hrg | elbow_trauma_hrg | foot_trauma_hrg | hand_trauma_hrg | complex_trauma_hrg),
+    any_hrg = (any_nontrauma_hrg | any_trauma_hrg),
+      
     # Week variable capped at one year (for some analyses)
     week52 =  ifelse(num_weeks > 52, 52, num_weeks),
     
