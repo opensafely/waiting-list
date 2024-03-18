@@ -82,10 +82,10 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
                             "Missing")),
     
     priority_type = ifelse(is.na(priority_type), "Missing", priority_type),
-    admitted = (waiting_list_type %in% c("IRTT","RTTI","PTLI")),
+    admitted = (waiting_list_type %in% c("IRTT")),
       
     missing_priority = (priority_type == "Missing" | is.na(priority_type)),
-    missing_admission = (!(waiting_list_type %in% c("IRTT","ORTT","RTTO","RTTI","PTLO","PTLI")) | is.na(waiting_list_type)),
+    missing_admission = (!(waiting_list_type %in% c("IRTT","ORTT")) | is.na(waiting_list_type)),
     
     prior_opioid_rx = (opioid_pre_count >= 3),
     

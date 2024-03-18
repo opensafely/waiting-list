@@ -52,7 +52,7 @@ dataset.rtt_end_date = last_clockstops.referral_to_treatment_period_end_date
 
 # Registered 6 months before WL start
 registrations = practice_registrations.spanning(
-        dataset.rtt_start_date - days(182), dataset.rtt_start_date
+        dataset.rtt_start_date - days(182), dataset.rtt_end_date
     ).sort_by(
         practice_registrations.end_date
     ).last_for_patient()
@@ -71,7 +71,7 @@ dataset.sex = patients.sex
 #### DEFINE POPULATION ####
 
 dataset.define_population(
-    dataset.end_date.is_after(dataset.rtt_start_date)
+    dataset.end_date.is_on_or_after(dataset.rtt_end_date)
     & registrations.exists_for_patient()
     & last_clockstops.exists_for_patient()
 )

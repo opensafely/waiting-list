@@ -27,7 +27,7 @@ clockstops = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
         & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
-        & wl_clockstops.activity_treatment_function_code.is_in(["110","111"])
+        & wl_clockstops.activity_treatment_function_code.is_in(["110"])
     )
 
 # Number of RTT pathways per person
@@ -189,11 +189,12 @@ dataset.complex_trauma_hrg = apcs.where(
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
+
 #### Censoring dates ####
 
 # Registered 6 months before WL start
 registrations = practice_registrations.spanning(
-        dataset.rtt_start_date - days(182), dataset.rtt_start_date
+        dataset.rtt_start_date - days(182), dataset.rtt_end_date
     ).sort_by(
         practice_registrations.end_date
     ).last_for_patient()
@@ -382,7 +383,7 @@ for comorb, comorb_codelist in comorb_codes.items():
 #### DEFINE POPULATION ####
 
 dataset.define_population(
-    dataset.end_date.is_on_or_after(dataset.rtt_start_date)
+    dataset.end_date.is_on_or_after(dataset.rtt_end_date)
     & registrations.exists_for_patient()
     & last_clockstops.exists_for_patient()
 )

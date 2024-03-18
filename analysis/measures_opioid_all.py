@@ -37,7 +37,7 @@ last_clockstops = wl_clockstops.where(
         wl_clockstops.referral_to_treatment_period_end_date.is_on_or_between("2021-05-01", "2022-04-30")
         & wl_clockstops.referral_to_treatment_period_start_date.is_on_or_before(wl_clockstops.referral_to_treatment_period_end_date)
         & wl_clockstops.week_ending_date.is_on_or_between("2021-05-01", "2022-04-30")
-        & wl_clockstops.activity_treatment_function_code.is_in(["110","111"])
+        & wl_clockstops.activity_treatment_function_code.is_in(["110"])
     ).sort_by(
         wl_clockstops.referral_to_treatment_period_start_date,
         wl_clockstops.pseudo_referral_identifier,
@@ -102,7 +102,7 @@ count_opioid_pre = all_opioid_rx.where(
 
 ## Censoring date
 registrations = practice_registrations.spanning(
-        rtt_start_date - days(182), rtt_start_date
+        rtt_start_date - days(182), rtt_end_date
     ).sort_by(
         practice_registrations.end_date
     ).last_for_patient()
@@ -163,7 +163,7 @@ denominator = (
         & ~cancer
 
         # Censoring date (death/deregistration) after start of waiting list
-        & (end_date.is_after(rtt_start_date))
+        & (end_date.is_on_or_after(rtt_end_date))
 
         # Routine priority type
         & (last_clockstops.priority_type_code.is_in(["routine"]))       
