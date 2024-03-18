@@ -133,6 +133,7 @@ actions:
       moderately_sensitive:
         data1: output/clockstops/cat_var_dist_prior.csv
         data2: output/clockstops/age_stats.csv
+        data3: output/clockstops/admission_day.csv
 
   opioid_prescribing:
    run: r:latest analysis/clockstops/opioid_prescribing.R

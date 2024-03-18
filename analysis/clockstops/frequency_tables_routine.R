@@ -90,6 +90,7 @@ prior_yes <- cat_dist_combined() %>%
         cat_dist(foot_hrg, "Foot procedure"),
         cat_dist(complex_hrg, "Complex procedure"),
         cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
+        cat_dist(any_admission, "Any admission"),
         
         cat_dist(hip_trauma_hrg, "Hip procedure (trauma)"),
         cat_dist(knee_trauma_hrg, "Knee procedure (trauma)"),
@@ -125,6 +126,7 @@ prior_no <- cat_dist_combined() %>%
         cat_dist(foot_hrg, "Foot procedure"),
         cat_dist(complex_hrg, "Complex procedure"),
         cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
+        cat_dist(any_admission, "Any admission"),
         
         cat_dist(hip_trauma_hrg, "Hip procedure (trauma)"),
         cat_dist(knee_trauma_hrg, "Knee procedure (trauma)"),
@@ -159,5 +161,17 @@ cat_dist <- cat_dist[,c("cohort", "var", "category",
                         "count_opioid_naive", "total_opioid_naive")]
 
 write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_prior.csv"),
+          row.names = FALSE) 
+
+
+#################
+
+
+admit_month <- ortho_routine_final %>%
+  group_by(first_admit_days) %>%
+  summarise(n_diff = n()) %>%
+  ungroup() 
+
+write.csv(admit_month, here::here("output", "clockstops",  "admission_day.csv"),
           row.names = FALSE) 
 
