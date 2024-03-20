@@ -141,6 +141,12 @@ dataset.complex_hrg = apcs.where(
         & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).exists_for_patient()
 
+dataset.pain_hrg = apcs.where(
+        apcs.spell_core_hrg_sus.is_in(["AB11Z","AB12Z","AB13Z","AB14Z","AB15Z","AB16Z","AB17Z","AB18Z","AB19Z","AB20Z",
+                                       "AB21Z","AB22Z","AB23Z","AB24Z","AB25Z","AB26Z","AB27Z","AB28Z"])
+        & apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
+    ).exists_for_patient()
+
 ### Hip/knee procedure - trauma
 dataset.hip_trauma_hrg = apcs.where(
         apcs.spell_core_hrg_sus.is_in(["HT12A","HT12B","HT12C","HT12D","HT12E",
@@ -372,7 +378,7 @@ comorb_codes = {
 
 for comorb, comorb_codelist in comorb_codes.items():
         
-    if comorb in ["diabetes","cardiac","copd","liver","oa","ra"]:
+    if comorb in ["diabetes","cardiac","copd","liver"]:
 
         ctv3_query = clin_events_5yrs.where(
                 clin_events_5yrs.ctv3_code.is_in(comorb_codelist)
