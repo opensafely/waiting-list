@@ -141,6 +141,8 @@ prior_no <- cat_dist_combined() %>%
         
         cat_dist(any_hrg, "Any procedure (trauma or non-trauma)"),
         
+        cat_dist(admit_hrg, "Admission HRG"),
+        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
