@@ -24,48 +24,6 @@
       "downloaded_at": "2023-10-18 09:43:43.184775Z",
       "sha": "8b849b5b785d80306e488d0109640c8c1d2da01b"
     },
-    "opensafely-chronic-cardiac-disease.csv": {
-      "id": "opensafely/chronic-cardiac-disease/2020-04-08",
-      "url": "https://www.opencodelists.org/codelist/opensafely/chronic-cardiac-disease/2020-04-08/",
-      "downloaded_at": "2023-10-18 09:43:43.653395Z",
-      "sha": "2267f6fada9c77a2bbf62ce7a1c07ddf48348d61"
-    },
-    "opensafely-chronic-liver-disease.csv": {
-      "id": "opensafely/chronic-liver-disease/2020-06-02",
-      "url": "https://www.opencodelists.org/codelist/opensafely/chronic-liver-disease/2020-06-02/",
-      "downloaded_at": "2023-10-18 09:43:43.805872Z",
-      "sha": "d31d212d23c5f0e15f63236d2106282fb070bd7c"
-    },
-    "opensafely-chronic-respiratory-disease.csv": {
-      "id": "opensafely/chronic-respiratory-disease/2020-04-10",
-      "url": "https://www.opencodelists.org/codelist/opensafely/chronic-respiratory-disease/2020-04-10/",
-      "downloaded_at": "2023-10-18 09:43:43.971933Z",
-      "sha": "77946d9b844f348daf5c8c9e81346b9776d13998"
-    },
-    "opensafely-diabetes.csv": {
-      "id": "opensafely/diabetes/2020-04-15",
-      "url": "https://www.opencodelists.org/codelist/opensafely/diabetes/2020-04-15/",
-      "downloaded_at": "2023-10-18 09:43:44.449933Z",
-      "sha": "f2781f0c9a0617b30996d681a798eedd152a09af"
-    },
-    "opensafely-hypertension.csv": {
-      "id": "opensafely/hypertension/2020-04-28",
-      "url": "https://www.opencodelists.org/codelist/opensafely/hypertension/2020-04-28/",
-      "downloaded_at": "2023-10-18 09:43:44.768864Z",
-      "sha": "b0d7bbf6ea767366db458bc6f6d37955ae331cc7"
-    },
-    "opensafely-chronic-kidney-disease-snomed.csv": {
-      "id": "opensafely/chronic-kidney-disease-snomed/07b0319c",
-      "url": "https://www.opencodelists.org/codelist/opensafely/chronic-kidney-disease-snomed/07b0319c/",
-      "downloaded_at": "2023-10-19 12:45:36.946065Z",
-      "sha": "5facf34dc24ff71032df5399b43adcd36997d670"
-    },
-    "opensafely-high-dose-long-acting-opioids-openprescribing-dmd.csv": {
-      "id": "opensafely/high-dose-long-acting-opioids-openprescribing-dmd/44885cb2",
-      "url": "https://www.opencodelists.org/codelist/opensafely/high-dose-long-acting-opioids-openprescribing-dmd/44885cb2/",
-      "downloaded_at": "2023-12-14 13:15:39.921621Z",
-      "sha": "a263b1c79ec4ae0190dab3838235ab9628ba0140"
-    },
     "user-markdrussell-new-rheumatoid-arthritis.csv": {
       "id": "user/markdrussell/new-rheumatoid-arthritis/68f9eaf6",
       "url": "https://www.opencodelists.org/codelist/user/markdrussell/new-rheumatoid-arthritis/68f9eaf6/",
@@ -155,6 +113,54 @@
       "url": "https://www.opencodelists.org/codelist/user/speed-vm/osteoarthritis-snomed-ct/2beaec27/",
       "downloaded_at": "2024-03-20 13:34:11.282686Z",
       "sha": "58f36f6ffb75205b2682522ffff27cffbe278385"
+    },
+    "user-elsie_horne-hf_snomed.csv": {
+      "id": "user/elsie_horne/hf_snomed/33579ca3",
+      "url": "https://www.opencodelists.org/codelist/user/elsie_horne/hf_snomed/33579ca3/",
+      "downloaded_at": "2024-03-20 17:44:27.234342Z",
+      "sha": "1ec565133002e86008e9f7b77dc3582bf2a9eb6f"
+    },
+    "user-elsie_horne-angina_snomed.csv": {
+      "id": "user/elsie_horne/angina_snomed/3983d01e",
+      "url": "https://www.opencodelists.org/codelist/user/elsie_horne/angina_snomed/3983d01e/",
+      "downloaded_at": "2024-03-20 17:44:27.724960Z",
+      "sha": "a3898f852193d02a74604d9d2d4a2535b8262a8c"
+    },
+    "user-elsie_horne-ami_snomed.csv": {
+      "id": "user/elsie_horne/ami_snomed/36d11028",
+      "url": "https://www.opencodelists.org/codelist/user/elsie_horne/ami_snomed/36d11028/",
+      "downloaded_at": "2024-03-20 17:44:28.226540Z",
+      "sha": "37aef412e1075e06cb5da738e5ba31fc214e432d"
+    },
+    "user-elsie_horne-cardiomyopathy_snomed.csv": {
+      "id": "user/elsie_horne/cardiomyopathy_snomed/0a17a9aa",
+      "url": "https://www.opencodelists.org/codelist/user/elsie_horne/cardiomyopathy_snomed/0a17a9aa/",
+      "downloaded_at": "2024-03-20 17:44:28.701303Z",
+      "sha": "74fa1939c8b02d7c24c84b0a300d937fb9de15f5"
+    },
+    "user-elsie_horne-liver_disease_snomed.csv": {
+      "id": "user/elsie_horne/liver_disease_snomed/5c978f9c",
+      "url": "https://www.opencodelists.org/codelist/user/elsie_horne/liver_disease_snomed/5c978f9c/",
+      "downloaded_at": "2024-03-20 17:44:29.169183Z",
+      "sha": "1126b645b1e22440f513a66cc2cf91a20d7177ad"
+    },
+    "user-elsie_horne-copd_snomed.csv": {
+      "id": "user/elsie_horne/copd_snomed/419c1000",
+      "url": "https://www.opencodelists.org/codelist/user/elsie_horne/copd_snomed/419c1000/",
+      "downloaded_at": "2024-03-20 17:44:29.639392Z",
+      "sha": "8621c69b3c52fd62b4ed4811411037eb9a2c9bb1"
+    },
+    "user-elsie_horne-diabetes_snomed.csv": {
+      "id": "user/elsie_horne/diabetes_snomed/43881c67",
+      "url": "https://www.opencodelists.org/codelist/user/elsie_horne/diabetes_snomed/43881c67/",
+      "downloaded_at": "2024-03-20 17:44:30.172454Z",
+      "sha": "c8e93a29e7f02dbbf006c009cbc57709068fb096"
+    },
+    "user-elsie_horne-ckd_snomed.csv": {
+      "id": "user/elsie_horne/ckd_snomed/25d9dcd5",
+      "url": "https://www.opencodelists.org/codelist/user/elsie_horne/ckd_snomed/25d9dcd5/",
+      "downloaded_at": "2024-03-20 17:44:30.625434Z",
+      "sha": "bff2f324ff0a1569ce7709903fd6a67b6ee5334d"
     }
   }
 }

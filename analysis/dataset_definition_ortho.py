@@ -377,20 +377,11 @@ comorb_codes = {
     }
 
 for comorb, comorb_codelist in comorb_codes.items():
-        
-    if comorb in ["diabetes","cardiac","copd","liver"]:
 
-        ctv3_query = clin_events_5yrs.where(
-                clin_events_5yrs.ctv3_code.is_in(comorb_codelist)
-            ).exists_for_patient()
-        dataset.add_column(comorb, ctv3_query)
-
-    else:
-
-        snomed_query = clin_events_5yrs.where(
-                clin_events_5yrs.snomedct_code.is_in(comorb_codelist)
-            ).exists_for_patient()
-        dataset.add_column(comorb, snomed_query)
+    snomed_query = clin_events_5yrs.where(
+            clin_events_5yrs.snomedct_code.is_in(comorb_codelist)
+        ).exists_for_patient()
+    dataset.add_column(comorb, snomed_query)
 
 
 #### DEFINE POPULATION ####
