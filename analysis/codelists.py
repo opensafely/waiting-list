@@ -109,7 +109,7 @@ cancer_codes = (
 )
 
 osteoarthritis_codes = codelist_from_csv(
-    "codelists/opensafely-osteoarthritis.csv",
+    "codelists/user-speed-vm-osteoarthritis-snomed-ct.csv",
     column = "code"
 )
 
@@ -154,7 +154,7 @@ copd_codes = codelist_from_csv(
 )
 
 ra_codes = codelist_from_csv(
-  "codelists/opensafely-rheumatoid-arthritis.csv",
+  "codelists/user-markdrussell-new-rheumatoid-arthritis.csv",
   column = "code"
 )
 

@@ -66,11 +66,11 @@
       "downloaded_at": "2023-12-14 13:15:39.921621Z",
       "sha": "a263b1c79ec4ae0190dab3838235ab9628ba0140"
     },
-    "opensafely-rheumatoid-arthritis.csv": {
-      "id": "opensafely/rheumatoid-arthritis/430e52f5",
-      "url": "https://www.opencodelists.org/codelist/opensafely/rheumatoid-arthritis/430e52f5/",
-      "downloaded_at": "2024-03-15 10:33:05.104910Z",
-      "sha": "35103cf5371b2baec82e592e3ffbdb1cf9dec3a6"
+    "user-markdrussell-new-rheumatoid-arthritis.csv": {
+      "id": "user/markdrussell/new-rheumatoid-arthritis/68f9eaf6",
+      "url": "https://www.opencodelists.org/codelist/user/markdrussell/new-rheumatoid-arthritis/68f9eaf6/",
+      "downloaded_at": "2024-03-20 13:34:04.492848Z",
+      "sha": "37439970e54dd5729e186ffbe6a3c78385403128"
     },
     "user-hjforbes-opioid-dependency-clinical-diagnosis.csv": {
       "id": "user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5",
@@ -150,11 +150,11 @@
       "downloaded_at": "2024-02-27 17:40:54.930503Z",
       "sha": "27be799a24d3c0504f486ed65ce6fd69b09df237"
     },
-    "opensafely-osteoarthritis.csv": {
-      "id": "opensafely/osteoarthritis/0e3cac95",
-      "url": "https://www.opencodelists.org/codelist/opensafely/osteoarthritis/0e3cac95/",
-      "downloaded_at": "2024-03-15 10:33:11.571417Z",
-      "sha": "547c798d8d5fc3972e95b7e31acc24c7a6a1b2e1"
+    "user-speed-vm-osteoarthritis-snomed-ct.csv": {
+      "id": "user/speed-vm/osteoarthritis-snomed-ct/2beaec27",
+      "url": "https://www.opencodelists.org/codelist/user/speed-vm/osteoarthritis-snomed-ct/2beaec27/",
+      "downloaded_at": "2024-03-20 13:34:11.282686Z",
+      "sha": "58f36f6ffb75205b2682522ffff27cffbe278385"
     }
   }
 }

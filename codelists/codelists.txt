@@ -9,7 +9,7 @@ opensafely/diabetes/2020-04-15
 opensafely/hypertension/2020-04-28
 opensafely/chronic-kidney-disease-snomed/07b0319c
 opensafely/high-dose-long-acting-opioids-openprescribing-dmd/44885cb2/
-opensafely/rheumatoid-arthritis/430e52f5/
+user/markdrussell/new-rheumatoid-arthritis/68f9eaf6/
 user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5/
 opensafely/symptoms-depression/0e294f34/
 opensafely/symptoms-anxiety/7519dbfe/
@@ -23,4 +23,4 @@ user/anschaf/weak-opioids-dmd/4b2ffbd4/
 user/anschaf/antidepressants-dmd/71bd2ed7/
 user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556
 user/speed-vm/nsaids-dmd/1e0e8710/
-opensafely/osteoarthritis/0e3cac95/
+user/speed-vm/osteoarthritis-snomed-ct/2beaec27/
