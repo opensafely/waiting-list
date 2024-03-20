@@ -72,7 +72,14 @@ dataset.first_admit = apcs.where(
 
 dataset.first_admit_days = (dataset.first_admit - dataset.rtt_end_date).days
 
-### Hip/knee procedure - non trauma
+dataset.admit_hrg = apcs.where(
+        apcs.admission_date.is_on_or_between(dataset.rtt_end_date, dataset.rtt_end_date)
+    ).sort_by(
+        apcs.admission_date
+    ).first_for_patient().spell_core_hrg_sus
+
+
+### Osteo procedures - non trauma
 dataset.hip_hrg = apcs.where(
         apcs.spell_core_hrg_sus.is_in(["HN12A","HN12B","HN12C","HN12D","HN12E","HN12F",
                                        "HN13A","HN13B","HN13C","HN13D","HN13E","HN13F","HN13G","HN13H",
