@@ -42,7 +42,8 @@ dat <- ortho_routine_final %>%
   subset(any_admission == FALSE)
       
 no_admit <- cat_dist_combined() %>%
-              rbind(cat_dist(waiting_list_type, "WL type")) %>%
+              rbind(cat_dist(waiting_list_type, "WL type"),
+                    cat_dist(wait_gp, "Wait group")) %>%
               rename(count_noadmit = count, total_noadmit = total)
 
 # Admission only
@@ -50,7 +51,8 @@ dat <- ortho_routine_final %>%
   subset(any_admission == TRUE)
 
 admit <- cat_dist_combined() %>%
-  rbind(cat_dist(waiting_list_type, "WL type")) %>%
+  rbind(cat_dist(waiting_list_type, "WL type"),
+        cat_dist(wait_gp, "Wait group")) %>%
   rename(count_admit = count, total_admit = total)
 
 
