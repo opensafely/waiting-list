@@ -2,13 +2,6 @@ opensafely/cancer-excluding-lung-and-haematological-snomed/2020-04-15
 opensafely/haematological-cancer-snomed/2020-04-15
 opensafely/lung-cancer-snomed/2020-04-15
 opensafely/ethnicity-snomed-0removed/2e641f61
-opensafely/chronic-cardiac-disease/2020-04-08
-opensafely/chronic-liver-disease/2020-06-02
-opensafely/chronic-respiratory-disease/2020-04-10
-opensafely/diabetes/2020-04-15
-opensafely/hypertension/2020-04-28
-opensafely/chronic-kidney-disease-snomed/07b0319c
-opensafely/high-dose-long-acting-opioids-openprescribing-dmd/44885cb2/
 user/markdrussell/new-rheumatoid-arthritis/68f9eaf6/
 user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5/
 opensafely/symptoms-depression/0e294f34/
@@ -24,3 +17,11 @@ user/anschaf/antidepressants-dmd/71bd2ed7/
 user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556
 user/speed-vm/nsaids-dmd/1e0e8710/
 user/speed-vm/osteoarthritis-snomed-ct/2beaec27/
+user/elsie_horne/hf_snomed/33579ca3/
+user/elsie_horne/angina_snomed/3983d01e/
+user/elsie_horne/ami_snomed/36d11028/
+user/elsie_horne/cardiomyopathy_snomed/0a17a9aa/
+user/elsie_horne/liver_disease_snomed/5c978f9c/
+user/elsie_horne/copd_snomed/419c1000/
+user/elsie_horne/diabetes_snomed/43881c67/
+user/elsie_horne/ckd_snomed/25d9dcd5/

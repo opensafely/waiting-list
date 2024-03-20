@@ -128,29 +128,46 @@ smi_codes = codelist_from_csv(
     column = "code"
 )
 
-cardiac_codes = codelist_from_csv(
-  "codelists/opensafely-chronic-cardiac-disease.csv",
-  column = "CTV3ID"
+hf_codes = codelist_from_csv(
+  "codelists/user-elsie_horne-hf_snomed.csv",
+  column = "code"
 )
 
+angina_codes = codelist_from_csv(
+  "codelists/user-elsie_horne-angina_snomed.csv",
+  column = "code"
+)
+
+ami_codes = codelist_from_csv(
+  "codelists/user-elsie_horne-ami_snomed.csv",
+  column = "code"
+)
+
+cardiomyopathy_codes = codelist_from_csv(
+  "codelists/user-elsie_horne-cardiomyopathy_snomed.csv",
+  column = "code"
+)
+
+cardiac_codes = (angina_codes + ami_codes + cardiomyopathy_codes + hf_codes)
+
 ckd_codes = codelist_from_csv(
-  "codelists/opensafely-chronic-kidney-disease-snomed.csv",
-  column = "id"
+  "codelists/user-elsie_horne-ckd_snomed.csv",
+  column = "code"
 )
 
 liver_codes = codelist_from_csv(
-  "codelists/opensafely-chronic-liver-disease.csv",
-  column = "CTV3ID"
+  "codelists/user-elsie_horne-liver_disease_snomed.csv",
+  column = "code"
 )
 
 diabetes_codes = codelist_from_csv(
-  "codelists/opensafely-diabetes.csv",
-  column = "CTV3ID"
+  "codelists/user-elsie_horne-diabetes_snomed.csv",
+  column = "code"
 )
 
 copd_codes = codelist_from_csv(
-  "codelists/opensafely-chronic-respiratory-disease.csv",
-  column = "CTV3ID"
+  "codelists/user-elsie_horne-copd_snomed.csv",
+  column = "code"
 )
 
 ra_codes = codelist_from_csv(
