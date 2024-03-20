@@ -372,7 +372,7 @@ comorb_codes = {
 
 for comorb, comorb_codelist in comorb_codes.items():
         
-    if comorb in ["diabetes","cardiac","copd","liver","oa","ra"]:
+    if comorb in ["diabetes","cardiac","copd","liver"]:
 
         ctv3_query = clin_events_5yrs.where(
                 clin_events_5yrs.ctv3_code.is_in(comorb_codelist)
