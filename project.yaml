@@ -83,13 +83,6 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_strong_opioid.csv
 
-  measures_admit_checks:
-    run: ehrql:v1 generate-measures analysis/measures_admit_checks.py 
-      --output output/measures/measures_admit_checks.csv
-    outputs:
-      moderately_sensitive:
-        measure_csv: output/measures/measures_admit_checks.csv
-
   # Combine measures
   opioids_by_week:
     run: r:latest analysis/clockstops/opioids_by_week.R
