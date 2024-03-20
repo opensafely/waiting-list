@@ -73,7 +73,7 @@ dataset.first_admit = apcs.where(
 dataset.first_admit_days = (dataset.first_admit - dataset.rtt_end_date).days
 
 dataset.admit_hrg = apcs.where(
-        apcs.admission_date.is_on_or_between(dataset.rtt_end_date, dataset.rtt_end_date)
+        apcs.admission_date.is_on_or_between(dataset.rtt_end_date - days(15), dataset.rtt_end_date + days(15))
     ).sort_by(
         apcs.admission_date
     ).first_for_patient().spell_core_hrg_sus
