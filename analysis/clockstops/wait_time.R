@@ -88,11 +88,9 @@ write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group.csv")
 # By week
 wait_time <- ortho_routine_final %>%
   mutate(total = n()) %>%
-  group_by(num_weeks, total) %>%
+  group_by(num_weeks, any_admission, total) %>%
   summarise(count = n()) %>%
-  mutate(count = rounding(count),
-         total = rounding(total)) %>%
-  arrange(num_weeks, count, total)
+  arrange(num_weeks, any_admission, count, total)
 
 write.csv(wait_time, here::here("output", "clockstops", "num_weeks.csv"),
           row.names = FALSE) 
