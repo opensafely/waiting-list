@@ -118,6 +118,7 @@ actions:
       moderately_sensitive:
         data1: output/clockstops/rtt_dates.csv
         data2: output/clockstops/wait_by_group.csv
+        data3: output/clockstops/num_weeks.csv
 
   frequency_tables_all:
    run: r:latest analysis/clockstops/frequency_tables_all.R
