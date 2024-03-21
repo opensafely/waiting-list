@@ -148,12 +148,3 @@ write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_prior.csv"
 
 #################
 
-
-admit_month <- ortho_routine_final %>%
-  group_by(first_admit_days) %>%
-  summarise(n_diff = n()) %>%
-  ungroup() 
-
-write.csv(admit_month, here::here("output", "clockstops",  "admission_day.csv"),
-          row.names = FALSE) 
-
