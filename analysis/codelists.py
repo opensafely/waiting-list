@@ -148,7 +148,12 @@ cardiomyopathy_codes = codelist_from_csv(
   column = "code"
 )
 
-cardiac_codes = (angina_codes + ami_codes + cardiomyopathy_codes + hf_codes)
+cardiac_codes = (
+  angina_codes +
+  ami_codes + 
+  cardiomyopathy_codes + 
+  hf_codes
+)
 
 ckd_codes = codelist_from_csv(
   "codelists/user-elsie_horne-ckd_snomed.csv",
