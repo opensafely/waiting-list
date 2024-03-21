@@ -41,7 +41,7 @@ exclusions_1 <- full %>%
   group_by(total) %>%
   summarise(start_before_end = rounding(sum(start_before_end))) %>%
   ungroup() %>%
-  mutate(cohort = "1. Full WL population") %>%
+  mutate(cohort = "Step 1") %>%
   reshape2::melt(id = c("cohort", "total")) 
 
 # Final full cohort
@@ -51,7 +51,7 @@ exclusions_2 <- full %>%
   group_by(total) %>%
   summarise(final = max(total)) %>%
   ungroup() %>%
-  mutate(cohort = "2. Full WL population - final") %>%
+  mutate(cohort = "Step 2") %>%
   reshape2::melt(id = c("cohort", "total")) 
 
 # Save as final
@@ -109,9 +109,7 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     
     # Any HRG
     any_nontrauma_hrg = (knee_hrg | hip_hrg | shoulder_hrg | elbow_hrg | foot_hrg | hand_hrg | complex_hrg),
-    any_trauma_hrg = (knee_trauma_hrg | hip_trauma_hrg | shoulder_trauma_hrg | elbow_trauma_hrg | foot_trauma_hrg | hand_trauma_hrg | complex_trauma_hrg),
-    any_hrg = (any_nontrauma_hrg | any_trauma_hrg),
-      
+
     # Week variable capped at one year (for some analyses)
     week52 =  ifelse(num_weeks > 52, 52, num_weeks),
     
@@ -134,86 +132,108 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     not_routine_admitted = (!(routine == "Routine" & admitted == TRUE))
   )
 
-# Number of people excluded due to non-M/F sex
+
+# Number of people with >2.5 years wait (99.9%)
 exclusions_3 <- ortho %>% 
+  mutate(total = rounding(n())) %>%
+  group_by(total) %>%
+  summarise(more_130weeks = rounding(sum(num_weeks > 130))) %>%
+  ungroup() %>%
+  mutate(cohort = "Step 3") %>%
+  reshape2::melt(id = c("cohort", "total")) 
+
+# Number of people excluded due to non-M/F sex
+exclusions_4 <- ortho %>% 
+  subset(num_weeks <= 130) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(sex_not_m_f = rounding(sum(sex_missing | sex_not_m_f))) %>%
   ungroup() %>%
-  mutate(cohort = "3. All orthopaedic") %>%
+  mutate(cohort = "Step 4") %>%
   reshape2::melt(id = c("cohort", "total")) 
 
 # Number of people excluded due to outside age range
-exclusions_4 <- ortho %>%
-  subset(sex_missing == FALSE & sex_not_m_f == FALSE) %>%
+exclusions_5 <- ortho %>%
+  subset(num_weeks <= 130 & 
+           sex_missing == FALSE & sex_not_m_f == FALSE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(age_not_18_110 = rounding(sum(age_not_18_110))) %>%
   ungroup() %>%
-  mutate(cohort = "4. Orthopaedic - no missing sex" ) %>%
+  mutate(cohort = "Step 5" ) %>%
   reshape2::melt(id = c("total", "cohort"))
 
 # Number of people excluded due to missing values 
-exclusions_5 <- ortho %>%
-  subset(sex_missing == FALSE & sex_not_m_f == FALSE & age_not_18_110 == FALSE) %>%
+exclusions_6 <- ortho %>%
+  subset(num_weeks <= 130 & 
+           sex_missing == FALSE & sex_not_m_f == FALSE & 
+           age_not_18_110 == FALSE) %>%
     mutate(total = rounding(n())) %>%
     group_by(total) %>%
     summarise(missing_priority = rounding(sum(missing_priority)),
               missing_admission = rounding(sum(missing_admission))) %>%
     ungroup() %>%
-    mutate(cohort = "5. Orthopaedic - within age range") %>%
+    mutate(cohort = "Step 6") %>%
     reshape2::melt(id = c("total", "cohort"))
 
 # Number of people excluded due to not being routine/admitted
-exclusions_6 <- ortho %>%
-  subset(sex_missing == FALSE & sex_not_m_f == FALSE & missing_priority == FALSE
-         & missing_admission == FALSE & age_not_18_110 == FALSE) %>%
+exclusions_7 <- ortho %>%
+  subset(num_weeks <= 130 & 
+           sex_missing == FALSE & sex_not_m_f == FALSE & 
+           age_not_18_110 == FALSE & 
+           missing_priority == FALSE & missing_admission == FALSE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(not_routine_admitted = rounding(sum(not_routine_admitted))) %>%
   ungroup() %>%
-  mutate(cohort = "6. Orthopaedic - no missing priority/admission type") %>%
+  mutate(cohort = "Step 7") %>%
   reshape2::melt(id = c("total", "cohort"))
 
 # Number of people excluded due to dying before end of waiting list
-exclusions_7 <- ortho %>%
-  subset(sex_missing == FALSE & sex_not_m_f == FALSE 
-         & age_not_18_110 == FALSE & routine == "Routine" & admitted == TRUE) %>%
+exclusions_8 <- ortho %>%
+  subset(num_weeks <= 130 & 
+           sex_missing == FALSE & sex_not_m_f == FALSE & 
+           age_not_18_110 == FALSE & 
+           routine == "Routine" & admitted == TRUE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(died_before_wl_end = rounding(sum(died_during_wl))) %>%
   ungroup() %>%
-  mutate(cohort = "7. Orthopaedic - routine/admitted only") %>%
+  mutate(cohort = "Step 8") %>%
   reshape2::melt(id = c("total", "cohort"))
   
 # Number of people excluded due to having history of cancer
-exclusions_8 <- ortho %>%
-  subset(sex_missing == FALSE & sex_not_m_f == FALSE 
-         & age_not_18_110 == FALSE & routine == "Routine" 
-         & admitted == TRUE & died_during_wl == FALSE) %>%
+exclusions_9 <- ortho %>%
+  subset(num_weeks <= 130 & 
+           sex_missing == FALSE & sex_not_m_f == FALSE & 
+           age_not_18_110 == FALSE & 
+           routine == "Routine" & admitted == TRUE &
+           died_during_wl == FALSE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(cancer = rounding(sum(cancer))) %>%
   ungroup() %>%
-  mutate(cohort = "8. Orthopaedic - routine/admitted and alive at end") %>%
+  mutate(cohort = "Step 9") %>%
   reshape2::melt(id = c("total", "cohort"))
 
 # Number of people in final cohort
-exclusions_9 <- ortho %>%
-  subset(sex_missing == FALSE & sex_not_m_f == FALSE 
-         & age_not_18_110 == FALSE & routine == "Routine" 
-         & admitted == TRUE & died_during_wl == FALSE
-         & cancer == FALSE) %>%
+exclusions_10 <- ortho %>%
+  subset(num_weeks <= 130 & 
+           sex_missing == FALSE & sex_not_m_f == FALSE & 
+           age_not_18_110 == FALSE & 
+           routine == "Routine" & admitted == TRUE &
+           died_during_wl == FALSE & 
+           cancer == FALSE) %>%
   mutate(total = rounding(n())) %>%
   group_by(total) %>%
   summarise(final = max(total)) %>%
   ungroup() %>%
-  mutate(cohort = "9. Orthopaedic - final") %>%
+  mutate(cohort = "Step 10") %>%
   reshape2::melt(id = c("total", "cohort"))
 
 all_exclusions <- rbind(exclusions_1, exclusions_2, exclusions_3, exclusions_4,
                         exclusions_5, exclusions_6, exclusions_7, exclusions_8,
-                        exclusions_9) %>%
+                        exclusions_9, exclusions_10) %>%
   rename(reason = variable, count = value)
 
 all_exclusions <- all_exclusions[,c("cohort", "total", "reason", "count")]
@@ -227,7 +247,7 @@ write.csv(all_exclusions, here::here("output", "clockstops", "exclude_ortho.csv"
 
 ortho_final <- ortho %>%
   subset(cancer == FALSE & died_during_wl == FALSE & age_not_18_110 == FALSE &
-           sex_missing == FALSE & sex_not_m_f == FALSE)
+           sex_missing == FALSE & sex_not_m_f == FALSE & num_weeks <= 130)
 
 ## Save as final
 write.csv(ortho_final, file = here::here("output", "data", "cohort_ortho_clockstops.csv.gz"),
@@ -236,7 +256,7 @@ write.csv(ortho_final, file = here::here("output", "data", "cohort_ortho_clockst
 
 ortho_routine_final <- ortho %>%
   subset(cancer == FALSE & died_during_wl == FALSE & routine == "Routine" & admitted == TRUE
-         & age_not_18_110 == FALSE & sex_missing == FALSE & sex_not_m_f == FALSE)
+         & age_not_18_110 == FALSE & sex_missing == FALSE & sex_not_m_f == FALSE & num_weeks <= 130)
 
 ## Save as final
 write.csv(ortho_routine_final, file = here::here("output", "data", "cohort_ortho_routine_clockstops.csv.gz"),

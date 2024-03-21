@@ -91,20 +91,8 @@ prior_yes <- cat_dist_combined() %>%
         cat_dist(complex_hrg, "Complex procedure"),
         cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
         cat_dist(any_admission, "Any admission"),
-        
-        cat_dist(hip_trauma_hrg, "Hip procedure (trauma)"),
-        cat_dist(knee_trauma_hrg, "Knee procedure (trauma)"),
-        cat_dist(shoulder_trauma_hrg, "Shoulder procedure (trauma)"),
-        cat_dist(elbow_trauma_hrg, "Elbow procedure (trauma)"),
-        cat_dist(hand_trauma_hrg, "Hand procedure (trauma)"),
-        cat_dist(foot_trauma_hrg, "Foot procedure (trauma)"),
-        cat_dist(complex_trauma_hrg, "Complex procedure (trauma)"),
-        cat_dist(any_trauma_hrg, "Any procedure (trauma)"),
-        
-        cat_dist(any_hrg, "Any procedure (trauma or non-trauma)"),
-        
         cat_dist(pain_hrg, "Pain management"),
-       # cat_dist(admit_hrg, "Admission HRG"),
+        cat_dist(trauma_hrg, "Trauma procedure"),
         
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
@@ -130,21 +118,8 @@ prior_no <- cat_dist_combined() %>%
         cat_dist(complex_hrg, "Complex procedure"),
         cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
         cat_dist(any_admission, "Any admission"),
-        
-        cat_dist(hip_trauma_hrg, "Hip procedure (trauma)"),
-        cat_dist(knee_trauma_hrg, "Knee procedure (trauma)"),
-        cat_dist(shoulder_trauma_hrg, "Shoulder procedure (trauma)"),
-        cat_dist(elbow_trauma_hrg, "Elbow procedure (trauma)"),
-        cat_dist(hand_trauma_hrg, "Hand procedure (trauma)"),
-        cat_dist(foot_trauma_hrg, "Foot procedure (trauma)"),
-        cat_dist(complex_trauma_hrg, "Complex procedure (trauma)"),
-        cat_dist(any_trauma_hrg, "Any procedure (trauma)"),
-        
-        cat_dist(any_hrg, "Any procedure (trauma or non-trauma)"),
-        
         cat_dist(pain_hrg, "Pain management"),
-        
-       # cat_dist(admit_hrg, "Admission HRG"),
+        cat_dist(trauma_hrg, "Trauma procedure"),
         
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
@@ -172,13 +147,4 @@ write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_prior.csv"
 
 
 #################
-
-
-admit_month <- ortho_routine_final %>%
-  group_by(first_admit_days) %>%
-  summarise(n_diff = n()) %>%
-  ungroup() 
-
-write.csv(admit_month, here::here("output", "clockstops",  "admission_day.csv"),
-          row.names = FALSE) 
 
