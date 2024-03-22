@@ -176,10 +176,10 @@ week_tot_rx <- ortho_routine_final %>%
          denominator = rounding(n())) %>%
   rename(weeks_on_wait_list = num_weeks) %>%
   ungroup() %>% 
-  arrange(prior_opioid_rx, weeks_on_wait_list, measure, opioid_rx, denominator)
+  arrange(prior_opioid_rx, weeks_on_wait_list, measure, opioid_rx, denominator) %>%
+  subset(prior_opioid_rx == TRUE | (prior_opioid_rx == FALSE & measure == "Any opioid"))
 
 week_tot_rx <- week_tot_rx[,c("prior_opioid_rx", "measure", "weeks_on_wait_list", "opioid_rx", "denominator")]
-
 
 write.csv(week_tot_rx, here::here("output", "clockstops", "total_rx_wait.csv"),
           row.names = FALSE)
