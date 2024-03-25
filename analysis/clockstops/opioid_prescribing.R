@@ -43,6 +43,8 @@ ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routi
                   ethnicity6, region, prior_opioid_rx, wait_gp,
                   censor_before_study_end, num_weeks)) %>%
   
+  dplyr::select(!c(ends_with(c("_any")))) %>%
+  
   # Transpose to long
   reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6", "region",
                         "prior_opioid_rx", "wait_gp", "censor_before_study_end",

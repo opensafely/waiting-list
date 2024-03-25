@@ -121,7 +121,6 @@ opioid_rx_wait <- opioid_rx %>%
   subset(!(prior_opioid_rx == "Opioid naive" & opioid_type != "Any opioid")) %>%
   subset(!(period == "During WL" & week == 52))
 
-
 write.csv(opioid_rx_wait, file = here::here("output", "clockstops", "opioid_by_week_wait.csv"),
           row.names = FALSE)
 
