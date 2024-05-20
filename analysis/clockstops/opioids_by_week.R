@@ -1,6 +1,6 @@
 ###############################################################
 # This script plots opioid prescribing per 100 people by week
-# in 6 months prior to WL start, during WL, and 6 months after WL end
+# in 6 months prior to WL start, during WL, and 12 months after WL end
 ###############################################################
 
 
@@ -72,9 +72,9 @@ opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_r
                 #wait_gp = ifelse(is.na(wait_gp), "All", wait_gp)
               )  %>%
               dplyr::select(c(opioid_type, opioid_rx, denominator, wait_gp,
-                              week, period, prior_opioid_rx)) 
+                              week, period, prior_opioid_rx, oa_diagnosis, hip_hrg, knee_hrg)) 
 
-opioid_rx <- opioid_rx[,c("opioid_type", "period",  "prior_opioid_rx", "wait_gp", 
+opioid_rx <- opioid_rx[,c("opioid_type", "period",  "prior_opioid_rx", "wait_gp", "oa_diagnosis", "hip_hrg", "knee_hrg",
                           "week", "opioid_rx", "denominator")]
 
 
@@ -124,6 +124,38 @@ opioid_rx_wait <- opioid_rx %>%
 write.csv(opioid_rx_wait, file = here::here("output", "clockstops", "opioid_by_week_wait.csv"),
           row.names = FALSE)
 
+
+# People with osteoarthritis only
+opioid_rx_oa <- opioid_rx %>%
+  group_by(week, period, prior_opioid_rx, opioid_type, oa_diagnosis) %>%
+  summarise(opioid_rx = rounding(sum(opioid_rx)),
+            denominator = rounding(sum(denominator))) %>%
+  arrange(oa_diagnosis, prior_opioid_rx,  opioid_type, period, week) 
+
+write.csv(opioid_rx_oa, file = here::here("output", "clockstops", "opioid_by_week_oa.csv"),
+          row.names = FALSE)
+
+
+# People with hip procedure
+opioid_rx_hip <- opioid_rx %>%
+  group_by(week, period, prior_opioid_rx, opioid_type, hip_hrg) %>%
+  summarise(opioid_rx = rounding(sum(opioid_rx)),
+            denominator = rounding(sum(denominator))) %>%
+  arrange(hip_hrg, prior_opioid_rx,  opioid_type, period, week) 
+
+write.csv(opioid_rx_hip, file = here::here("output", "clockstops", "opioid_by_week_hip.csv"),
+          row.names = FALSE)
+
+
+# People with knee procedure
+opioid_rx_knee <- opioid_rx %>%
+  group_by(week, period, prior_opioid_rx, opioid_type, knee_hrg) %>%
+  summarise(opioid_rx = rounding(sum(opioid_rx)),
+            denominator = rounding(sum(denominator))) %>%
+  arrange(knee_hrg, prior_opioid_rx, opioid_type, period, week) 
+
+write.csv(opioid_rx_knee, file = here::here("output", "clockstops", "opioid_by_week_knee.csv"),
+          row.names = FALSE)
 
 #####
 

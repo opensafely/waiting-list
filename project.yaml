@@ -25,9 +25,7 @@ actions:
       highly_sensitive:
         cohort: output/data/dataset_ortho.arrow
   
-  
   #### Check number of pathways over time ####
-
   measures_checks:
     run: ehrql:v1 generate-measures analysis/measures_checks.py 
       --output output/measures/measures_checks.csv
@@ -37,7 +35,6 @@ actions:
 
 
   ##### Opioid measures - closed pathways #####
-
   measures_any_opioid:
     run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
       --output output/measures/measures_any_opioid.csv

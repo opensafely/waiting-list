@@ -89,7 +89,10 @@ meds <- rbind(
     meds_dist(ethnicity6, "Ethnicity"),
     meds_dist(sex, "Sex"),
     meds_dist(prior_opioid_rx, "Prior opioid Rx"),
-    meds_dist(wait_gp, "Time on waiting list")
+    meds_dist(wait_gp, "Time on waiting list"),
+    meds_dist(oa, "OA diagnosis"),
+    meds_dist(hip_hrg, "Hip HRG"),
+    meds_dist(knee_hrg, "Knee HRG")
     ) 
   
 meds <- meds[,c("cohort", "variable", "category", "period", "measure", "count_any", "count_3plus", "total") ]
@@ -105,7 +108,10 @@ meds_ptime <- rbind(
     ptime(ethnicity6, "Ethnicity"),
     ptime(sex, "Sex"),
     ptime(prior_opioid_rx, "Prior opioid Rx"),
-    ptime(wait_gp, "Time on waiting list")) %>%
+    ptime(wait_gp, "Time on waiting list"),
+    ptime(oa, "OA diagnosis"),
+    ptime(hip_hrg, "Hip HRG"),
+    ptime(knee_hrg, "Knee HRG")) %>%
   arrange(cohort, variable, category, period, measure) %>%
   subset(!(variable == "Region" & is.na(category))) %>%
   subset(!(variable == "IMD" & category == "Unknown"))
