@@ -1,7 +1,7 @@
 ###########################################################
 # This script creates weekly opioid prescribing rates
 #   in the 6 months pre-waiting list, during waiting list and 
-#   6 months post-waiting list for people with a completed RTT pathway
+#   12 months post-waiting list for people with a completed RTT pathway
 #   for orthopaedic surgery only
 ###########################################################
 
@@ -12,10 +12,10 @@ from ehrql.tables.tpp import (
     medications,
     clinical_events,
     addresses,
-    wl_clockstops)
+    wl_clockstops,
+    apcs)
 
 import codelists
-
 
 ##########
 
@@ -87,7 +87,7 @@ count_opioid_wait = all_opioid_rx.where(
                 & all_opioid_rx.tmp_wait_date.is_during(INTERVAL)
             ).count_for_patient()
 
-# Num Rx post waiting list (up to 6 months)
+# Num Rx post waiting list (up to 12 months)
 count_opioid_post = all_opioid_rx.where(
                 all_opioid_rx.dmd_code.is_in(codelist)
                 & all_opioid_rx.tmp_post_date.is_during(INTERVAL)
@@ -139,13 +139,35 @@ age = patients.age_on(rtt_start_date)
 sex = patients.sex
 
 
+### Knee or hip procedure ###
+admit_events = apcs.where(apcs.admission_date.is_on_or_between(rtt_end_date - days(15), rtt_end_date + days(15)))
+
+hip_hrg = admit_events.where(
+        apcs.spell_core_hrg_sus.is_in(codelists.hip_codes)
+    ).exists_for_patient()
+
+knee_hrg = admit_events.where(
+        apcs.spell_core_hrg_sus.is_in(codelists.knee_codes)
+    ).exists_for_patient()
+
+
+### Osteoarthritis diagnosis ###
+clin_events_5yrs = clinical_events.where(
+        clinical_events.date.is_on_or_between(rtt_start_date - years(5), rtt_start_date)
+    )
+
+oa_diagnosis = clin_events_5yrs.where(
+            clin_events_5yrs.snomedct_code.is_in(codelists.osteoarthritis_codes)
+    ).exists_for_patient()
+
+
 
 ######
 
 
 measures = create_measures()
 
-measures.configure_dummy_data(population_size=500)
+measures.configure_dummy_data(population_size=1000)
 
 measures.configure_disclosure_control(enabled=False)
 
@@ -185,7 +207,10 @@ measures.define_measure(
     denominator=denominator & (tmp_end_date_rtt_start > INTERVAL.end_date) & (tmp_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx,
-              "num_weeks": num_weeks}
+              "num_weeks": num_weeks,
+              "oa_diagnosis": oa_diagnosis,
+              "hip_hrg": hip_hrg,
+              "knee_hrg": knee_hrg}
     )
 
 # Prescribing post WL
@@ -197,7 +222,10 @@ measures.define_measure(
     denominator=denominator & (tmp_end_date_rtt_end > INTERVAL.end_date),
     intervals=weeks(52).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx,
-              "num_weeks": num_weeks}
+              "num_weeks": num_weeks,
+              "oa_diagnosis": oa_diagnosis,
+              "hip_hrg": hip_hrg,
+              "knee_hrg": knee_hrg}
     )
 
 # Prescribing pre WL
@@ -209,6 +237,9 @@ measures.define_measure(
     denominator=denominator,
     intervals=weeks(26).starting_on("2000-01-01"),
     group_by={"prior_opioid_rx": prior_opioid_rx,
-              "num_weeks": num_weeks}
+              "num_weeks": num_weeks,
+              "oa_diagnosis": oa_diagnosis,
+              "hip_hrg": hip_hrg,
+              "knee_hrg": knee_hrg}
     )
 

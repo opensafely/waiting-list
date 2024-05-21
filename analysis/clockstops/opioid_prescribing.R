@@ -37,18 +37,21 @@ ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routi
                                          rtt_start_month =  col_date(format="%Y-%m-%d"),
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
   
+  mutate(oa = ifelse(oa == TRUE, "Yes", "No"),
+         hip_hrg = ifelse(hip_hrg == TRUE, "Yes", "No"),
+         knee_hrg = ifelse(knee_hrg == TRUE, "Yes", "No")) %>%
   dplyr::select(c(patient_id, starts_with(c("opioid_", "short_opioid", "long_opioid",
                                             "weak_opioid", "strong_opioid")), post_time_adj, 
                   wait_time_adj, pre_time, age_group, sex, imd10, 
                   ethnicity6, region, prior_opioid_rx, wait_gp,
-                  censor_before_study_end, num_weeks)) %>%
+                  censor_before_study_end, num_weeks, oa, hip_hrg, knee_hrg)) %>%
   
   dplyr::select(!c(ends_with(c("_any")))) %>%
   
   # Transpose to long
   reshape2::melt(id = c("patient_id","age_group","sex","imd10","ethnicity6", "region",
                         "prior_opioid_rx", "wait_gp", "censor_before_study_end",
-                        "num_weeks")) %>%
+                        "num_weeks", "oa", "hip_hrg", "knee_hrg")) %>%
   
   # Create new variables for time period and medicine type
   mutate(period = case_when(
@@ -70,11 +73,11 @@ ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routi
 # Split out person-time and merge it back in
 person_time <- ortho_routine_final %>%
     subset(measure == "Person time") %>%
-    dplyr::select(c(patient_id, period, value, censor_before_study_end, num_weeks)) %>%
+    dplyr::select(c(patient_id, period, value, censor_before_study_end, num_weeks, oa, hip_hrg, knee_hrg)) %>%
     rename(person_time = value)
 
 ortho_routine_final_2 <- merge(subset(ortho_routine_final, measure != "Person time"), person_time, 
-                     by = c("patient_id", "period",  "censor_before_study_end"), all.x = TRUE) 
+                     by = c("patient_id", "period",  "censor_before_study_end", "num_weeks", "oa", "hip_hrg","knee_hrg"), all.x = TRUE) 
 
 
 ######### Medicine prescribing frequencies - overall and stratified ############
@@ -89,7 +92,10 @@ meds <- rbind(
     meds_dist(ethnicity6, "Ethnicity"),
     meds_dist(sex, "Sex"),
     meds_dist(prior_opioid_rx, "Prior opioid Rx"),
-    meds_dist(wait_gp, "Time on waiting list")
+    meds_dist(wait_gp, "Time on waiting list"),
+    meds_dist(oa, "OA diagnosis"),
+    meds_dist(hip_hrg, "Hip HRG"),
+    meds_dist(knee_hrg, "Knee HRG")
     ) 
   
 meds <- meds[,c("cohort", "variable", "category", "period", "measure", "count_any", "count_3plus", "total") ]
@@ -105,13 +111,16 @@ meds_ptime <- rbind(
     ptime(ethnicity6, "Ethnicity"),
     ptime(sex, "Sex"),
     ptime(prior_opioid_rx, "Prior opioid Rx"),
-    ptime(wait_gp, "Time on waiting list")) %>%
+    ptime(wait_gp, "Time on waiting list"),
+    ptime(oa, "OA diagnosis"),
+    ptime(hip_hrg, "Hip HRG"),
+    ptime(knee_hrg, "Knee HRG")
+  ) %>%
   arrange(cohort, variable, category, period, measure) %>%
   subset(!(variable == "Region" & is.na(category))) %>%
   subset(!(variable == "IMD" & category == "Unknown"))
 
-meds_ptime <- meds_ptime[,c("cohort","period","measure","variable","category","person_days",
-                                           "count_rx")]
+meds_ptime <- meds_ptime[,c("cohort","period","measure","variable","category","person_days","count_rx")]
 
 
 ## Combine into one file
