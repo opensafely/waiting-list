@@ -130,7 +130,8 @@ opioid_rx_oa <- opioid_rx %>%
   group_by(week, period, prior_opioid_rx, opioid_type, oa_diagnosis) %>%
   summarise(opioid_rx = rounding(sum(opioid_rx)),
             denominator = rounding(sum(denominator))) %>%
-  arrange(oa_diagnosis, prior_opioid_rx,  opioid_type, period, week) 
+  arrange(oa_diagnosis, prior_opioid_rx,  opioid_type, period, week) %>%
+  dplyr::select(opioid_type %in% c("Weak opioid", "Strong opioid", "Any opioid"))
 
 write.csv(opioid_rx_oa, file = here::here("output", "clockstops", "opioid_by_week_oa.csv"),
           row.names = FALSE)
@@ -141,7 +142,8 @@ opioid_rx_hip <- opioid_rx %>%
   group_by(week, period, prior_opioid_rx, opioid_type, hip_hrg) %>%
   summarise(opioid_rx = rounding(sum(opioid_rx)),
             denominator = rounding(sum(denominator))) %>%
-  arrange(hip_hrg, prior_opioid_rx,  opioid_type, period, week) 
+  arrange(hip_hrg, prior_opioid_rx,  opioid_type, period, week) %>%
+  dplyr::select(opioid_type %in% c("Weak opioid", "Strong opioid", "Any opioid"))
 
 write.csv(opioid_rx_hip, file = here::here("output", "clockstops", "opioid_by_week_hip.csv"),
           row.names = FALSE)
@@ -152,7 +154,8 @@ opioid_rx_knee <- opioid_rx %>%
   group_by(week, period, prior_opioid_rx, opioid_type, knee_hrg) %>%
   summarise(opioid_rx = rounding(sum(opioid_rx)),
             denominator = rounding(sum(denominator))) %>%
-  arrange(knee_hrg, prior_opioid_rx, opioid_type, period, week) 
+  arrange(knee_hrg, prior_opioid_rx, opioid_type, period, week) %>%
+  dplyr::select(opioid_type %in% c("Weak opioid", "Strong opioid", "Any opioid"))
 
 write.csv(opioid_rx_knee, file = here::here("output", "clockstops", "opioid_by_week_knee.csv"),
           row.names = FALSE)
