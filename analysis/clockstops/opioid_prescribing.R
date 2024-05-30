@@ -40,10 +40,10 @@ ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routi
   mutate(oa = ifelse(oa == TRUE, "Yes", "No"),
          hip_hrg = ifelse(hip_hrg == TRUE, "Yes", "No"),
          knee_hrg = ifelse(knee_hrg == TRUE, "Yes", "No")) %>%
+  
   dplyr::select(c(patient_id, starts_with(c("opioid_", "short_opioid", "long_opioid",
-                                            "weak_opioid", "strong_opioid")), post_time_adj, 
-                  wait_time_adj, pre_time, age_group, sex, imd10, 
-                  ethnicity6, region, prior_opioid_rx, wait_gp,
+                                            "weak_opioid", "strong_opioid")), 
+                  age_group, sex, imd10, ethnicity6, region, prior_opioid_rx, wait_gp,
                   censor_before_study_end, num_weeks, oa, hip_hrg, knee_hrg)) %>%
   
   dplyr::select(!c(ends_with(c("_any")))) %>%
@@ -63,7 +63,9 @@ ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routi
                       grepl("short_opioid", variable) ~ "Short-acting opioid",
                       grepl("long_opioid", variable) ~ "Long-acting opioid",
                       grepl("weak_opioid", variable) ~ "Weak opioid",
-                      grepl("strong_opioid", variable) ~ "Strong opioid",
+                      grepl("strong_opioid1", variable) ~ "Strong opioid",
+                      grepl("strong_opioid2", variable) ~ "Strong opioid 2",
+                      grepl("moderate_opioid", variable) ~ "Moderate opioid",
                       TRUE ~ "Any opioid"),
          
          # Variables for any prescribing, and >=3 prescriptions
@@ -71,14 +73,13 @@ ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routi
          med_3plus = ifelse(value >= 3, 1, 0)) 
 
 # Split out person-time and merge it back in
-person_time <- ortho_routine_final %>%
-    subset(measure == "Person time") %>%
-    dplyr::select(c(patient_id, period, value, censor_before_study_end, num_weeks, oa, hip_hrg, knee_hrg)) %>%
-    rename(person_time = value)
+# person_time <- ortho_routine_final %>%
+#     subset(measure == "Person time") %>%
+#     dplyr::select(c(patient_id, period, value, censor_before_study_end, num_weeks, oa, hip_hrg, knee_hrg)) %>%
+#     rename(person_time = value)
 
-ortho_routine_final_2 <- merge(subset(ortho_routine_final, measure != "Person time"), person_time, 
-                     by = c("patient_id", "period",  "censor_before_study_end", "num_weeks", "oa", "hip_hrg","knee_hrg"), all.x = TRUE) 
-
+ortho_routine_final_2 <- ortho_routine_final %>%
+  subset(measure != "Person time")
 
 ######### Medicine prescribing frequencies - overall and stratified ############
 
@@ -100,35 +101,35 @@ meds <- rbind(
   
 meds <- meds[,c("cohort", "variable", "category", "period", "measure", "count_any", "count_3plus", "total") ]
 
+write.csv(meds, here::here("output", "clockstops", "med_by_period.csv"), row.names = FALSE)
+
 
 ########### Medicine Rx counts and person time - overall and stratified ########
-
-meds_ptime <- rbind(
-    ptime(full, "Full cohort"),
-    ptime(age_group, "Age"),
-    ptime(imd10, "IMD"),
-    ptime(region, "Region"),
-    ptime(ethnicity6, "Ethnicity"),
-    ptime(sex, "Sex"),
-    ptime(prior_opioid_rx, "Prior opioid Rx"),
-    ptime(wait_gp, "Time on waiting list"),
-    ptime(oa, "OA diagnosis"),
-    ptime(hip_hrg, "Hip HRG"),
-    ptime(knee_hrg, "Knee HRG")
-  ) %>%
-  arrange(cohort, variable, category, period, measure) %>%
-  subset(!(variable == "Region" & is.na(category))) %>%
-  subset(!(variable == "IMD" & category == "Unknown"))
-
-meds_ptime <- meds_ptime[,c("cohort","period","measure","variable","category","person_days","count_rx")]
+# 
+# meds_ptime <- rbind(
+#     ptime(full, "Full cohort"),
+#     ptime(age_group, "Age"),
+#     ptime(imd10, "IMD"),
+#     ptime(region, "Region"),
+#     ptime(ethnicity6, "Ethnicity"),
+#     ptime(sex, "Sex"),
+#     ptime(prior_opioid_rx, "Prior opioid Rx"),
+#     ptime(wait_gp, "Time on waiting list"),
+#     ptime(oa, "OA diagnosis"),
+#     ptime(hip_hrg, "Hip HRG"),
+#     ptime(knee_hrg, "Knee HRG")
+#   ) %>%
+#   arrange(cohort, variable, category, period, measure) %>%
+#   subset(!(variable == "Region" & is.na(category))) %>%
+#   subset(!(variable == "IMD" & category == "Unknown"))
+# 
+# meds_ptime <- meds_ptime[,c("cohort","period","measure","variable","category","person_days","count_rx")]
 
 
 ## Combine into one file
-all_meds <- merge(meds, meds_ptime, by = c( "cohort", "period", "variable","category", "measure")) %>%
-  arrange(cohort, variable, category, period, measure) 
+# all_meds <- merge(meds, meds_ptime, by = c( "cohort", "period", "variable","category", "measure")) %>%
+#   arrange(cohort, variable, category, period, measure) 
 
-write.csv(all_meds, here::here("output", "clockstops", "med_by_period.csv"),
-          row.names = FALSE)
 
 
 
@@ -136,9 +137,9 @@ write.csv(all_meds, here::here("output", "clockstops", "med_by_period.csv"),
 ############ By prior opioid prescribing and wait time ##################
 #########################################################################
 
-####### Medicine prescribing frequencies - by prior opioid Rx and wait time ####
+####### Medicine prescribing frequencies - by prior opioid Rx, wait time, OA diagnosis, hip/knee HRG ####
 
-prior_wait <- ortho_routine_final_2 %>% 
+prior_wait_1 <- ortho_routine_final_2 %>% 
   mutate(prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
   group_by(wait_gp, prior_opioid_rx, measure, period) %>%
   summarise(count_any = rounding(sum(med_any)),
@@ -146,51 +147,77 @@ prior_wait <- ortho_routine_final_2 %>%
             total = rounding(n()),
             total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
   ungroup() %>%
-  mutate(cohort = "Orthopaedic - Routine/Admitted") %>%
-  mutate(total = ifelse(period == "Pre-WL", total, total_post))
+  mutate(cohort = "Orthopaedic - Routine/Admitted",
+         total = ifelse(period == "Pre-WL", total, total_post),
+         oa = "Total",
+         hip_hrg = "Total",
+         knee_hrg = "Total")
 
-prior_wait <- prior_wait[,c("cohort", "prior_opioid_rx", "wait_gp", "period", "measure", "count_any", "count_3plus", "total") ]
-
-
-#########  Medicine Rx counts and person time - by prior opioid Rx and wait time ####################
-
-# Count total number of Rx, total person-days
-#   for each period and each medicine group
-
-prior_wait_ptime <- ortho_routine_final_2 %>%
-    mutate(prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
-    group_by(period, measure, wait_gp, prior_opioid_rx) %>%
-    summarise(person_days = rounding(sum(person_time)),
-              count_rx = rounding(sum(value))) %>%
-    mutate( cohort = "Orthopaedic - Routine/Admitted")
-  
-prior_wait_ptime <- prior_wait_ptime[,c("cohort","period","measure","prior_opioid_rx","wait_gp","person_days",
-                            "count_rx")]
+prior_wait_2  <- ortho_routine_final_2 %>% 
+  mutate(prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
+  group_by(wait_gp, prior_opioid_rx, measure, period, oa) %>%
+  summarise(count_any = rounding(sum(med_any)),
+            count_3plus = rounding(sum(med_3plus)),
+            total = rounding(n()),
+            total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
+  ungroup() %>%
+  mutate(cohort = "Orthopaedic - Routine/Admitted",
+         total = ifelse(period == "Pre-WL", total, total_post),
+         hip_hrg = "Total",
+         knee_hrg = "Total")
 
 
-## Combine into one file
-all_prior_wait <- merge(prior_wait, prior_wait_ptime, by = c( "cohort", "period", "prior_opioid_rx", "wait_gp", "measure")) %>%
-  arrange(cohort, prior_opioid_rx, wait_gp, period, measure) 
+prior_wait_3  <- ortho_routine_final_2 %>% 
+  mutate(prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
+  group_by(wait_gp, prior_opioid_rx, measure, period, hip_hrg) %>%
+  summarise(count_any = rounding(sum(med_any)),
+            count_3plus = rounding(sum(med_3plus)),
+            total = rounding(n()),
+            total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
+  ungroup() %>%
+  mutate(cohort = "Orthopaedic - Routine/Admitted",
+         total = ifelse(period == "Pre-WL", total, total_post),
+         oa = "Total",
+         knee_hrg = "Total")
 
-write.csv(all_prior_wait, here::here("output", "clockstops", "med_by_period_wait.csv"),
+
+prior_wait_4  <- ortho_routine_final_2 %>% 
+  mutate(prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
+  group_by(wait_gp, prior_opioid_rx, measure, period, knee_hrg) %>%
+  summarise(count_any = rounding(sum(med_any)),
+            count_3plus = rounding(sum(med_3plus)),
+            total = rounding(n()),
+            total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
+  ungroup() %>%
+  mutate(cohort = "Orthopaedic - Routine/Admitted",
+         total = ifelse(period == "Pre-WL", total, total_post),
+         oa = "Total",
+         hip_hrg = "Total")
+
+
+prior_wait_all <- rbind(prior_wait_1, prior_wait_2, prior_wait_3, prior_wait_4)
+prior_wait_all <- prior_wait_all[,c("cohort", "prior_opioid_rx", "oa", "hip_hrg", "knee_hrg",
+                            "wait_gp", "period", "measure", "count_any", "count_3plus", "total") ]
+
+write.csv(prior_wait_all, here::here("output", "clockstops", "med_by_period_wait.csv"),
           row.names = FALSE)
 
 
 
-##############
-
-
-week_tot_rx <- ortho_routine_final %>%
-  subset(period == "During WL" & num_weeks <= 52 & measure!= "Person time" & num_weeks > 0) %>%
-  group_by(num_weeks, measure, prior_opioid_rx) %>%
-  summarise(opioid_rx = rounding(sum(value)),
-         denominator = rounding(n())) %>%
-  rename(weeks_on_wait_list = num_weeks) %>%
-  ungroup() %>% 
-  arrange(prior_opioid_rx, weeks_on_wait_list, measure, opioid_rx, denominator) %>%
-  subset(prior_opioid_rx == TRUE | (prior_opioid_rx == FALSE & measure == "Any opioid"))
-
-week_tot_rx <- week_tot_rx[,c("prior_opioid_rx", "measure", "weeks_on_wait_list", "opioid_rx", "denominator")]
-
-write.csv(week_tot_rx, here::here("output", "clockstops", "total_rx_wait.csv"),
-          row.names = FALSE)
+# ##############
+# 
+# 
+# week_tot_rx <- ortho_routine_final %>%
+#   subset(period == "During WL" & num_weeks <= 52 & measure!= "Person time" & num_weeks > 0) %>%
+#   group_by(num_weeks, measure, prior_opioid_rx) %>%
+#   summarise(opioid_rx = rounding(sum(value)),
+#          denominator = rounding(n())) %>%
+#   rename(weeks_on_wait_list = num_weeks) %>%
+#   ungroup() %>% 
+#   arrange(prior_opioid_rx, weeks_on_wait_list, measure, opioid_rx, denominator) %>%
+#   subset(prior_opioid_rx == TRUE | (prior_opioid_rx == FALSE & measure == "Any opioid"))
+# 
+# week_tot_rx <- week_tot_rx[,c("prior_opioid_rx", "measure", "weeks_on_wait_list", "opioid_rx", "denominator")]
+# 
+# write.csv(week_tot_rx, here::here("output", "clockstops", "total_rx_wait.csv"),
+#           row.names = FALSE)

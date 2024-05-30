@@ -71,19 +71,37 @@ actions:
       moderately_sensitive:
         measure_csv: output/measures/measures_weak_opioid.csv
 
-  measures_strong_opioid:
+  measures_moderate_opioid:
     run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
-      --output output/measures/measures_strong_opioid.csv
+      --output output/measures/measures_moderate_opioid.csv
       --
-      --codelist "strong_opioid_codes"
+      --codelist "moderate_opioid_codes"
     outputs:
       moderately_sensitive:
-        measure_csv: output/measures/measures_strong_opioid.csv
+        measure_csv: output/measures/measures_moderate_opioid.csv
+
+  measures_strong_opioid1:
+    run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
+      --output output/measures/measures_strong_opioid1.csv
+      --
+      --codelist "strong_opioid_codes1"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_strong_opioid1.csv
+
+  measures_strong_opioid2:
+    run: ehrql:v1 generate-measures analysis/measures_opioid_all.py 
+      --output output/measures/measures_strong_opioid2.csv
+      --
+      --codelist "strong_opioid_codes2"
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_strong_opioid2.csv
 
   # Combine measures
   opioids_by_week:
     run: r:latest analysis/clockstops/opioids_by_week.R
-    needs: [measures_any_opioid, measures_weak_opioid, measures_strong_opioid, measures_long_opioid, measures_short_opioid]
+    needs: [measures_any_opioid, measures_weak_opioid, measures_strong_opioid1, measures_strong_opioid2, measures_moderate_opioid, measures_long_opioid, measures_short_opioid]
     outputs:
       moderately_sensitive:
         data: output/clockstops/opioid*.csv
@@ -146,7 +164,7 @@ actions:
       moderately_sensitive:
         data1: output/clockstops/med_by_period.csv
         data2: output/clockstops/med_by_period_wait.csv
-        data3: output/clockstops/total_rx_wait.csv
+        #data3: output/clockstops/total_rx_wait.csv
 
   ######################################################################################
   
