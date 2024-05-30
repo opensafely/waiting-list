@@ -7,11 +7,10 @@ user/hjforbes/opioid-dependency-clinical-diagnosis/46e554f5/
 opensafely/symptoms-depression/0e294f34/
 opensafely/symptoms-anxiety/7519dbfe/
 primis-covid19-vacc-uptake-old/sev_mental_cod/v1/
-user/anschaf/codeine-for-pain-dmd/165e5574/
-user/anschaf/long-acting-opioids-dmd/7d4ee23e/
+user/anschaf/long-acting-opioids-dmd/40522a02/
 user/anschaf/gabapentinoids-dmd/7a9c2248/
-opensafely/strongopioidsCW-dmd/2f6dc8a9/
-user/anschaf/opioids-for-analgesia-dmd/302b133b/
+opensafely/strongopioidsCW-dmd/4304e9f8/
+user/anschaf/opioids-for-analgesia-dmd/08cdc3ac/
 user/anschaf/weak-opioids-dmd/4b2ffbd4/
 user/anschaf/antidepressants-dmd/71bd2ed7/
 user/speed-vm/antidepressants-for-pain-indication-dmd/1e769556
@@ -22,3 +21,5 @@ primis-covid19-vacc-uptake/resp_cov/v2.5/
 primis-covid19-vacc-uptake/cld/v2.5/
 primis-covid19-vacc-uptake/ckd15/v2.5/
 primis-covid19-vacc-uptake/diab/v2.5/
+user/anschaf/strong-opioids-exc-tramadol-and-tapentadol-dmd/248ff6d7
+user/anschaf/tramadol-and-tapentadol-dmd/53fc1d4b/

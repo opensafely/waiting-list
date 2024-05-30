@@ -54,17 +54,11 @@
       "downloaded_at": "2023-12-21 13:26:47.006724Z",
       "sha": "a538dc701eee7987ba9b0ca745f84baef5771ff1"
     },
-    "user-anschaf-codeine-for-pain-dmd.csv": {
-      "id": "user/anschaf/codeine-for-pain-dmd/165e5574",
-      "url": "https://www.opencodelists.org/codelist/user/anschaf/codeine-for-pain-dmd/165e5574/",
-      "downloaded_at": "2024-02-16 17:04:36.485757Z",
-      "sha": "4944a10864f355e33fd3c534d838c9fa4f428e2a"
-    },
     "user-anschaf-long-acting-opioids-dmd.csv": {
-      "id": "user/anschaf/long-acting-opioids-dmd/7d4ee23e",
-      "url": "https://www.opencodelists.org/codelist/user/anschaf/long-acting-opioids-dmd/7d4ee23e/",
-      "downloaded_at": "2024-01-19 12:04:49.479796Z",
-      "sha": "1d8893bb8bf19a4f34bed91936e6fe403f252a73"
+      "id": "user/anschaf/long-acting-opioids-dmd/40522a02",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/long-acting-opioids-dmd/40522a02/",
+      "downloaded_at": "2024-05-30 17:52:05.153348Z",
+      "sha": "e87575f7ac19dfe031100e3f245ee9795204a44c"
     },
     "user-anschaf-gabapentinoids-dmd.csv": {
       "id": "user/anschaf/gabapentinoids-dmd/7a9c2248",
@@ -73,16 +67,16 @@
       "sha": "b6cdf0ac884dd460b01ce338c6895f4c06d4646f"
     },
     "opensafely-strongopioidsCW-dmd.csv": {
-      "id": "opensafely/strongopioidsCW-dmd/2f6dc8a9",
-      "url": "https://www.opencodelists.org/codelist/opensafely/strongopioidsCW-dmd/2f6dc8a9/",
-      "downloaded_at": "2024-02-13 16:47:23.706936Z",
-      "sha": "f7e7ba1728255424766d4eb76d208fee8bb45c25"
+      "id": "opensafely/strongopioidsCW-dmd/4304e9f8",
+      "url": "https://www.opencodelists.org/codelist/opensafely/strongopioidsCW-dmd/4304e9f8/",
+      "downloaded_at": "2024-05-30 17:52:06.148117Z",
+      "sha": "b64a4fa943a41791e1271f9dbf6e3501d1e64ed2"
     },
     "user-anschaf-opioids-for-analgesia-dmd.csv": {
-      "id": "user/anschaf/opioids-for-analgesia-dmd/302b133b",
-      "url": "https://www.opencodelists.org/codelist/user/anschaf/opioids-for-analgesia-dmd/302b133b/",
-      "downloaded_at": "2024-03-13 12:17:05.118633Z",
-      "sha": "62c6a891f5d1f50b55ea3479c80fc58fc72834a3"
+      "id": "user/anschaf/opioids-for-analgesia-dmd/08cdc3ac",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/opioids-for-analgesia-dmd/08cdc3ac/",
+      "downloaded_at": "2024-05-30 17:52:06.999970Z",
+      "sha": "3a21f1b56618eaa56dc4216864bcfe50c88776fb"
     },
     "user-anschaf-weak-opioids-dmd.csv": {
       "id": "user/anschaf/weak-opioids-dmd/4b2ffbd4",
@@ -143,6 +137,18 @@
       "url": "https://www.opencodelists.org/codelist/primis-covid19-vacc-uptake/diab/v2.5/",
       "downloaded_at": "2024-03-21 20:10:15.291029Z",
       "sha": "545f7a1395c5f96a0c7c398e94e021acff38a217"
+    },
+    "user-anschaf-strong-opioids-exc-tramadol-and-tapentadol-dmd.csv": {
+      "id": "user/anschaf/strong-opioids-exc-tramadol-and-tapentadol-dmd/248ff6d7",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/strong-opioids-exc-tramadol-and-tapentadol-dmd/248ff6d7/",
+      "downloaded_at": "2024-05-30 17:52:13.765157Z",
+      "sha": "368d529ef1001262944a19ecc7e0e7d3f86af147"
+    },
+    "user-anschaf-tramadol-and-tapentadol-dmd.csv": {
+      "id": "user/anschaf/tramadol-and-tapentadol-dmd/53fc1d4b",
+      "url": "https://www.opencodelists.org/codelist/user/anschaf/tramadol-and-tapentadol-dmd/53fc1d4b/",
+      "downloaded_at": "2024-05-30 18:08:00.242156Z",
+      "sha": "b67c1fc460338e6664c2eae344e3ff50a7a2174d"
     }
   }
 }
