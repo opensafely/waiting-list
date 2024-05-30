@@ -71,7 +71,7 @@ meds_dist <- function(var, name) {
   dat %>% 
     mutate(full = "Full cohort", 
            prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
-    # subset(period %in% c("Pre-WL","Post WL")) %>%
+    subset(period %in% c("Pre-WL","Post WL")) %>%
     group_by({{var}}, measure, period) %>%
     summarise(count_any = rounding(sum(med_any)),
               count_6mos_3plus = rounding(sum(med_6mos_3plus)),
