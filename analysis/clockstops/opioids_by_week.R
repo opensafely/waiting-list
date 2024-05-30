@@ -45,14 +45,23 @@ weak_opioid_rx <- read_csv(here::here("output", "measures", "measures_weak_opioi
                           col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
               mutate(opioid_type = "Weak opioid")
 
-strong_opioid_rx <- read_csv(here::here("output", "measures", "measures_strong_opioid.csv"),
+moderate_opioid_rx <- read_csv(here::here("output", "measures", "measures_moderate_opioid.csv"),
                           col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
-              mutate(opioid_type = "Strong opioid")
+              mutate(opioid_type = "Moderate opioid")
+
+strong_opioid_rx1 <- read_csv(here::here("output", "measures", "measures_strong_opioid1.csv"),
+                             col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
+  mutate(opioid_type = "Strong opioid 1")
+
+strong_opioid_rx2 <- read_csv(here::here("output", "measures", "measures_strong_opioid2.csv"),
+                             col_types = cols(interval_start = col_date(format="%Y-%m-%d"))) %>%
+  mutate(opioid_type = "Strong opioid 2")
 
 
 ############## Data cleaning ############
 
-opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_rx, strong_opioid_rx) %>%
+opioid_rx <- rbind(any_opioid_rx, long_opioid_rx, short_opioid_rx, weak_opioid_rx, strong_opioid_rx1,
+                   strong_opioid_rx2, moderate_opioid_rx) %>%
               mutate(
                 # Convert interval start date to number of weeks 
                 week = as.numeric(((interval_start - as.Date("2000-01-01"))/7)) + 1,

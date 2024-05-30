@@ -74,7 +74,8 @@ meds_dist <- function(var, name) {
     # subset(period %in% c("Pre-WL","Post WL")) %>%
     group_by({{var}}, measure, period) %>%
     summarise(count_any = rounding(sum(med_any)),
-              count_3plus = rounding(sum(med_3plus)),
+              count_6mos_3plus = rounding(sum(med_6mos_3plus)),
+              count_3mos_3plus = rounding(sum(med_3mos_3plus)),
               total = rounding(n()),
               total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
     ungroup() %>%
