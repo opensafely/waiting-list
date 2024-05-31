@@ -39,9 +39,7 @@ ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routi
   
   mutate(oa = ifelse(oa == TRUE, "Yes", "No"),
          hip_hrg = ifelse(hip_hrg == TRUE, "Yes", "No"),
-         knee_hrg = ifelse(knee_hrg == TRUE, "Yes", "No"),
-         
-         prior_opioid_rx = (opioid_pre_count1 >= 3)) %>%
+         knee_hrg = ifelse(knee_hrg == TRUE, "Yes", "No")) %>%
   
   dplyr::select(c(patient_id, starts_with(c("opioid_", "short_opioid", "long_opioid", "moderate_opioid",
                                             "weak_opioid", "strong_opioid")), 
@@ -64,12 +62,13 @@ ortho_routine_final_6mos <- ortho_routine_final %>%
   
     # Variables for any prescribing, and >=3 prescriptions
   mutate(med_any_6mos = ifelse(value >= 1, 1, 0),
-        med_3more_6mos = ifelse(value >= 3, 1, 0),
+         med_3more_6mos = ifelse(value >= 3, 1, 0),
         
         period = case_when(
           grepl("pre_", variable) ~ "Pre-WL",
           grepl("wait_", variable) ~ "During WL", 
           grepl("post_", variable) ~ "Post WL"),
+        
         measure = case_when(
           grepl("short_opioid", variable) ~ "Short-acting opioid",
           grepl("long_opioid", variable) ~ "Long-acting opioid",
@@ -219,10 +218,10 @@ prior_wait_4  <- ortho_routine_final_2 %>%
 
 
 prior_wait_all <- rbind(prior_wait_1, prior_wait_2, prior_wait_3, prior_wait_4)
+
 prior_wait_all <- prior_wait_all[,c("cohort", "prior_opioid_rx", "oa", "hip_hrg", "knee_hrg",
                             "wait_gp", "period", "measure", 
-                            "count_any_6mos",
-                            "count_any_3mos",
+                            "count_any_6mos","count_any_3mos",
                             "count_3more_6mos", "count_3more_3mos", "total") ]
 
 write.csv(prior_wait_all, here::here("output", "clockstops", "med_by_period_wait.csv"),
