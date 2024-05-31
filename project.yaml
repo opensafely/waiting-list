@@ -149,6 +149,7 @@ actions:
       moderately_sensitive:
         data1: output/clockstops/cat_var_dist_prior.csv
         data2: output/clockstops/age_stats.csv
+        data3: output/clockstops/procedures.csv
   
   check_no_admission:
    run: r:latest analysis/clockstops/check_no_admission.R

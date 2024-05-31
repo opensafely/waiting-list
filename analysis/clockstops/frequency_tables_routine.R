@@ -87,6 +87,28 @@ write.csv(age_stats_combined, here::here("output", "clockstops", "age_stats.csv"
 
 
 
+########### Table with procedure type ################################
+
+# Prior opioid rx only
+dat <- ortho_routine_final 
+
+procedures <- 
+  rbind(cat_dist(hip_hrg, "Hip procedure"),
+        cat_dist(knee_hrg, "Knee procedure"),
+        cat_dist(shoulder_hrg, "Shoulder procedure"),
+        cat_dist(elbow_hrg, "Elbow procedure"),
+        cat_dist(hand_hrg, "Hand procedure"),
+        cat_dist(foot_hrg, "Foot procedure"),
+        cat_dist(complex_hrg, "Complex procedure"),
+        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
+        cat_dist(pain_hrg, "Pain management"),
+        cat_dist(trauma_hrg, "Trauma procedure")) %>%
+  subset(category == TRUE)
+
+write.csv(cat_dist, here::here("output", "clockstops",  "procedures.csv"),
+          row.names = FALSE) 
+
+
 ########### Categorical variable relative frequency distributions #############
 ############ By prior opioid rx ###############################################
 
@@ -97,16 +119,6 @@ dat <- ortho_routine_final %>%
 prior_yes <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),
         cat_dist(knee_hrg, "Knee procedure"),
-        cat_dist(shoulder_hrg, "Shoulder procedure"),
-        cat_dist(elbow_hrg, "Elbow procedure"),
-        cat_dist(hand_hrg, "Hand procedure"),
-        cat_dist(foot_hrg, "Foot procedure"),
-        cat_dist(complex_hrg, "Complex procedure"),
-        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
-        cat_dist(any_admission, "Any admission"),
-        cat_dist(pain_hrg, "Pain management"),
-        cat_dist(trauma_hrg, "Trauma procedure"),
-        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
@@ -124,16 +136,6 @@ dat <- ortho_routine_final %>%
 prior_no <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),
         cat_dist(knee_hrg, "Knee procedure"),
-        cat_dist(shoulder_hrg, "Shoulder procedure"),
-        cat_dist(elbow_hrg, "Elbow procedure"),
-        cat_dist(hand_hrg, "Hand procedure"),
-        cat_dist(foot_hrg, "Foot procedure"),
-        cat_dist(complex_hrg, "Complex procedure"),
-        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
-        cat_dist(any_admission, "Any admission"),
-        cat_dist(pain_hrg, "Pain management"),
-        cat_dist(trauma_hrg, "Trauma procedure"),
-        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
@@ -152,16 +154,6 @@ dat <- ortho_routine_final %>%
 long_yes <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),
         cat_dist(knee_hrg, "Knee procedure"),
-        cat_dist(shoulder_hrg, "Shoulder procedure"),
-        cat_dist(elbow_hrg, "Elbow procedure"),
-        cat_dist(hand_hrg, "Hand procedure"),
-        cat_dist(foot_hrg, "Foot procedure"),
-        cat_dist(complex_hrg, "Complex procedure"),
-        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
-        cat_dist(any_admission, "Any admission"),
-        cat_dist(pain_hrg, "Pain management"),
-        cat_dist(trauma_hrg, "Trauma procedure"),
-        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
@@ -182,16 +174,6 @@ dat <- ortho_routine_final %>%
 oa_yes <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),
         cat_dist(knee_hrg, "Knee procedure"),
-        cat_dist(shoulder_hrg, "Shoulder procedure"),
-        cat_dist(elbow_hrg, "Elbow procedure"),
-        cat_dist(hand_hrg, "Hand procedure"),
-        cat_dist(foot_hrg, "Foot procedure"),
-        cat_dist(complex_hrg, "Complex procedure"),
-        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
-        cat_dist(any_admission, "Any admission"),
-        cat_dist(pain_hrg, "Pain management"),
-        cat_dist(trauma_hrg, "Trauma procedure"),
-        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
@@ -213,16 +195,6 @@ dat <- ortho_routine_final %>%
 hip_yes <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),
         cat_dist(knee_hrg, "Knee procedure"),
-        cat_dist(shoulder_hrg, "Shoulder procedure"),
-        cat_dist(elbow_hrg, "Elbow procedure"),
-        cat_dist(hand_hrg, "Hand procedure"),
-        cat_dist(foot_hrg, "Foot procedure"),
-        cat_dist(complex_hrg, "Complex procedure"),
-        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
-        cat_dist(any_admission, "Any admission"),
-        cat_dist(pain_hrg, "Pain management"),
-        cat_dist(trauma_hrg, "Trauma procedure"),
-        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
@@ -243,16 +215,6 @@ dat <- ortho_routine_final %>%
 knee_yes <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),
         cat_dist(knee_hrg, "Knee procedure"),
-        cat_dist(shoulder_hrg, "Shoulder procedure"),
-        cat_dist(elbow_hrg, "Elbow procedure"),
-        cat_dist(hand_hrg, "Hand procedure"),
-        cat_dist(foot_hrg, "Foot procedure"),
-        cat_dist(complex_hrg, "Complex procedure"),
-        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
-        cat_dist(any_admission, "Any admission"),
-        cat_dist(pain_hrg, "Pain management"),
-        cat_dist(trauma_hrg, "Trauma procedure"),
-        
         cat_dist(gaba_any, "Gabapentinoids (any)"),
         cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
         cat_dist(nsaid_any, "NSAID (any)"),
