@@ -73,9 +73,10 @@ meds_dist <- function(var, name) {
            prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
     subset(period %in% c("Pre-WL","Post WL")) %>%
     group_by({{var}}, measure, period) %>%
-    summarise(count_any = rounding(sum(med_any)),
-              count_6mos_3plus = rounding(sum(med_6mos_3plus)),
-              count_3mos_3plus = rounding(sum(med_3mos_3plus)),
+    summarise(count_any_6mos = rounding(sum(med_any_6mos)),
+              count_any_3mos = rounding(sum(med_any_3mos)),
+              count_3more_6mos = rounding(sum(med_3more_6mos)),
+              count_3more_3mos = rounding(sum(med_3more_3mos)),
               total = rounding(n()),
               total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
     ungroup() %>%

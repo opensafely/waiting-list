@@ -83,9 +83,6 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     missing_priority = (priority_type == "Missing" | is.na(priority_type)),
     missing_admission = (!(waiting_list_type %in% c("IRTT","ORTT")) | is.na(waiting_list_type)),
     
-    prior_opioid_rx = (opioid_pre_count1 >= 3),
-    prior_opioid_rx2 = (opioid_pre_count2 >= 3),
-    
     # Died while on WL
     died_during_wl = (!is.na(dod) & dod < rtt_end_date),
     died_during_post = (!is.na(dod) & dod <= (rtt_end_date + 182)),
