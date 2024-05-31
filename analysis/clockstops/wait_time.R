@@ -17,6 +17,7 @@ library('ggplot2')
 library('zoo')
 library('reshape2')
 library('fs')
+library('readr')
 
 ## Rounding function
 source(here("analysis", "custom_functions.R"))
@@ -69,13 +70,17 @@ wait_by_group <- rbind(
   wait_gp(imd10, "IMD decile"),
   wait_gp(ethnicity6, "Ethnicity"),
   wait_gp(region, "Region"),
-  wait_gp(prior_opioid_rx, "Prior opioid Rx")
+  wait_gp(prior_opioid_rx, "Prior opioid Rx"),
+  wait_gp(long_term_opioid, "Long-term opioid"),
+  wait_gp(oa, "OA diagnosis"),
+  wait_gp(hip_hrg, "Hip procedure"),
+  wait_gp(knee_hrg, "Knee procedure")
   ) %>% 
   arrange(var, category) %>%
   subset(!(var == "Region" & is.na(category)))
 
 wait_by_group <- wait_by_group[,c( "cohort", "var", "category",
-                                  "wait_gp1", "wait_gp2", "wait_gp3", "total",
+                                   "wait_gp1", "wait_gp2", "wait_gp3", "total",
                                   "p25", "p50", "p75")]
 
 write.csv(wait_by_group, here::here("output", "clockstops", "wait_by_group.csv"),

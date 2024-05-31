@@ -90,7 +90,6 @@ write.csv(age_stats_combined, here::here("output", "clockstops", "age_stats.csv"
 ########### Categorical variable relative frequency distributions #############
 ############ By prior opioid rx ###############################################
 
-
 # Prior opioid rx only
 dat <- ortho_routine_final %>%
   subset(prior_opioid_rx == TRUE)
@@ -170,12 +169,105 @@ long_yes <- cat_dist_combined() %>%
         cat_dist(tca_any, "TCA (any)"),
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
-        cat_dist(ad_3plus, "Antidepressant (>=3)")) %>%
+        cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(long_term_opioid, "Long-term opioid"),
+        cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
   rename(count_opioid_long = count, total_opioid_long = total)
 
 
+# People with OA only
+dat <- ortho_routine_final %>%
+  subset(oa == TRUE)
+
+oa_yes <- cat_dist_combined() %>%
+  rbind(cat_dist(hip_hrg, "Hip procedure"),
+        cat_dist(knee_hrg, "Knee procedure"),
+        cat_dist(shoulder_hrg, "Shoulder procedure"),
+        cat_dist(elbow_hrg, "Elbow procedure"),
+        cat_dist(hand_hrg, "Hand procedure"),
+        cat_dist(foot_hrg, "Foot procedure"),
+        cat_dist(complex_hrg, "Complex procedure"),
+        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
+        cat_dist(any_admission, "Any admission"),
+        cat_dist(pain_hrg, "Pain management"),
+        cat_dist(trauma_hrg, "Trauma procedure"),
+        
+        cat_dist(gaba_any, "Gabapentinoids (any)"),
+        cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
+        cat_dist(nsaid_any, "NSAID (any)"),
+        cat_dist(nsaid_3plus, "NSAID (>=3)"),
+        cat_dist(tca_any, "TCA (any)"),
+        cat_dist(tca_3plus, "TCA (>=3)"),
+        cat_dist(ad_any, "Antidepressant (any)"),
+        cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(long_term_opioid, "Long-term opioid"),
+        cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
+  rename(count_oa = count, total_oa = total)
+
+
+
+# People with hip procedure only
+dat <- ortho_routine_final %>%
+  subset(hip_hrg == TRUE)
+
+hip_yes <- cat_dist_combined() %>%
+  rbind(cat_dist(hip_hrg, "Hip procedure"),
+        cat_dist(knee_hrg, "Knee procedure"),
+        cat_dist(shoulder_hrg, "Shoulder procedure"),
+        cat_dist(elbow_hrg, "Elbow procedure"),
+        cat_dist(hand_hrg, "Hand procedure"),
+        cat_dist(foot_hrg, "Foot procedure"),
+        cat_dist(complex_hrg, "Complex procedure"),
+        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
+        cat_dist(any_admission, "Any admission"),
+        cat_dist(pain_hrg, "Pain management"),
+        cat_dist(trauma_hrg, "Trauma procedure"),
+        
+        cat_dist(gaba_any, "Gabapentinoids (any)"),
+        cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
+        cat_dist(nsaid_any, "NSAID (any)"),
+        cat_dist(nsaid_3plus, "NSAID (>=3)"),
+        cat_dist(tca_any, "TCA (any)"),
+        cat_dist(tca_3plus, "TCA (>=3)"),
+        cat_dist(ad_any, "Antidepressant (any)"),
+        cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(long_term_opioid, "Long-term opioid"),
+        cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
+  rename(count_hip = count, total_hip = total)
+
+
+# People with knee procedure only
+dat <- ortho_routine_final %>%
+  subset(knee_hrg == TRUE)
+
+knee_yes <- cat_dist_combined() %>%
+  rbind(cat_dist(hip_hrg, "Hip procedure"),
+        cat_dist(knee_hrg, "Knee procedure"),
+        cat_dist(shoulder_hrg, "Shoulder procedure"),
+        cat_dist(elbow_hrg, "Elbow procedure"),
+        cat_dist(hand_hrg, "Hand procedure"),
+        cat_dist(foot_hrg, "Foot procedure"),
+        cat_dist(complex_hrg, "Complex procedure"),
+        cat_dist(any_nontrauma_hrg, "Any procedure (non-trauma)"),
+        cat_dist(any_admission, "Any admission"),
+        cat_dist(pain_hrg, "Pain management"),
+        cat_dist(trauma_hrg, "Trauma procedure"),
+        
+        cat_dist(gaba_any, "Gabapentinoids (any)"),
+        cat_dist(gaba_3plus, "Gabapentinoids (>=3)"),
+        cat_dist(nsaid_any, "NSAID (any)"),
+        cat_dist(nsaid_3plus, "NSAID (>=3)"),
+        cat_dist(tca_any, "TCA (any)"),
+        cat_dist(tca_3plus, "TCA (>=3)"),
+        cat_dist(ad_any, "Antidepressant (any)"),
+        cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(long_term_opioid, "Long-term opioid"),
+        cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
+  rename(count_knee = count, total_knee = total)
+
+
 # Merge 
-cat_dist <- list(prior_yes, prior_no, long_yes) %>% 
+cat_dist <- list(prior_yes, prior_no, long_yes, oa_yes, hip_yes, knee_yes) %>% 
   reduce(full_join, by=c("category","var","cohort")) %>%
   filter(category != FALSE) %>%
   arrange(var, category) 
@@ -183,7 +275,9 @@ cat_dist <- list(prior_yes, prior_no, long_yes) %>%
 cat_dist <- cat_dist[,c("cohort", "var", "category", 
                         "count_prior_opioid", "total_prior_opioid", 
                         "count_opioid_naive", "total_opioid_naive",
-                        "count_opioid_long", "total_opioid_long")]
+                        "count_opioid_long", "total_opioid_long",
+                        "count_oa", "total_oa",
+                          "count_hip", "total_hip","count_knee","total_knee")]
 
 write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_prior.csv"),
           row.names = FALSE) 
