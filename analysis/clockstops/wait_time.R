@@ -18,6 +18,7 @@ library('zoo')
 library('reshape2')
 library('fs')
 library('readr')
+library('tidyr')
 
 ## Rounding function
 source(here("analysis", "custom_functions.R"))
@@ -79,7 +80,7 @@ wait_by_group <- rbind(
   arrange(var, category) %>%
   subset(!(var == "Region" & is.na(category)))
 
-wait_by_group <- wait_by_group[,c( "cohort", "var", "category",
+wait_by_group <- wait_by_group[,c("cohort", "var", "category",
                                    "wait_gp1", "wait_gp2", "wait_gp3", "total",
                                   "p25", "p50", "p75")]
 
