@@ -87,6 +87,10 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     died_during_wl = (!is.na(dod) & dod < rtt_end_date),
     died_during_post = (!is.na(dod) & dod <= (rtt_end_date + 182)),
     
+    # Long-term use
+    prior_opioid_rx = (opioid_pre_count1 >= 3),
+    long_term_opioid = (opioid_pre_count2 >= 3),
+    
     # Time on WL, censored at death/deregistration
     wait_time_adj = as.numeric(
       pmin(rtt_end_date, end_date, na.rm = FALSE) - rtt_start_date + 1),
