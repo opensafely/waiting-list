@@ -104,7 +104,7 @@ procedures <-
         cat_dist(trauma_hrg, "Trauma procedure")) %>%
   subset(category == TRUE)
 
-write.csv(cat_dist, here::here("output", "clockstops",  "procedures.csv"),
+write.csv(procedures, here::here("output", "clockstops",  "procedures.csv"),
           row.names = FALSE) 
 
 
