@@ -63,7 +63,8 @@ ortho_routine_final_6mos <- ortho_routine_final %>%
     # Variables for any prescribing, and >=3 prescriptions
   mutate(med_any_6mos = ifelse(value >= 1, 1, 0),
          med_3more_6mos = ifelse(value >= 3, 1, 0),
-        
+         med_none_6mos = ifelse(value ==0, 1, 0),
+         
         period = case_when(
           grepl("pre_", variable) ~ "Pre-WL",
           grepl("wait_", variable) ~ "During WL", 
@@ -94,6 +95,7 @@ ortho_routine_final_3mos <- ortho_routine_final %>%
   # Variables for any prescribing, and >=3 prescriptions
   mutate(med_any_3mos = ifelse(value >= 1, 1, 0),
          med_3more_3mos = ifelse(value >= 3, 1, 0),
+         med_none_3mos = ifelse(value ==0, 1, 0),
          
          period = case_when(
            grepl("pre_", variable) ~ "Pre-WL",
@@ -110,6 +112,7 @@ ortho_routine_final_3mos <- ortho_routine_final %>%
   
   dplyr::select(!c("value", "variable"))
   
+
 # Combine both
 ortho_routine_final_both <- merge(ortho_routine_final_6mos, ortho_routine_final_3mos,
                                   by = c("patient_id","age_group","sex","imd10","ethnicity6", "region",
@@ -140,6 +143,7 @@ meds <- rbind(
     ) 
   
 meds <- meds[,c("cohort", "variable", "category", "period", "measure", 
+                "count_none_6mos", "count_none_3mos",
                 "count_any_6mos", "count_3more_3mos", 
                 "count_3more_6mos", "count_3more_3mos", "total") ]
 
@@ -162,6 +166,8 @@ prior_wait_1 <- ortho_routine_final_2 %>%
             count_any_3mos = rounding(sum(med_any_3mos)),
             count_3more_6mos = rounding(sum(med_3more_6mos)),
             count_3more_3mos = rounding(sum(med_3more_3mos)),
+            count_none_6mos = rounding(sum(med_none_6mos)),
+            count_none_3mos = rounding(sum(med_none_3mos)),
             total = rounding(n()),
             total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
   ungroup() %>%
@@ -180,6 +186,8 @@ prior_wait_2  <- ortho_routine_final_2 %>%
             count_any_3mos = rounding(sum(med_any_3mos)),
             count_3more_6mos = rounding(sum(med_3more_6mos)),
             count_3more_3mos = rounding(sum(med_3more_3mos)),
+            count_none_6mos = rounding(sum(med_none_6mos)),
+            count_none_3mos = rounding(sum(med_none_3mos)),
             total = rounding(n()),
             total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
   ungroup() %>%
@@ -197,6 +205,8 @@ prior_wait_3  <- ortho_routine_final_2 %>%
             count_any_3mos = rounding(sum(med_any_3mos)),
             count_3more_6mos = rounding(sum(med_3more_6mos)),
             count_3more_3mos = rounding(sum(med_3more_3mos)),
+            count_none_6mos = rounding(sum(med_none_6mos)),
+            count_none_3mos = rounding(sum(med_none_3mos)),
             total = rounding(n()),
             total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
   ungroup() %>%
@@ -214,6 +224,8 @@ prior_wait_4  <- ortho_routine_final_2 %>%
             count_any_3mos = rounding(sum(med_any_3mos)),
             count_3more_6mos = rounding(sum(med_3more_6mos)),
             count_3more_3mos = rounding(sum(med_3more_3mos)),
+            count_none_6mos = rounding(sum(med_none_6mos)),
+            count_none_3mos = rounding(sum(med_none_3mos)),
             total = rounding(n()),
             total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
   ungroup() %>%
@@ -228,6 +240,7 @@ prior_wait_all <- rbind(prior_wait_1, prior_wait_2, prior_wait_3, prior_wait_4)
 prior_wait_all <- prior_wait_all[,c("cohort", "long_term_opioid", 
                             "oa", "hip_hrg", "knee_hrg",
                             "wait_gp", "period", "measure", 
+                            "count_none_6mos", "count_none_3mos",
                             "count_any_6mos","count_any_3mos",
                             "count_3more_6mos", "count_3more_3mos", "total") ]
 

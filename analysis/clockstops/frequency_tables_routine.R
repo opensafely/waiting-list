@@ -89,7 +89,6 @@ write.csv(age_stats_combined, here::here("output", "clockstops", "age_stats.csv"
 
 ########### Table with procedure type ################################
 
-# Prior opioid rx only
 dat <- ortho_routine_final 
 
 procedures <- 
@@ -126,12 +125,15 @@ prior_yes <- cat_dist_combined() %>%
         cat_dist(tca_any, "TCA (any)"),
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
-        cat_dist(ad_3plus, "Antidepressant (>=3)")) %>%
+        cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(no_opioid, "No opioid"),
+        cat_dist(long_term_opioid, "Long-term opioid"),
+        cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
   rename(count_prior_opioid = count, total_prior_opioid = total)
 
 # No prior opioid rx only
 dat <- ortho_routine_final %>%
-  subset(prior_opioid_rx == FALSE)
+  subset(no_opioid == FALSE)
 
 prior_no <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),
@@ -143,7 +145,10 @@ prior_no <- cat_dist_combined() %>%
         cat_dist(tca_any, "TCA (any)"),
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
-        cat_dist(ad_3plus, "Antidepressant (>=3)")) %>%
+        cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(no_opioid, "No opioid"),
+        cat_dist(long_term_opioid, "Long-term opioid"),
+        cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
   rename(count_opioid_naive = count, total_opioid_naive = total)
 
 
@@ -162,6 +167,7 @@ long_yes <- cat_dist_combined() %>%
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
         cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(no_opioid, "No opioid"),
         cat_dist(long_term_opioid, "Long-term opioid"),
         cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
   rename(count_opioid_long = count, total_opioid_long = total)
@@ -182,6 +188,7 @@ oa_yes <- cat_dist_combined() %>%
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
         cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(no_opioid, "No opioid"),
         cat_dist(long_term_opioid, "Long-term opioid"),
         cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
   rename(count_oa = count, total_oa = total)
@@ -203,6 +210,7 @@ hip_yes <- cat_dist_combined() %>%
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
         cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(no_opioid, "No opioid"),
         cat_dist(long_term_opioid, "Long-term opioid"),
         cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
   rename(count_hip = count, total_hip = total)
@@ -223,6 +231,7 @@ knee_yes <- cat_dist_combined() %>%
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
         cat_dist(ad_3plus, "Antidepressant (>=3)"),
+        cat_dist(no_opioid, "No opioid"),
         cat_dist(long_term_opioid, "Long-term opioid"),
         cat_dist(prior_opioid_rx, ">=3 opioid Rx")) %>%
   rename(count_knee = count, total_knee = total)

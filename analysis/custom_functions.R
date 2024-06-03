@@ -59,7 +59,10 @@ cat_dist_combined <- function() {
     cat_dist(anxiety, "Anxiety"),
     cat_dist(smi, "Severe mental illness"),
     cat_dist(oud, "Opioid use disorder"),
-    cat_dist(ra, "Rheumatoid arthritis")
+    cat_dist(ra, "Rheumatoid arthritis"),
+    cat_dist(no_opioid, "No opioid"),
+    cat_dist(long_term_opioid, "Long-term opioid"),
+    cat_dist(prior_opioid_rx, ">=3 opioid Rx")
   ) 
   
 }
@@ -77,6 +80,8 @@ meds_dist <- function(var, name) {
               count_any_3mos = rounding(sum(med_any_3mos)),
               count_3more_6mos = rounding(sum(med_3more_6mos)),
               count_3more_3mos = rounding(sum(med_3more_3mos)),
+              count_none_3mos = rounding(sum(med_none_3mos)),
+              count_none_6mos = rounding(sum(med_none_6mos)),
               total = rounding(n()),
               total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
     ungroup() %>%
