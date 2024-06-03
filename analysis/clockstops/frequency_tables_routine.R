@@ -178,7 +178,7 @@ oa_yes <- cat_dist_combined() %>%
         cat_dist(tca_any, "TCA (any)"),
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
-        cat_dist(ad_3plus, "Antidepressant (>=3)"))) %>%
+        cat_dist(ad_3plus, "Antidepressant (>=3)")) %>%
   rename(count_oa = count, total_oa = total)
 
 
