@@ -75,6 +75,10 @@ meds_dist <- function(var, name) {
     mutate(full = "Full cohort", 
            prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
     subset(period %in% c("Pre-WL","Post WL")) %>%
+    group_by({{var}}, period) %>%
+    mutate(total = n(), 
+           total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
+    ungrroup() %>%
     group_by({{var}}, measure, period) %>%
     summarise(count_any_6mos = rounding(sum(med_any_6mos)),
               count_any_3mos = rounding(sum(med_any_3mos)),
@@ -82,8 +86,8 @@ meds_dist <- function(var, name) {
               count_3more_3mos = rounding(sum(med_3more_3mos)),
               count_none_3mos = rounding(sum(med_none_3mos)),
               count_none_6mos = rounding(sum(med_none_6mos)),
-              total = rounding(n()),
-              total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
+              total = rounding(total),
+              total_post = rounding(total_post)) %>%
     ungroup() %>%
     mutate(cohort = "Orthopaedic - Routine/Admitted") %>%
     rename(category = {{var}}) %>%
