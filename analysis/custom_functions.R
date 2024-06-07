@@ -72,8 +72,7 @@ cat_dist_combined <- function() {
 meds_dist <- function(var, name) {
   
   dat %>% 
-    mutate(full = "Full cohort", 
-           prior_opioid_rx = ifelse(prior_opioid_rx == TRUE, "Yes", "No")) %>%
+    mutate(full = "Full cohort") %>%
     subset(period %in% c("Pre-WL","Post WL")) %>%
     group_by({{var}}, period) %>%
     mutate(total = n(), 
