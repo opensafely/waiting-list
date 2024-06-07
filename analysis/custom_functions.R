@@ -77,17 +77,15 @@ meds_dist <- function(var, name) {
     subset(period %in% c("Pre-WL","Post WL")) %>%
     group_by({{var}}, period) %>%
     mutate(total = n(), 
-           total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
-    ungrroup() %>%
-    group_by({{var}}, measure, period) %>%
+           total_post = sum(censor_before_study_end == FALSE)) %>%
+    ungroup() %>%
+    group_by({{var}}, measure, period, total, total_post) %>%
     summarise(count_any_6mos = rounding(sum(med_any_6mos)),
               count_any_3mos = rounding(sum(med_any_3mos)),
               count_3more_6mos = rounding(sum(med_3more_6mos)),
               count_3more_3mos = rounding(sum(med_3more_3mos)),
               count_none_3mos = rounding(sum(med_none_3mos)),
-              count_none_6mos = rounding(sum(med_none_6mos)),
-              total = rounding(total),
-              total_post = rounding(total_post)) %>%
+              count_none_6mos = rounding(sum(med_none_6mos))) %>%
     ungroup() %>%
     mutate(cohort = "Orthopaedic - Routine/Admitted") %>%
     rename(category = {{var}}) %>%
