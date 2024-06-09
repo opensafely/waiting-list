@@ -71,27 +71,94 @@ cat_dist_combined <- function() {
 # during each time period
 meds_dist <- function(var, name) {
   
-  dat %>% 
+  pre <- dat %>% 
     mutate(full = "Full cohort") %>%
-    subset(period %in% c("Pre-WL","Post WL")) %>%
+    subset(period %in% c("Pre-WL")) %>%
     group_by({{var}}, period, measure) %>%
-    mutate(total = rounding(n()), 
-           total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
+    mutate(total = rounding(n())) %>%
     ungroup() %>%
-    group_by({{var}}, measure, period, total, total_post) %>%
+    group_by({{var}}, measure, period, total) %>%
     summarise(count_any_6mos = rounding(sum(med_any_6mos)),
               count_any_3mos = rounding(sum(med_any_3mos)),
               count_3more_6mos = rounding(sum(med_3more_6mos)),
-              count_3more_3mos = rounding(sum(med_3more_3mos)),
-              count_none_3mos = rounding(sum(med_none_3mos)),
-              count_none_6mos = rounding(sum(med_none_6mos))) %>%
+              count_3more_3mos = rounding(sum(med_3more_3mos))) %>%
     ungroup() %>%
     rename(category = {{var}}) %>%
     mutate(cohort = "Orthopaedic - Routine/Admitted",
            category = as.character(category),
-           variable = name,
-           total = ifelse(period == "Pre-WL", total, total_post)) %>%
-    dplyr::select(!total_post)
+           variable = name) 
+  
+  post <- dat %>% 
+    mutate(full = "Full cohort") %>%
+    subset(period %in% c("Post WL") &
+             censor_before_study_end == FALSE) %>%
+    group_by({{var}}, period, measure) %>%
+    mutate(total = rounding(n())) %>%
+    ungroup() %>%
+    group_by({{var}}, measure, period, total) %>%
+    summarise(count_any_6mos = rounding(sum(med_any_6mos)),
+              count_any_3mos = rounding(sum(med_any_3mos)),
+              count_3more_6mos = rounding(sum(med_3more_6mos)),
+              count_3more_3mos = rounding(sum(med_3more_3mos))) %>%
+    ungroup() %>%
+    rename(category = {{var}}) %>%
+    mutate(cohort = "Orthopaedic - Routine/Admitted",
+           category = as.character(category),
+           variable = name)
+  
+  both <- rbind(pre, post)
+  
+  return(both)
+  
+}
+
+
+
+# Number of people with any prescription and 3+ prescriptions
+# during each time period - stratified by wait time
+meds_dist_wait <- function(var, name) {
+  
+  
+  dat <- dat %>%
+    mutate(full = "Full cohort",
+           long_term_opioid = ifelse(long_term_opioid == TRUE, "Yes", "No"))
+  
+  pre <- dat %>% 
+    subset(period %in% c("Pre-WL")) %>%
+    group_by({{var}}, period, long_term_opioid, measure, wait_gp) %>%
+    mutate(total = rounding(n())) %>%
+    ungroup() %>%
+    group_by({{var}}, measure, long_term_opioid, period, total, wait_gp) %>%
+    summarise(count_any_6mos = rounding(sum(med_any_6mos)),
+              count_any_3mos = rounding(sum(med_any_3mos)),
+              count_3more_6mos = rounding(sum(med_3more_6mos)),
+              count_3more_3mos = rounding(sum(med_3more_3mos))) %>%
+    ungroup() %>%
+    rename(category = {{var}}) %>%
+    mutate(cohort = "Orthopaedic - Routine/Admitted",
+           category = as.character(category),
+           variable = name) 
+  
+  post <- dat %>% 
+    subset(period %in% c("Post WL") &
+             censor_before_study_end == FALSE) %>%
+    group_by({{var}}, period, long_term_opioid, measure, wait_gp) %>%
+    mutate(total = rounding(n())) %>%
+    ungroup() %>%
+    group_by({{var}}, measure, long_term_opioid, period, total, wait_gp) %>%
+    summarise(count_any_6mos = rounding(sum(med_any_6mos)),
+              count_any_3mos = rounding(sum(med_any_3mos)),
+              count_3more_6mos = rounding(sum(med_3more_6mos)),
+              count_3more_3mos = rounding(sum(med_3more_3mos))) %>%
+    ungroup() %>%
+    rename(category = {{var}}) %>%
+    mutate(cohort = "Orthopaedic - Routine/Admitted",
+           category = as.character(category),
+           variable = name)
+  
+  both <- rbind(pre, post)
+  
+  return(both)
   
 }
 
