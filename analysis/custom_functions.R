@@ -74,9 +74,9 @@ meds_dist <- function(var, name) {
   dat %>% 
     mutate(full = "Full cohort") %>%
     subset(period %in% c("Pre-WL","Post WL")) %>%
-    group_by({{var}}, period) %>%
-    mutate(total = n(), 
-           total_post = sum(censor_before_study_end == FALSE)) %>%
+    group_by({{var}}, period, measure) %>%
+    mutate(total = rounding(n()), 
+           total_post = rounding(sum(censor_before_study_end == FALSE))) %>%
     ungroup() %>%
     group_by({{var}}, measure, period, total, total_post) %>%
     summarise(count_any_6mos = rounding(sum(med_any_6mos)),
@@ -86,11 +86,12 @@ meds_dist <- function(var, name) {
               count_none_3mos = rounding(sum(med_none_3mos)),
               count_none_6mos = rounding(sum(med_none_6mos))) %>%
     ungroup() %>%
-    mutate(cohort = "Orthopaedic - Routine/Admitted") %>%
     rename(category = {{var}}) %>%
-    mutate(category = as.character(category),
+    mutate(cohort = "Orthopaedic - Routine/Admitted",
+           category = as.character(category),
            variable = name,
-           total = ifelse(period == "Pre-WL", total, total_post))
+           total = ifelse(period == "Pre-WL", total, total_post)) %>%
+    dplyr::select(!total_post)
   
 }
 

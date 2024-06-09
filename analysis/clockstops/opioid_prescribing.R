@@ -143,7 +143,7 @@ meds <- rbind(
     ) 
   
 meds <- meds[,c("cohort", "variable", "category", "period", "measure", 
-                "total", "total_post",
+                "total",
                 "count_none_6mos", "count_none_3mos",
                 "count_any_6mos", "count_any_3mos", 
                 "count_3more_6mos", "count_3more_3mos") ] 
