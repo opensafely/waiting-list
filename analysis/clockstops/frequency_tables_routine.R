@@ -37,14 +37,14 @@ ortho_routine_final <- read_csv(here::here("output", "data", "cohort_ortho_routi
                                          end_date = col_date(format="%Y-%m-%d"),
                                          rtt_start_month =  col_date(format="%Y-%m-%d"),
                                          rtt_end_month =  col_date(format="%Y-%m-%d"))) %>%
-  mutate(gaba_any = (gabapentinoid_pre_count1 >= 1),
-         gaba_3plus = (gabapentinoid_pre_count1 >= 3),
-         nsaid_any = (nsaid_pre_count1 >= 1),
-         nsaid_3plus = (nsaid_pre_count1 >= 3),
-         tca_any = (tca_pre_count1 >= 1),
-         tca_3plus = (tca_pre_count1 >= 3),
-         ad_any = (antidepressant_pre_count1 >= 1),
-         ad_3plus = (antidepressant_pre_count1 >= 3))
+  mutate(gaba_any = (gabapentinoid_pre_count2 >= 1),
+         gaba_3plus = (gabapentinoid_pre_count2 >= 3),
+         nsaid_any = (nsaid_pre_count2 >= 1),
+         nsaid_3plus = (nsaid_pre_count2 >= 3),
+         tca_any = (tca_pre_count2 >= 1),
+         tca_3plus = (tca_pre_count2 >= 3),
+         ad_any = (antidepressant_pre_count2 >= 1),
+         ad_3plus = (antidepressant_pre_count2 >= 3))
          
 
 
@@ -57,12 +57,12 @@ age_stats <- ortho_routine_final %>%
                 p50 = quantile(age, .5, na.rm=TRUE),
                 p75 = quantile(age, .75, na.rm=TRUE)) %>%
       mutate(variable = "Age summary statistics", 
-             prior_opioid_rx = "Full cohort", 
+             any_opioid = "Full cohort", 
              long_term_opioid = "Full cohort",
              cohort = "Orthopaedic - Routine/Admitted")
 
 age_stats_prior_1 <- ortho_routine_final %>%
-  group_by(prior_opioid_rx) %>%
+  group_by(any_opioid) %>%
   summarise(p25 = quantile(age, .25, na.rm=TRUE),
             p50 = quantile(age, .5, na.rm=TRUE),
             p75 = quantile(age, .75, na.rm=TRUE)) %>%
@@ -76,7 +76,7 @@ age_stats_prior_2 <- ortho_routine_final %>%
             p50 = quantile(age, .5, na.rm=TRUE),
             p75 = quantile(age, .75, na.rm=TRUE)) %>%
   mutate(variable = "Age summary statistics",
-         prior_opioid_rx = " ",
+         any_opioid = " ",
          cohort = "Orthopaedic - Routine/Admitted")
 
 
@@ -113,7 +113,7 @@ write.csv(procedures, here::here("output", "clockstops",  "procedures.csv"),
 
 # Prior opioid rx only
 dat <- ortho_routine_final %>%
-  subset(prior_opioid_rx == TRUE)
+  subset(any_opioid == TRUE)
 
 prior_yes <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),
@@ -130,7 +130,7 @@ prior_yes <- cat_dist_combined() %>%
 
 # No prior opioid rx only
 dat <- ortho_routine_final %>%
-  subset(no_opioid == TRUE)
+  subset(any_opioid == FALSE)
 
 prior_no <- cat_dist_combined() %>%
   rbind(cat_dist(hip_hrg, "Hip procedure"),

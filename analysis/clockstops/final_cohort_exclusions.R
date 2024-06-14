@@ -88,7 +88,8 @@ ortho <- arrow::read_feather(here::here("output", "data", "dataset_ortho.arrow")
     died_during_post = (!is.na(dod) & dod <= (rtt_end_date + 182)),
     
     # Long-term use
-    no_opioid = (opioid_pre_count1 == 0),
+    no_opioid = (opioid_pre_count2 == 0),
+    any_opioid = (opioid_pre_count2 > 0),
     prior_opioid_rx = (opioid_pre_count1 >= 3),
     long_term_opioid = (opioid_pre_count2 >= 3),
     
