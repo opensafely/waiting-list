@@ -223,7 +223,8 @@ knee_yes <- cat_dist_combined() %>%
 cat_dist <- list(prior_yes, prior_no, long_yes, oa_yes, hip_yes, knee_yes) %>% 
   reduce(full_join, by=c("category","var","cohort")) %>%
   filter(category != FALSE) %>%
-  arrange(var, category) 
+  arrange(var, category) %>%
+  replace(is.na(.), 0)
 
 cat_dist <- cat_dist[,c("cohort", "var", "category", 
                         "count_any_opioid", "total_any_opioid", 
