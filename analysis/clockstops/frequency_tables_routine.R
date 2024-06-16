@@ -126,7 +126,7 @@ prior_yes <- cat_dist_combined() %>%
         cat_dist(tca_3plus, "TCA (>=3)"),
         cat_dist(ad_any, "Antidepressant (any)"),
         cat_dist(ad_3plus, "Antidepressant (>=3)")) %>%
-  rename(count_prior_opioid = count, total_prior_opioid = total)
+  rename(count_any_opioid = count, total_any_opioid = total)
 
 # No prior opioid rx only
 dat <- ortho_routine_final %>%
@@ -226,13 +226,13 @@ cat_dist <- list(prior_yes, prior_no, long_yes, oa_yes, hip_yes, knee_yes) %>%
   arrange(var, category) 
 
 cat_dist <- cat_dist[,c("cohort", "var", "category", 
-                        "count_prior_opioid", "total_prior_opioid", 
+                        "count_any_opioid", "total_any_opioid", 
                         "count_opioid_naive", "total_opioid_naive",
                         "count_opioid_long", "total_opioid_long",
                         "count_oa", "total_oa",
                           "count_hip", "total_hip","count_knee","total_knee")]
 
-write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_prior.csv"),
+write.csv(cat_dist, here::here("output", "clockstops",  "cat_var_dist_opioid.csv"),
           row.names = FALSE) 
 
 
