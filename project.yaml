@@ -147,7 +147,7 @@ actions:
    needs: [final_cohort_exclusions]
    outputs:
       moderately_sensitive:
-        data1: output/clockstops/cat_var_dist_prior.csv
+        data1: output/clockstops/cat_var_dist_opioid.csv
         data2: output/clockstops/age_stats.csv
         data3: output/clockstops/procedures.csv
   
