@@ -18,7 +18,7 @@ library('patchwork')
 
 setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/GitHub/waiting-list")
 dir_create(here::here("output", "released_outputs"), showWarnings = FALSE, recurse = TRUE)
-source(here("analysis", "plot_functions.R"))
+source(here("analysis", "visualisation", "plot_functions.R"))
 
 
 ################################################################################

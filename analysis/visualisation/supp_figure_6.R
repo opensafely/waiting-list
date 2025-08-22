@@ -8,23 +8,16 @@
 ################################################################################
 
 library('tidyverse')
-library('lubridate')
 library('here')
 library('dplyr')
 library('ggplot2')
-library('zoo')
-library('reshape2')
 library('fs')
 library('patchwork')
-library('ggpubr')
-library('splines2')
-library('lmtest')
-library('splines')
 
 
 setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/GitHub/waiting-list")
 dir_create(here::here("output", "released_outputs"), showWarnings = FALSE, recurse = TRUE)
-source(here("analysis", "plot_functions.R"))
+source(here("analysis", "visualisation", "plot_functions.R"))
 
 
 ################################################################################
