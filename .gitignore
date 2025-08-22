@@ -12,5 +12,5 @@ venv/
 dummy/measures_dummy.R
 analysis/published_data/*
 analysis/old/*
-analysis/visualisation/*
+analysis/visualisation/old/*
 ehrql-main
