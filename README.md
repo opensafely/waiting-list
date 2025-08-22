@@ -4,7 +4,7 @@ Details of the purpose of this project can be found at the [OpenSAFELY workspace
 
 The codelists used in this project are available in the [codelists folder](https://github.com/opensafely/waiting-list/tree/main/codelists). 
 
-Link to preprint: [Higgins et al. Opioid prescribing to people on orthopaedic waiting lists during the COVID-19 pandemic in England: a study using OpenSAFELY-TPP. medrxiv](https://www.medrxiv.org/content/10.1101/2025.05.06.25326436v1)
+Link to preprint: [Higgins et al. Opioid prescribing to people on orthopaedic waiting lists during the COVID-19 pandemic in England: a study using OpenSAFELY-TPP. medrxiv. doi: 10.1101/2025.05.06.25326436v1.](https://www.medrxiv.org/content/10.1101/2025.05.06.25326436v1)
 
 The contents of this repository MUST NOT be considered an accurate or valid representation of the study or its purpose. 
 This repository may reflect an incomplete or incorrect analysis with no further ongoing work.
